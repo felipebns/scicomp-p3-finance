@@ -5,8 +5,20 @@ class FeatureEngineer:
     def build(self, raw_df: pd.DataFrame, feature_profile: str) -> tuple[pd.DataFrame, list[str], str]:
         if feature_profile == "xgboost":
             return self._build_xgboost_features(raw_df)
+        elif feature_profile in ["lstm", "gru"]:
+            return self._build_rnn_features(raw_df)
 
         raise NotImplementedError(f"Feature profile '{feature_profile}' is not implemented yet")
+
+    def _build_rnn_features(self, raw_df: pd.DataFrame) -> tuple[pd.DataFrame, list[str], str]:
+        df = raw_df.copy().sort_values("date").reset_index(drop=True)
+        df["target_return_next_day"] = df["adj_close"].shift(-1) / df["adj_close"] - 1
+        feature_cols = ["adj_close"]
+        
+        dataset = df[["date"] + feature_cols + ["target_return_next_day"]].copy()
+        dataset = dataset.dropna().reset_index(drop=True)
+        
+        return dataset, feature_cols, "target_return_next_day"
 
     def _build_xgboost_features(self, raw_df: pd.DataFrame) -> tuple[pd.DataFrame, list[str], str]:
         df = raw_df.copy().sort_values("date").reset_index(drop=True)

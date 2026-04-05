@@ -61,7 +61,11 @@ class Pipeline:
         y_true = df[target_col].to_numpy()
         y_pred = self.algorithm.predict(df, features)
 
-        y_rw = np.zeros_like(y_true, dtype=float)
+        mask = ~np.isnan(y_pred)
+        y_true_clean = y_true[mask]
+        y_pred_clean = y_pred[mask]
+
+        y_rw = np.zeros_like(y_true_clean, dtype=float)
 
         last_adj_close = float(df["adj_close"].iloc[-1])
 
@@ -69,14 +73,14 @@ class Pipeline:
             "ticker": self.stock.ticker,
             "algorithm": self.algorithm.name(),
             "test": {
-                "mae": float(mean_absolute_error(y_true, y_pred)),
-                "rmse": float(np.sqrt(mean_squared_error(y_true, y_pred))),
-                "r2": float(r2_score(y_true, y_pred)),
+                "mae": float(mean_absolute_error(y_true_clean, y_pred_clean)),
+                "rmse": float(np.sqrt(mean_squared_error(y_true_clean, y_pred_clean))),
+                "r2": float(r2_score(y_true_clean, y_pred_clean)),
             },
             "random_walk": {
-                "mae": float(mean_absolute_error(y_true, y_rw)),
-                "rmse": float(np.sqrt(mean_squared_error(y_true, y_rw))),
-                "r2": float(r2_score(y_true, y_rw)),
+                "mae": float(mean_absolute_error(y_true_clean, y_rw)),
+                "rmse": float(np.sqrt(mean_squared_error(y_true_clean, y_rw))),
+                "r2": float(r2_score(y_true_clean, y_rw)),
             },
             "last_adj_close": last_adj_close,
             "predicted_next_return": float(y_pred[-1]),
@@ -107,7 +111,7 @@ class Pipeline:
 
         fig, ax = plt.subplots(figsize=(14, 7))
         ax.plot(plot_df["date"], actual_return, label="Actual return")
-        ax.plot(plot_df["date"], pred_return, label="XGBoost prediction")
+        ax.plot(plot_df["date"], pred_return, label=f"{self.algorithm.name()} prediction")
         ax.plot(plot_df["date"], random_walk, label="Random walk (0)")
         ax.set_title("Adjusted Return Prediction vs Random Walk")
         ax.set_xlabel("Date")
