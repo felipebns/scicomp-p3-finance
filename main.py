@@ -12,3 +12,6 @@ if __name__ == "__main__":
     algorithm = XGBoostAlgorithm(random_state=42)
     pipeline = Pipeline(stock=stock, algorithm=algorithm, output_dir="output")
     pipeline.run()
+
+
+"""Need to change strategy ? bad results"""

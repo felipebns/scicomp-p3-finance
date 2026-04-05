@@ -22,7 +22,7 @@ class Stock:
             return self._normalize(df)
         except Exception as e:
             print(f"Error fetching data for {self.ticker}: {e}")
-            return
+            return pd.DataFrame()
 
     def _normalize(self, df: pd.DataFrame) -> pd.DataFrame:
         if df is None or df.empty:
@@ -35,6 +35,9 @@ class Stock:
 
         df.columns = [str(c).strip().lower().replace(" ", "_") for c in df.columns]
 
+        if "adj_close" not in df.columns or df["adj_close"].isna().all():
+            raise ValueError("adj_close is required for this model")
+
         if "date" not in df.columns:
             if isinstance(df.index, pd.DatetimeIndex):
                 idx_name = df.index.name or "index"
@@ -45,15 +48,31 @@ class Stock:
         df["date"] = pd.to_datetime(df["date"])
         df = df.sort_values("date").drop_duplicates(subset=["date"], keep="last")
 
-        for col in ["open", "high", "low", "close", "volume"]:
+        for col in ["open", "high", "low", "close", "adj_close", "volume"]:
             if col not in df.columns:
                 df[col] = np.nan
-
-        if "adj_close" not in df.columns:
-            df["adj_close"] = df["close"]
-
-        for col in ["open", "high", "low", "close", "adj_close", "volume"]:
             df[col] = pd.to_numeric(df[col], errors="coerce")
 
-        df = df.dropna(subset=["close"]).reset_index(drop=True)
-        return df[["date", "open", "high", "low", "close", "adj_close", "volume"]]
+        df = df.dropna(subset=["close", "adj_close"]).reset_index(drop=True)
+
+        df["adj_factor"] = df["adj_close"] / df["close"]
+
+        df["adj_open"] = df["open"] * df["adj_factor"]
+        df["adj_high"] = df["high"] * df["adj_factor"]
+        df["adj_low"] = df["low"] * df["adj_factor"]
+
+
+        return df[
+            [
+                "date",
+                "open",
+                "high",
+                "low",
+                "close",
+                "adj_open",
+                "adj_high",
+                "adj_low",
+                "adj_close",
+                "volume",
+            ]
+        ]

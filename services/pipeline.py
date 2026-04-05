@@ -13,8 +13,17 @@ import numpy as np
 import pandas as pd
 import json
 
+
 class Pipeline:
-    def __init__(self, stock: Stock, algorithm: Algorithm, output_dir: str = "output", test_size: float = 0.15, valid_size: float = 0.15, history_window: int = 250) -> None:
+    def __init__(
+        self,
+        stock: Stock,
+        algorithm: Algorithm,
+        output_dir: str = "output",
+        test_size: float = 0.15,
+        valid_size: float = 0.15,
+        history_window: int = 250,
+    ) -> None:
         self.stock = stock
         self.algorithm = algorithm
         self.output_dir = Path(output_dir)
@@ -26,7 +35,9 @@ class Pipeline:
 
     def run(self) -> dict[str, Any]:
         raw_df = self.stock.fetch()
-        dataset, feature_cols, target_col = self.features.build(raw_df, self.algorithm.feature_profile())
+        dataset, feature_cols, target_col = self.features.build(
+            raw_df, self.algorithm.feature_profile()
+        )
 
         train_df, valid_df, test_df = self._split(dataset)
         self.algorithm.fit(train_df, valid_df, feature_cols, target_col)
@@ -40,12 +51,19 @@ class Pipeline:
         n = len(df)
         train_end = int(n * (1 - self.valid_size - self.test_size))
         valid_end = int(n * (1 - self.test_size))
-        return df.iloc[:train_end].copy(), df.iloc[train_end:valid_end].copy(), df.iloc[valid_end:].copy()
+        return (
+            df.iloc[:train_end].copy(),
+            df.iloc[train_end:valid_end].copy(),
+            df.iloc[valid_end:].copy(),
+        )
 
     def _evaluate(self, df: pd.DataFrame, features: list[str], target_col: str) -> dict[str, Any]:
         y_true = df[target_col].to_numpy()
         y_pred = self.algorithm.predict(df, features)
+
         y_rw = np.zeros_like(y_true, dtype=float)
+
+        last_adj_close = float(df["adj_close"].iloc[-1])
 
         return {
             "ticker": self.stock.ticker,
@@ -60,14 +78,17 @@ class Pipeline:
                 "rmse": float(np.sqrt(mean_squared_error(y_true, y_rw))),
                 "r2": float(r2_score(y_true, y_rw)),
             },
-            "last_close": float(df["close"].iloc[-1]),
+            "last_adj_close": last_adj_close,
             "predicted_next_return": float(y_pred[-1]),
-            "predicted_next_close": float(df["close"].iloc[-1] * (1.0 + y_pred[-1])),
+            "predicted_next_adj_close": float(last_adj_close * (1.0 + y_pred[-1])),
             "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         }
 
     def _save_json(self, metrics: dict[str, Any]) -> None:
-        (self.output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+        (self.output_dir / "metrics.json").write_text(
+            json.dumps(metrics, indent=2),
+            encoding="utf-8",
+        )
 
     def _plot(self, df: pd.DataFrame, features: list[str], target_col: str) -> None:
         if len(df) < 2:
@@ -88,7 +109,7 @@ class Pipeline:
         ax.plot(plot_df["date"], actual_return, label="Actual return")
         ax.plot(plot_df["date"], pred_return, label="XGBoost prediction")
         ax.plot(plot_df["date"], random_walk, label="Random walk (0)")
-        ax.set_title("Return Prediction vs Random Walk")
+        ax.set_title("Adjusted Return Prediction vs Random Walk")
         ax.set_xlabel("Date")
         ax.set_ylabel("Return")
         ax.legend()

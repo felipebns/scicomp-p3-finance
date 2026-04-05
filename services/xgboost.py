@@ -6,15 +6,15 @@ import pandas as pd
 class XGBoostAlgorithm(Algorithm):
     def __init__(self, random_state: int = 42) -> None:
         self.model = XGBRegressor(
-            n_estimators=500,
-            max_depth=5,
-            learning_rate=0.03,
+            n_estimators=400,
+            max_depth=8,
+            learning_rate=0.01,
             subsample=0.8,
             colsample_bytree=0.8,
             reg_alpha=0.0,
             reg_lambda=1.0,
             min_child_weight=2,
-            gamma=0.0,
+            gamma=0.01,
             objective="reg:squarederror",
             tree_method="hist",
             random_state=random_state,
