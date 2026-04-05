@@ -2,4 +2,6 @@
 
 ### Starting with XGBoost
 
+### Use only AAPL for now, later use multiple tickers 5-10
+
 - Change target to log return later...
