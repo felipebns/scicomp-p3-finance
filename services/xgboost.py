@@ -4,17 +4,20 @@ import numpy as np
 import pandas as pd
 
 class XGBoostAlgorithm(Algorithm):
-    def __init__(self, random_state: int = 42) -> None:
+    def __init__(self, n_estimators: int = 400, max_depth: int = 8, learning_rate: float = 0.01,
+                gamma: float = 0.01, subsample: float = 0.8, colsample_bytree: float = 0.8,
+                reg_alpha: float = 0.0, reg_lambda: float = 1.0, min_child_weight: int = 2,
+                random_state: int = 42) -> None:
         self.model = XGBRegressor(
-            n_estimators=400,
-            max_depth=8,
-            learning_rate=0.01,
-            subsample=0.8,
-            colsample_bytree=0.8,
-            reg_alpha=0.0,
-            reg_lambda=1.0,
-            min_child_weight=2,
-            gamma=0.01,
+            n_estimators=n_estimators,
+            max_depth=max_depth,
+            learning_rate=learning_rate,
+            subsample=subsample,
+            colsample_bytree=colsample_bytree,
+            reg_alpha=reg_alpha,
+            reg_lambda=reg_lambda,
+            min_child_weight=min_child_weight,
+            gamma=gamma,
             objective="reg:squarederror",
             tree_method="hist",
             random_state=random_state,

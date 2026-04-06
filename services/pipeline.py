@@ -13,7 +13,6 @@ import numpy as np
 import pandas as pd
 import json
 
-
 class Pipeline:
     def __init__(
         self,
@@ -33,7 +32,7 @@ class Pipeline:
         self.history_window = history_window
         self.features = FeatureEngineer()
 
-    def run(self) -> dict[str, Any]:
+    def run(self, save: bool = True) -> dict[str, Any]:
         raw_df = self.stock.fetch()
         dataset, feature_cols, target_col = self.features.build(
             raw_df, self.algorithm.feature_profile()
@@ -43,8 +42,9 @@ class Pipeline:
         self.algorithm.fit(train_df, valid_df, feature_cols, target_col)
 
         metrics = self._evaluate(test_df, feature_cols, target_col)
-        self._save_json(metrics)
-        self._plot(test_df, feature_cols, target_col)
+        if save:
+            self._save_json(metrics)
+            self._plot(test_df, feature_cols, target_col)
         return metrics
 
     def _split(self, df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
