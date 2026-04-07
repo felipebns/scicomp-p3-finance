@@ -1,64 +1,52 @@
-from services.pipeline import Pipeline
-from services.stock import Stock
-from services.xgboost import XGBoostAlgorithm
-from services.lstm import LstmAlgorithm
-from services.gru import GruAlgorithm
-from services.hyperparameter_sweep import HyperparameterSweep
 from datetime import datetime, timezone
+from services.stock import Stock
+from services.pipeline import Pipeline
+from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
+from services.algorithms.svc import SVCAlgorithm
+from services.algorithms.random_forest import RandomForestAlgorithm
+from services.algorithms.ensemble import EnsembleClassificationAlgorithm
 
 if __name__ == "__main__":
-    ticker = "AAPL"
+    ticker = "SPY"
     start = "2016-01-01"
     end = datetime.now(timezone.utc).date().isoformat()
 
-    # Define underlying stock fetcher
+    print(f"Buscando dados históricos de {ticker} desde {start}...")
     stock = Stock(ticker=ticker, start=start, end=end)
+
+    models = [
+        LogisticRegressionAlgorithm(),
+        SVCAlgorithm(),
+        RandomForestAlgorithm(),
+        EnsembleClassificationAlgorithm()
+    ]
     
-    # Define Parameter Grid for GRU Sweep
-    param_grid = {
-        'lookback': [10, 15, 20],
-        'hidden_size': [32, 64],
-        'num_layers': [1, 2],
-        'batch_size': [32, 64],
-        'epochs': [100],
-        'patience': [15]
-    }
-    
-    # 1. Run hyperparameter sweep using the Pipeline internally
-    sweep = HyperparameterSweep(
-        algorithm_class=GruAlgorithm,
-        stock=stock,
-        param_grid=param_grid,
-        output_path="output/gru_sweep.json",
-        metric_to_optimize="r2"  # Optimize for R² score
-    )
-    
-    sweep.run(verbose=True)
-    sweep.save_results()
-    
-    # 2. Extract best algorithm from the sweep
     print("\n============================================================")
-    print("TRAINING FINAL MODEL WITH BEST SWEEP CONFIGURATION")
+    print("INICIANDO PIPELINE DE CLASSIFICAÇÃO COM ENSEMBLE LEARNING")
     print("============================================================")
-    
-    best_algorithm = GruAlgorithm(**sweep.best_config)
-    
-    # 3. Create single Pipeline using the optimal algorithm and run full output
-    final_pipeline = Pipeline(stock=stock, algorithm=best_algorithm, output_dir="output")
-    metrics = final_pipeline.run(save=True)
 
-"""Try latter with log returns instead of absolute returns, maybe more stationary and easier to predict"""
+    pipeline = Pipeline(
+        stock=stock, 
+        algorithms=models, 
+        output_dir="output",
+        test_size=0.20,
+        history_window=100
+    )
 
-"""Change target ? up or down ? return 5 days ?"""
+    results = pipeline.run(save=True)
 
-"""Feature optimization is needed, changing number of layers, hidden units, rolling window, etc"""
+    print("\n============================================================")
+    print("PIPELINE CONCLUÍDO. RESULTADOS SALVOS NO DIRETÓRIO 'output/'")
+    print("============================================================")
 
-"""More features in RNN"""
-
-"""Sweep with different algorithms, not just GRU, but also LSTM and XGBoost, to compare performance"""
-
-"""What should I maximize ? r2 ? rmse ? mae ?"""
-
-"""Better parameters for sweeping"""
-
-"""Change stopping criteria, maybe more patience ?"""
+"""Make backtest"""
+"""Parameter tuning"""
+"""Test different sharpe strategies"""
+"""Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
+"""Compare to different strategies:
+- Buy and Hold
+- Random Walk
+- Always Long
+- Mean strategy
+"""
+"""Manage multiple stocks, weighting, portfolio-level metrics"""

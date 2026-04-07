@@ -1,96 +1,63 @@
 import pandas as pd
-import numpy as np
 
 class FeatureEngineer:
     def build(self, raw_df: pd.DataFrame, feature_profile: str) -> tuple[pd.DataFrame, list[str], str]:
-        if feature_profile == "xgboost":
-            return self._build_xgboost_features(raw_df)
-        elif feature_profile in ["lstm", "gru"]:
-            return self._build_rnn_features(raw_df)
-
+        if feature_profile == "classification_indicators":
+            return self._build_classification_indicators(raw_df)
         raise NotImplementedError(f"Feature profile '{feature_profile}' is not implemented yet")
 
-    def _build_rnn_features(self, raw_df: pd.DataFrame) -> tuple[pd.DataFrame, list[str], str]:
-        df = raw_df.copy().sort_values("date").reset_index(drop=True)
-        df["target_return_next_day"] = df["adj_close"].shift(-1) / df["adj_close"] - 1
-        feature_cols = ["adj_close"]
-        
-        dataset = df[["date"] + feature_cols + ["target_return_next_day"]].copy()
-        dataset = dataset.dropna().reset_index(drop=True)
-        
-        return dataset, feature_cols, "target_return_next_day"
+    def _build_classification_indicators(self, df: pd.DataFrame, lookback: int = 20) -> tuple[pd.DataFrame, list[str], str]:
+        df = df.copy()
+        target_col = "target_direction"
+        df[target_col] = (df["close"].shift(-1) > df["close"]).astype(int)
 
-    def _build_xgboost_features(self, raw_df: pd.DataFrame) -> tuple[pd.DataFrame, list[str], str]:
-        df = raw_df.copy().sort_values("date").reset_index(drop=True)
+        features = []
 
-        df["adj_return_1d"] = df["adj_close"].pct_change()
-        df["adj_log_return_1d"] = np.log(df["adj_close"] / df["adj_close"].shift(1))
+        # 1. EMA
+        df["ema_10"] = df["close"].ewm(span=10, adjust=False).mean()
+        df["ema_20"] = df["close"].ewm(span=20, adjust=False).mean()
+        features.extend(["ema_10", "ema_20"])
 
-        df["adj_range_pct"] = (df["adj_high"] - df["adj_low"]) / df["adj_close"]
-        df["adj_oc_pct"] = (df["adj_close"] - df["adj_open"]) / df["adj_open"]
-        df["adj_hl_pct"] = (df["adj_high"] - df["adj_low"]) / df["adj_open"]
-
-        df["ema_9"] = df["adj_close"].ewm(span=9, adjust=False).mean()
-
-        df["sma_5"] = df["adj_close"].rolling(5).mean()
-        df["sma_15"] = df["adj_close"].rolling(15).mean()
-        df["sma_30"] = df["adj_close"].rolling(30).mean()
-
-        delta = df["adj_close"].diff()
-        gain = delta.clip(lower=0)
-        loss = -delta.clip(upper=0)
-
-        avg_gain = gain.ewm(alpha=1 / 14, adjust=False).mean()
-        avg_loss = loss.ewm(alpha=1 / 14, adjust=False).mean()
-
-        rs = avg_gain / avg_loss.replace(0, np.nan)
+        # 2. RSI (14 periods)
+        delta = df["close"].diff()
+        gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+        loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+        rs = gain / loss
         df["rsi_14"] = 100 - (100 / (1 + rs))
+        df["rsi_14"] = df["rsi_14"].fillna(50)
+        features.append("rsi_14")
 
-        ema_12 = df["adj_close"].ewm(span=12, adjust=False).mean()
-        ema_26 = df["adj_close"].ewm(span=26, adjust=False).mean()
-        df["macd"] = ema_12 - ema_26
-        df["macd_signal"] = df["macd"].ewm(span=9, adjust=False).mean()
-        df["macd_hist"] = df["macd"] - df["macd_signal"]
+        # 3. Bollinger Bands (20 periods)
+        sma = df["close"].rolling(window=20).mean()
+        std = df["close"].rolling(window=20).std()
+        df["bb_upper"] = sma + (2 * std)
+        df["bb_lower"] = sma - (2 * std)
+        df["bb_width"] = (df["bb_upper"] - df["bb_lower"]) / sma
+        features.extend(["bb_upper", "bb_lower", "bb_width"])
 
-        df["volume_change"] = df["volume"].pct_change()
+        # 4. ROC (Rate of Change) - 10 periods
+        df["roc_10"] = ((df["close"] - df["close"].shift(10)) / df["close"].shift(10)) * 100
+        features.append("roc_10")
 
-        direction = np.sign(df["adj_close"].diff()).fillna(0.0)
-        df["obv"] = (direction * df["volume"]).cumsum()
+        # 5. Momentum - 10 periods
+        df["momentum_10"] = df["close"] - df["close"].shift(10)
+        features.append("momentum_10")
 
-        df["day_of_week"] = df["date"].dt.dayofweek
-        df["month"] = df["date"].dt.month
-        df["quarter"] = df["date"].dt.quarter
+        # 6. Returns and Lagged Features
+        df["return"] = df["close"].pct_change()
+        features.append("return")
 
-        df["target_return_next_day"] = df["adj_close"].shift(-1) / df["adj_close"] - 1
+        for i in range(1, 6): # Últimos 5 dias de retornos defasados
+            col = f"return_lag_{i}"
+            df[col] = df["return"].shift(i)
+            features.append(col)
 
-        # Only use everything adjusted!
-        feature_cols = [
-            "adj_open",
-            "adj_high",
-            "adj_low",
-            "adj_close",
-            "volume",
-            "adj_return_1d",
-            "adj_log_return_1d",
-            "adj_range_pct",
-            "adj_oc_pct",
-            "adj_hl_pct",
-            "ema_9",
-            "sma_5",
-            "sma_15",
-            "sma_30",
-            "rsi_14",
-            "macd",
-            "macd_signal",
-            "macd_hist",
-            "volume_change",
-            "obv",
-            "day_of_week",
-            "month",
-            "quarter",
-        ]
+        # Drop rows with NaN due to rolling/shift windows, except the very last row for target
+        # We need the target to be NA for the last row (we can't know the future), 
+        # but we drop NAs where features are missing
+        df = df.dropna(subset=features).copy()
+        
+        # Drop the last row because its target is invalid (future data)
+        df = df.iloc[:-1].reset_index(drop=True)
 
-        dataset = df[["date"] + feature_cols + ["target_return_next_day"]].copy()
-        dataset = dataset.replace([np.inf, -np.inf], np.nan).dropna().reset_index(drop=True)
-
-        return dataset, feature_cols, "target_return_next_day"
+        return df, features, target_col
