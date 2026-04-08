@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 from services.transform import FeatureEngineer
 from services.algorithms.base import Algorithm
 from services.stock import Stock
+from services.backtesting import Backtest
 
 class Pipeline:
     def __init__(
@@ -37,15 +38,32 @@ class Pipeline:
         train_df, test_df = self._split(dataset)
         
         results = {}
+        best_model = None
+        best_model_name = None
+        best_sharpe = -np.inf
+        
         for algo in self.algorithms:
             print(f"Training {algo.name()}...")
             algo.fit(train_df, pd.DataFrame(), feature_cols, target_col)
             metrics = self._evaluate(algo, test_df, feature_cols, target_col)
             results[algo.name()] = metrics
+            
+            # Track best model by Sharpe Ratio
+            if metrics["sharpe_ratio"] > best_sharpe:
+                best_sharpe = metrics["sharpe_ratio"]
+                best_model = algo
+                best_model_name = algo.name()
 
         if save:
             self._save_json(results)
             self._plot_metrics_comparison(results)
+            
+            # Run backtesting with best model
+            if best_model is not None:
+                print(f"\n{'='*70}")
+                print(f"Running backtesting with best model: {best_model_name}")
+                print(f"{'='*70}")
+                self._run_backtest(best_model, test_df, feature_cols)
             
         return results
 
@@ -114,3 +132,21 @@ class Pipeline:
         plt.tight_layout()
         plt.savefig(self.output_dir / "metrics_comparison.png", dpi=150, bbox_inches='tight')
         plt.close()
+    
+    def _run_backtest(self, best_algo: Algorithm, test_df: pd.DataFrame, features: list[str]) -> None:
+        """Run backtest comparing model with benchmark strategies"""
+        
+        # Get predictions from best model
+        y_pred = best_algo.predict(test_df, features)
+        
+        # Initialize backtest engine
+        backtest = Backtest(test_df, initial_capital=10000)
+        
+        # Run all strategies
+        backtest_results = backtest.run_all_strategies(y_pred)
+        
+        # Save results
+        backtest.save_backtest_summary(backtest_results, str(self.output_dir))
+        
+        # Plot results
+        backtest.plot_backtest_results(backtest_results, str(self.output_dir))

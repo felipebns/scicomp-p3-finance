@@ -1,10 +1,10 @@
 from datetime import datetime, timezone
 from services.stock import Stock
 from services.pipeline import Pipeline
-from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
 from services.algorithms.svc import SVCAlgorithm
 from services.algorithms.random_forest import RandomForestAlgorithm
 from services.algorithms.ensemble import EnsembleClassificationAlgorithm
+from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
 
 if __name__ == "__main__":
     ticker = "SPY"
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         RandomForestAlgorithm(),
         EnsembleClassificationAlgorithm()
     ]
-    
+
     print("\n============================================================")
     print("INICIANDO PIPELINE DE CLASSIFICAÇÃO COM ENSEMBLE LEARNING")
     print("============================================================")
@@ -39,14 +39,8 @@ if __name__ == "__main__":
     print("PIPELINE CONCLUÍDO. RESULTADOS SALVOS NO DIRETÓRIO 'output/'")
     print("============================================================")
 
-"""Make backtest"""
-"""Parameter tuning"""
+"""Manage multiple stocks, weighting, portfolio-level metrics"""
 """Test different sharpe strategies"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
-"""Compare to different strategies:
-- Buy and Hold
-- Random Walk
-- Always Long
-- Mean strategy
-"""
-"""Manage multiple stocks, weighting, portfolio-level metrics"""
+"""Parameter tuning"""
+"""Understand what is happening in backtest"""

@@ -1,0 +1,37 @@
+{
+  "ML Model": {
+    "total_return": 0.7581176922483108,
+    "sharpe_ratio": 4.032941658073452,
+    "max_drawdown": -0.028571698022538287,
+    "win_rate": 0.232421875,
+    "final_equity": 17581.176922483108
+  },
+  "Buy & Hold": {
+    "total_return": 0.2777141505904601,
+    "sharpe_ratio": 0.8113749753711759,
+    "max_drawdown": -0.18998904129504926,
+    "win_rate": 0.568359375,
+    "final_equity": 12777.141505904601
+  },
+  "Always Long": {
+    "total_return": 0.2777141505904601,
+    "sharpe_ratio": 0.8113749753711759,
+    "max_drawdown": -0.18998904129504926,
+    "win_rate": 0.568359375,
+    "final_equity": 12777.141505904601
+  },
+  "Mean Reversion": {
+    "total_return": -0.36183704364255986,
+    "sharpe_ratio": -1.5266356089945294,
+    "max_drawdown": -0.39077719452266535,
+    "win_rate": 0.12109375,
+    "final_equity": 6381.629563574402
+  },
+  "Random Walk": {
+    "total_return": 0.05384602626074786,
+    "sharpe_ratio": 0.28299512283561135,
+    "max_drawdown": -0.20671900767049842,
+    "win_rate": 0.28125,
+    "final_equity": 10538.46026260748
+  }
+}
