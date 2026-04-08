@@ -1,37 +1,42 @@
 {
   "ML Model": {
-    "total_return": 0.7581176922483108,
-    "sharpe_ratio": 4.032941658073452,
-    "max_drawdown": -0.028571698022538287,
-    "win_rate": 0.232421875,
-    "final_equity": 17581.176922483108
+    "total_return": -0.10762909137374199,
+    "annualized_return": -0.007148353315132749,
+    "sharpe_ratio": 0.009891763966074097,
+    "max_drawdown": -0.35284386274226665,
+    "active_hit_rate": 0.5161699429296132,
+    "final_equity": 8923.709086262581
   },
   "Buy & Hold": {
-    "total_return": 0.2777141505904601,
-    "sharpe_ratio": 0.8113749753711759,
-    "max_drawdown": -0.18998904129504926,
-    "win_rate": 0.568359375,
-    "final_equity": 12777.141505904601
+    "total_return": 5.097249097343385,
+    "annualized_return": 0.12063307955274905,
+    "sharpe_ratio": 0.7455667895562267,
+    "max_drawdown": -0.34104746893243953,
+    "active_hit_rate": 0.54975,
+    "final_equity": 60972.49097343384
   },
-  "Always Long": {
-    "total_return": 0.2777141505904601,
-    "sharpe_ratio": 0.8113749753711759,
-    "max_drawdown": -0.18998904129504926,
-    "win_rate": 0.568359375,
-    "final_equity": 12777.141505904601
+  "Fixed Income (Cash)": {
+    "total_return": 1.169392230707078,
+    "annualized_return": 0.04999999999997229,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "active_hit_rate": 0.0,
+    "final_equity": 21693.92230707078
   },
   "Mean Reversion": {
-    "total_return": -0.36183704364255986,
-    "sharpe_ratio": -1.5266356089945294,
-    "max_drawdown": -0.39077719452266535,
-    "win_rate": 0.12109375,
-    "final_equity": 6381.629563574402
+    "total_return": 1.9214864744940567,
+    "annualized_return": 0.06987501245534888,
+    "sharpe_ratio": 0.5545834875808971,
+    "max_drawdown": -0.31966968738132495,
+    "active_hit_rate": 0.540519877675841,
+    "final_equity": 29214.86474494057
   },
-  "Random Walk": {
-    "total_return": 0.05384602626074786,
-    "sharpe_ratio": 0.28299512283561135,
-    "max_drawdown": -0.20671900767049842,
-    "win_rate": 0.28125,
-    "final_equity": 10538.46026260748
+  "Random Walk (Median)": {
+    "total_return": -0.5011628097517365,
+    "annualized_return": -0.04286894854627454,
+    "sharpe_ratio": -0.3216063167974433,
+    "max_drawdown": -0.5626063356770725,
+    "active_hit_rate": 0.4979487179487179,
+    "final_equity": 4988.371902482634
   }
 }

@@ -8,7 +8,7 @@ from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
 
 if __name__ == "__main__":
     ticker = "SPY"
-    start = "2016-01-01"
+    start = "2006-01-01" #20 years of data
     end = datetime.now(timezone.utc).date().isoformat()
 
     print(f"Buscando dados históricos de {ticker} desde {start}...")
@@ -40,7 +40,9 @@ if __name__ == "__main__":
     print("============================================================")
 
 """Manage multiple stocks, weighting, portfolio-level metrics"""
-"""Test different sharpe strategies"""
+"""Test different sharpe strategies, should I choose the one with the highest sharpe ratio?"""
+"""Test different buy/sell strategies"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Parameter tuning"""
-"""Understand what is happening in backtest"""
+"""Verify conceptual correctness of everything, anualized return, sharpe ratio, drawdown, etc."""
+"""Tirar portuges depois, deixar só inglês"""

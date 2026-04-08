@@ -10,6 +10,7 @@ from services.transform import FeatureEngineer
 from services.algorithms.base import Algorithm
 from services.stock import Stock
 from services.backtesting import Backtest
+from utils.walk_forward import walk_forward_validation
 
 class Pipeline:
     def __init__(
@@ -58,12 +59,12 @@ class Pipeline:
             self._save_json(results)
             self._plot_metrics_comparison(results)
             
-            # Run backtesting with best model
+            # Run backtesting with best model 
             if best_model is not None:
                 print(f"\n{'='*70}")
-                print(f"Running backtesting with best model: {best_model_name}")
+                print(f"Running REALLY Walk-Forward Backtesting with best model: {best_model_name}")
                 print(f"{'='*70}")
-                self._run_backtest(best_model, test_df, feature_cols)
+                self._run_backtest(best_model, dataset, feature_cols, target_col)
             
         return results
 
@@ -79,7 +80,7 @@ class Pipeline:
         y_true = df[target_col].to_numpy()
         y_pred = algorithm.predict(df, features)
         y_prob = algorithm.predict_proba(df, features)
-        actual_returns = df["return"].to_numpy()
+        actual_returns = df["return"].shift(-1).fillna(0).to_numpy()
 
         acc = accuracy_score(y_true, y_pred)
         prec = precision_score(y_true, y_pred, zero_division=0)
@@ -133,17 +134,26 @@ class Pipeline:
         plt.savefig(self.output_dir / "metrics_comparison.png", dpi=150, bbox_inches='tight')
         plt.close()
     
-    def _run_backtest(self, best_algo: Algorithm, test_df: pd.DataFrame, features: list[str]) -> None:
-        """Run backtest comparing model with benchmark strategies"""
+    def _run_backtest(self, best_algo: Algorithm, dataset: pd.DataFrame, features: list[str], target_col: str) -> None:
+        """Run realistic walk-forward backtest comparing model with benchmark strategies"""
         
-        # Get predictions from best model
-        y_pred = best_algo.predict(test_df, features)
+        print("Executando simulação de dados Walk-Forward... (treino progressivo e avaliação isolada)")
         
-        # Initialize backtest engine
-        backtest = Backtest(test_df, initial_capital=10000)
+        # Obter dataset apenas no futuro cego OOS e as predições empilhadas
+        wfv_df, wfv_predictions = walk_forward_validation(
+            df=dataset,
+            algorithm=best_algo,
+            features=features,
+            target_col=target_col,
+            train_window=1000, 
+            test_window=250    
+        )
+        
+        # Initialize backtest engine on fully out-of-sample predictions
+        backtest = Backtest(wfv_df, initial_capital=10000)
         
         # Run all strategies
-        backtest_results = backtest.run_all_strategies(y_pred)
+        backtest_results = backtest.run_all_strategies(wfv_predictions)
         
         # Save results
         backtest.save_backtest_summary(backtest_results, str(self.output_dir))
