@@ -44,27 +44,53 @@ class Pipeline:
         best_sharpe = -np.inf
         
         for algo in self.algorithms:
-            print(f"Training {algo.name()}...")
-            algo.fit(train_df, pd.DataFrame(), feature_cols, target_col)
-            metrics = self._evaluate(algo, test_df, feature_cols, target_col)
-            results[algo.name()] = metrics
+            print(f"\n[Fase 1: Seleção] WFV para {algo.name()} no conjunto de Treino...")
+            try:
+                # Walk-forward validation apenas no train_df para seleção de hiperparâmetros/modelo
+                wfv_df, wfv_predictions = walk_forward_validation(
+                    df=train_df,
+                    algorithm=algo,
+                    features=feature_cols,
+                    target_col=target_col,
+                    train_window=750,  # ~3 anos de treino
+                    test_window=250    # ~1 ano de validação cega repetida
+                )
+                wfv_actual_returns = wfv_df["return"].shift(-1).fillna(0).to_numpy()
+                strategy_returns = np.where(wfv_predictions == 1, wfv_actual_returns, 0)
+                
+                if len(strategy_returns) > 1 and np.std(strategy_returns) > 0:
+                    sharpe = np.mean(strategy_returns) / np.std(strategy_returns) * np.sqrt(252)
+                else:
+                    sharpe = 0.0
+            except Exception as e:
+                print(f"  -> WFV falhou para {algo.name()} (treino muito curto?): {e}. Usando Sharpe 0.")
+                sharpe = 0.0
+                
+            print(f"  -> WFV Sharpe: {sharpe:.4f}")
             
-            # Track best model by Sharpe Ratio
-            if metrics["sharpe_ratio"] > best_sharpe:
-                best_sharpe = metrics["sharpe_ratio"]
+            # Escolhendo o modelo pelo WFV (livre de test leakage)
+            if sharpe > best_sharpe:
+                best_sharpe = sharpe
                 best_model = algo
                 best_model_name = algo.name()
+                
+            print(f"[Fase 2: Retreino] Treinando {algo.name()} no Train Set completo...")
+            algo.fit(train_df, pd.DataFrame(), feature_cols, target_col)
+            
+            # Salvando métricas sobre o test_df apenas para relatório (NÃO decide qual modelo é o melhor)
+            metrics = self._evaluate(algo, test_df, feature_cols, target_col)
+            results[algo.name()] = metrics
 
         if save:
             self._save_json(results)
             self._plot_metrics_comparison(results)
             
-            # Run backtesting with best model 
             if best_model is not None:
                 print(f"\n{'='*70}")
-                print(f"Running REALLY Walk-Forward Backtesting with best model: {best_model_name}")
+                print(f"[Fase 3: Backtest Final] Estratégia Vencedora: {best_model_name} (WFV Sharpe: {best_sharpe:.4f})")
                 print(f"{'='*70}")
-                self._run_backtest(best_model, dataset, feature_cols, target_col)
+                # Agora rodamos o backtest APENAS no Test Set que não foi usado para absolutamente nada
+                self._run_backtest(best_model, test_df, feature_cols, target_col)
             
         return results
 
@@ -134,26 +160,19 @@ class Pipeline:
         plt.savefig(self.output_dir / "metrics_comparison.png", dpi=150, bbox_inches='tight')
         plt.close()
     
-    def _run_backtest(self, best_algo: Algorithm, dataset: pd.DataFrame, features: list[str], target_col: str) -> None:
-        """Run realistic walk-forward backtest comparing model with benchmark strategies"""
+    def _run_backtest(self, best_algo: Algorithm, test_df: pd.DataFrame, features: list[str], target_col: str) -> None:
+        """Run realistic out-of-sample backtest with the selected best model"""
         
-        print("Executando simulação de dados Walk-Forward... (treino progressivo e avaliação isolada)")
+        print("Executando simulação final estritamente no OOS (Test Set)...")
         
-        # Obter dataset apenas no futuro cego OOS e as predições empilhadas
-        wfv_df, wfv_predictions = walk_forward_validation(
-            df=dataset,
-            algorithm=best_algo,
-            features=features,
-            target_col=target_col,
-            train_window=1000, 
-            test_window=250    
-        )
+        # Get predictions from best model already trained on full Train Set
+        y_pred = best_algo.predict(test_df, features)
         
-        # Initialize backtest engine on fully out-of-sample predictions
-        backtest = Backtest(wfv_df, initial_capital=10000)
+        # Initialize backtest engine
+        backtest = Backtest(test_df, initial_capital=10000)
         
         # Run all strategies
-        backtest_results = backtest.run_all_strategies(wfv_predictions)
+        backtest_results = backtest.run_all_strategies(y_pred)
         
         # Save results
         backtest.save_backtest_summary(backtest_results, str(self.output_dir))

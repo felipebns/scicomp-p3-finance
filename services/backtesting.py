@@ -1,8 +1,8 @@
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-from typing import Dict, Tuple
 import json
+from typing import Dict
 
 class Backtest:
     """Backtesting engine to compare trading strategies with realistic assumptions"""
@@ -23,7 +23,7 @@ class Backtest:
         
         results["ML Model"] = self._model_strategy(model_predictions)
         results["Buy & Hold"] = self._buy_and_hold()
-        results["Fixed Income (Cash)"] = self._fixed_income()
+        results[f"Fixed Income {self.annual_rf_rate:.2%} anual"] = self._fixed_income()
         results["Mean Reversion"] = self._mean_reversion()
         results["Random Walk (Median)"] = self._random_walk_monte_carlo(n_runs=50)
         
@@ -77,25 +77,38 @@ class Backtest:
         return self._calculate_metrics(net_returns, positions)
     
     def _random_walk_monte_carlo(self, n_runs: int = 50) -> Dict:
-        """Robust Random Walk calculates metrics for each run and returns empirical median path."""
+        """
+        Robust Random Walk: Execute multiple runs and return median-representative path.
+        Returns the run whose total_return is CLOSEST TO MEDIAN (not mean).
+        Includes metadata about all runs for transparency.
+        """
         np.random.seed(42)
         all_metrics = []
-        all_curves = []
-        all_positions = []
         
-        for _ in range(n_runs):
+        for run_idx in range(n_runs):
             positions = np.random.randint(0, 2, size=len(self.test_df))
             net_returns = self._calculate_strategy_returns(positions)
             metrics = self._calculate_metrics(net_returns, positions)
             all_metrics.append(metrics)
-            all_curves.append(metrics["equity_curve"])
-            all_positions.append(positions)
-            
-        # Obter o indíce do run cujo retorno total é o mais próximo da mediana
+        
+        # Find run closest to median return (robust center)
         returns = [m["total_return"] for m in all_metrics]
-        median_idx = np.argsort(returns)[len(returns)//2]
+        median_return = np.median(returns)
+        distances = np.abs(np.array(returns) - median_return)
+        median_idx = np.argmin(distances)
         
         representative_metrics = all_metrics[median_idx]
+        
+        # Store run statistics for transparency
+        representative_metrics["_metadata"] = {
+            "n_runs": n_runs,
+            "median_return": float(median_return),
+            "representative_run_idx": int(median_idx),
+            "mean_return_all_runs": float(np.mean(returns)),
+            "std_return_all_runs": float(np.std(returns)),
+            "min_return": float(np.min(returns)),
+            "max_return": float(np.max(returns))
+        }
         
         return representative_metrics
     
@@ -125,10 +138,14 @@ class Backtest:
         drawdown = (equity_curve - running_max) / running_max
         max_drawdown = np.min(drawdown)
         
+        # Calculate gross returns before costs
+        next_returns = self.test_df["return"].shift(-1).fillna(0).values
+        gross_returns = positions * next_returns
+        
         is_active = (positions > 0)
         active_days = np.sum(is_active)
         if active_days > 0:
-            active_hit_rate = np.sum(strategy_returns[is_active] > 0) / active_days
+            active_hit_rate = np.sum(gross_returns[is_active] > 0) / active_days
         else:
             active_hit_rate = 0.0
             
@@ -151,7 +168,6 @@ class Backtest:
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(14, 10))
         
         for strategy_name, equity_curve in equity_curves.items():
-            # CORREÇÃO: Normalizar pelo equity INICIAL em vez de equity_curve[0] que em alguns cenarios de caixa pode ser levemente diferente
             normalized_curve = equity_curve / self.initial_capital
             ax1.plot(dates, normalized_curve, label=strategy_name, linewidth=2, alpha=0.8)
             
@@ -213,7 +229,7 @@ class Backtest:
         
         summary = {}
         for strategy_name, metrics in backtest_results.items():
-            summary[strategy_name] = {
+            base_metrics = {
                 "total_return": float(metrics["total_return"]),
                 "annualized_return": float(metrics["annualized_return"]),
                 "sharpe_ratio": float(metrics["sharpe_ratio"]),
@@ -221,6 +237,12 @@ class Backtest:
                 "active_hit_rate": float(metrics["active_hit_rate"]),
                 "final_equity": float(metrics["final_equity"])
             }
+            
+            # Add random walk metadata if present (for transparency)
+            if "_metadata" in metrics:
+                base_metrics["_random_walk_metadata"] = metrics["_metadata"]
+            
+            summary[strategy_name] = base_metrics
             
         with open(f"{output_dir}/backtest_summary.json", 'w') as f:
             json.dump(summary, f, indent=2)
@@ -230,10 +252,16 @@ class Backtest:
         print("="*70)
         for strategy_name, metrics in summary.items():
             print(f"\n{strategy_name}:")
-            print(f"  Total Ret:     {metrics['total_return']*100:.2f}%")
-            print(f"  Ann. Ret:      {metrics['annualized_return']*100:.2f}%")
-            print(f"  Sharpe:        {metrics['sharpe_ratio']:.4f}")
-            print(f"  Max DD:        {metrics['max_drawdown']*100:.2f}%")
-            print(f"  Act. Hit Rate: {metrics['active_hit_rate']*100:.2f}%")
-            print(f"  Final Equity:  ${metrics['final_equity']:,.2f}")
+            print(f"  Total Return:     {metrics['total_return']*100:.2f}%")
+            print(f"  Annualized Ret:   {metrics['annualized_return']*100:.2f}%")
+            print(f"  Sharpe Ratio:     {metrics['sharpe_ratio']:.4f}")
+            print(f"  Max Drawdown:     {metrics['max_drawdown']*100:.2f}%")
+            print(f"  Active Hit Rate:  {metrics['active_hit_rate']*100:.2f}%")
+            print(f"  Final Equity:     ${metrics['final_equity']:,.2f}")
+            
+            # Show random walk metadata if available
+            if "_random_walk_metadata" in metrics:
+                meta = metrics["_random_walk_metadata"]
+                print(f"  [Random Walk: {meta['n_runs']} runs]")
+                print(f"    Median:  {meta['median_return']*100:.2f}% | Mean: {meta['mean_return_all_runs']*100:.2f}% ± {meta['std_return_all_runs']*100:.2f}%")
         print("="*70 + "\n")

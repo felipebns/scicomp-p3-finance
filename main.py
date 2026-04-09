@@ -39,10 +39,11 @@ if __name__ == "__main__":
     print("PIPELINE CONCLUÍDO. RESULTADOS SALVOS NO DIRETÓRIO 'output/'")
     print("============================================================")
 
-"""Manage multiple stocks, weighting, portfolio-level metrics"""
-"""Test different sharpe strategies, should I choose the one with the highest sharpe ratio?"""
-"""Test different buy/sell strategies"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
-"""Parameter tuning"""
-"""Verify conceptual correctness of everything, anualized return, sharpe ratio, drawdown, etc."""
+"""Manage multiple stocks, weighting, portfolio-level metrics"""
 """Tirar portuges depois, deixar só inglês"""
+"""Parameter tuning/more features ?"""
+"""Test different buy/sell strategies, what is happening in sharpe strategy and _calculate_strategy_returns ?"""
+
+
+"""1 Model per stock for now !!!"""
