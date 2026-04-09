@@ -1,46 +1,78 @@
 import pandas as pd
 import numpy as np
-from typing import Dict
+import copy
+from typing import Tuple, List
+from sklearn.metrics import roc_auc_score
+from scipy.stats import spearmanr
 
-def walk_forward_validation(df: pd.DataFrame, algorithm, features: list[str], target_col: str, 
-                            train_window: int = 1000, test_window: int = 250) -> Dict:
-    """
-    Perform rigorous Walk-Forward Validation (WFV) without data leakage.
-    - GROWING WINDOW: Always train on [0:train_end], test on [train_end:test_end]
-    - Each iteration rolls BOTH boundaries forward by test_window
-    - No overlap or reuse of test data in training
+def walk_forward_validation(df: pd.DataFrame, algorithm, features: list[str], target_col: str, train_window: int = 1000, test_window: int = 250) -> Tuple[pd.DataFrame, np.ndarray, List[float], float, float]:
+  """
+  Perform rigorous Walk-Forward Validation (WFV) without data leakage.
+  - GROWING WINDOW: Always train on [0:train_end], test on [train_end:test_end]
+  - Each iteration rolls BOTH boundaries forward by test_window
+  - No overlap or reuse of test data in training
+  - Models are strictly isolated per fold using deepcopy
+  - Uses PURE ML METRICS (IC, AUC) for model selection, NOT financial metrics
+
+  Example with train_window=750, test_window=250:
+    Iter 0: train[0:750],     test[750:1000]
+    Iter 1: train[0:1000],    test[1000:1250]
+    Iter 2: train[0:1250],    test[1250:1500]
+
+  Returns:
+    Tuple containing:
+    - wfv_df: DataFrame with out-of-sample test data concatenated
+    - wfv_predictions: Array with out-of-sample predictions
+    - fold_ics: List of Information Coefficients for each fold (USED FOR MODEL SELECTION)
+    - mean_ic: The mean IC across all folds
+    - std_ic: The standard deviation of IC across folds
+  """
+  all_predictions = []
+  all_probs = []
+  all_test_indices = []
+  fold_ics = []
+
+  n = len(df)
+  train_end = train_window
+  test_end = train_window + test_window
+
+  while test_end <= n:
+    train_df = df.iloc[:train_end]  # GROWING: all data up to this point
+    test_df = df.iloc[train_end:test_end]
     
-    Example with train_window=750, test_window=250:
-      Iter 0: train[0:750],     test[750:1000]
-      Iter 1: train[0:1000],    test[1000:1250]
-      Iter 2: train[0:1250],    test[1250:1500]
-    """
-    all_predictions = []
-    all_test_indices = []
+    # Deep clone the algorithm to ensure strict isolation (no state leakage between folds)
+    fold_algo = copy.deepcopy(algorithm)
     
-    n = len(df)
-    train_end = train_window
-    test_end = train_window + test_window
+    # Train model on historical data
+    fold_algo.fit(train_df, pd.DataFrame(), features, target_col)
     
-    while test_end <= n:
-        train_df = df.iloc[:train_end]  # GROWING: all data up to this point
-        test_df = df.iloc[train_end:test_end]
-        
-        # Train model on historical data
-        algorithm.fit(train_df, pd.DataFrame(), features, target_col)
-        
-        # Predict on future (blind) test period
-        predictions = algorithm.predict(test_df, features)
-        
-        all_predictions.extend(predictions)
-        all_test_indices.extend(test_df.index)
-        
-        # Roll forward for next iteration (no overlap)
-        train_end = test_end
-        test_end = train_end + test_window
-        
-    # Reconstruct aggregated OOS dataframe and predictions
-    wfv_df = df.loc[all_test_indices].copy()
-    wfv_predictions = np.array(all_predictions)
+    # Predict on future (blind) test period
+    predictions = fold_algo.predict(test_df, features)
+    y_prob = fold_algo.predict_proba(test_df, features)
     
-    return wfv_df, wfv_predictions
+    # Calculate Information Coefficient (IC) for this fold
+    # IC = correlation between predicted probability and actual returns
+    # This is a PURE ML METRIC, independent of any trading strategy
+    actual_returns = test_df["return"].shift(-1).fillna(0).to_numpy()
+    
+    ic = float(np.corrcoef(y_prob, actual_returns)[0, 1]) if len(y_prob) > 1 else 0.0
+    ic = 0.0 if np.isnan(ic) else ic
+        
+    fold_ics.append(ic)
+    
+    all_predictions.extend(predictions)
+    all_probs.extend(y_prob)
+    all_test_indices.extend(test_df.index)
+    
+    # Roll forward for next iteration (no overlap)
+    train_end = test_end
+    test_end = train_end + test_window
+      
+  # Reconstruct aggregated OOS dataframe and predictions
+  wfv_df = df.loc[all_test_indices].copy()
+  wfv_predictions = np.array(all_predictions)
+  
+  mean_ic = float(np.mean(fold_ics)) if fold_ics else 0.0
+  std_ic = float(np.std(fold_ics)) if fold_ics else 0.0
+
+  return wfv_df, wfv_predictions, fold_ics, mean_ic, std_ic

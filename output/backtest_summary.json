@@ -1,11 +1,43 @@
 {
-  "ML Model": {
-    "total_return": 0.04054017885153249,
-    "annualized_return": 0.009905504882472327,
-    "sharpe_ratio": 0.14428698333069795,
-    "max_drawdown": -0.22632147307994605,
-    "active_hit_rate": 0.5195195195195195,
-    "final_equity": 10405.401788515324
+  "ML Threshold 0.50": {
+    "total_return": 0.030463551115715193,
+    "annualized_return": 0.0074708841484449895,
+    "sharpe_ratio": 0.12287460274343136,
+    "max_drawdown": -0.15725588335724228,
+    "active_hit_rate": 0.5363825363825364,
+    "final_equity": 10304.635511157152
+  },
+  "ML Threshold 0.55": {
+    "total_return": 0.04145884557099655,
+    "annualized_return": 0.010126581386830313,
+    "sharpe_ratio": 0.17270962755711491,
+    "max_drawdown": -0.20375637978588218,
+    "active_hit_rate": 0.5163398692810458,
+    "final_equity": 10414.588455709965
+  },
+  "ML Threshold 0.60": {
+    "total_return": 0.22658323892894838,
+    "annualized_return": 0.05196104060409601,
+    "sharpe_ratio": 14.756335221261317,
+    "max_drawdown": -0.0008063694934560581,
+    "active_hit_rate": 1.0,
+    "final_equity": 12265.832389289484
+  },
+  "ML Threshold 0.65": {
+    "total_return": 0.21739039925690617,
+    "annualized_return": 0.049999999999971845,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "active_hit_rate": 0.0,
+    "final_equity": 12173.903992569061
+  },
+  "ML Threshold 0.70": {
+    "total_return": 0.21739039925690617,
+    "annualized_return": 0.049999999999971845,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "active_hit_rate": 0.0,
+    "final_equity": 12173.903992569061
   },
   "Buy & Hold": {
     "total_return": 0.48150943534900126,

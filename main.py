@@ -42,10 +42,9 @@ if __name__ == "__main__":
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Manage multiple stocks, weighting, portfolio-level metrics"""
 """Parameter tuning/more features ?"""
-"""Test different buy/sell strategies, what is happening in sharpe strategy and _calculate_strategy_returns ?"""
+"""Test different ml choosing strategies"""
 
 
-
-"""Clean requirements"""
-
+"""Test more buy/sell strategies"""
+"""Clean requirements.txt"""
 """1 Model per stock for now !!!"""

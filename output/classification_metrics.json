@@ -5,7 +5,8 @@
     "recall": 0.7049180327868853,
     "f1_score": 0.6113744075829384,
     "auc": 0.5054469290085537,
-    "sharpe_ratio": 0.6058334082030928
+    "information_coefficient": 0.014903211891818672,
+    "spearman_correlation": -0.0015340011267358873
   },
   "Support Vector Classifier": {
     "accuracy": 0.4704724409448819,
@@ -13,7 +14,8 @@
     "recall": 0.2750455373406193,
     "f1_score": 0.3595238095238095,
     "auc": 0.5260138152685631,
-    "sharpe_ratio": 0.17608165718004073
+    "information_coefficient": 0.016409226585815367,
+    "spearman_correlation": 0.03935010152282347
   },
   "Random Forest": {
     "accuracy": 0.47244094488188976,
@@ -21,7 +23,8 @@
     "recall": 0.3151183970856102,
     "f1_score": 0.3922902494331066,
     "auc": 0.47742049979912865,
-    "sharpe_ratio": 0.2454179613388296
+    "information_coefficient": 0.004336893547914925,
+    "spearman_correlation": 0.0013253519058610778
   },
   "Hybrid Ensemble": {
     "accuracy": 0.4940944881889764,
@@ -29,6 +32,7 @@
     "recall": 0.46994535519125685,
     "f1_score": 0.5009708737864078,
     "auc": 0.48193522971491876,
-    "sharpe_ratio": 0.3302249557585758
+    "information_coefficient": 0.008073856342656874,
+    "spearman_correlation": 0.00900103777462328
   }
 }

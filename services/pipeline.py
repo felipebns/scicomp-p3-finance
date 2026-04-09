@@ -2,8 +2,10 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+
 from pathlib import Path
 from typing import Any
+from scipy.stats import spearmanr
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
 
 from services.transform import FeatureEngineer
@@ -41,13 +43,15 @@ class Pipeline:
         results = {}
         best_model = None
         best_model_name = None
-        best_sharpe = -np.inf
+        best_ic_score = -np.inf
         
         for algo in self.algorithms:
             print(f"\n[Phase 1: Selection] WFV for {algo.name()} on Training set...")
             try:
-                # Walk-forward validation only on train_df for hyperparameter/model selection
-                wfv_df, wfv_predictions = walk_forward_validation(
+                # Walk-forward validation uses PURE ML METRICS (IC) for model selection
+                # IC = Information Coefficient (correlation between predictions and returns)
+                # This is independent of any trading threshold or strategy
+                wfv_df, wfv_predictions, fold_ics, mean_ic, std_ic = walk_forward_validation(
                     df=train_df,
                     algorithm=algo,
                     features=feature_cols,
@@ -55,22 +59,27 @@ class Pipeline:
                     train_window=750,  # ~3 years of training
                     test_window=250    # ~1 year of blind validation repeated
                 )
-                wfv_actual_returns = wfv_df["return"].shift(-1).fillna(0).to_numpy()
-                strategy_returns = np.where(wfv_predictions == 1, wfv_actual_returns, 0)
                 
-                if len(strategy_returns) > 1 and np.std(strategy_returns) > 0:
-                    sharpe = np.mean(strategy_returns) / np.std(strategy_returns) * np.sqrt(252)
-                else:
-                    sharpe = 0.0
+                # Robust Model Selection Metric using PURE ML METRICS
+                # Higher IC = better prediction of returns
+                # We penalize high variance to favor stable, consistent models
+                score = mean_ic - (0.5 * std_ic)
+                
             except Exception as e:
-                print(f"  -> WFV failed for {algo.name()} (training too short?): {e}. Using Sharpe 0.")
-                sharpe = 0.0
+                print(f"  -> WFV failed for {algo.name()} (training too short?): {e}. Using Score 0.")
+                score = 0.0
+                mean_ic = 0.0
+                std_ic = 0.0
+                fold_ics = []
                 
-            print(f"  -> WFV Sharpe: {sharpe:.4f}")
-            
-            # Choosing the model by WFV (free of test leakage)
-            if sharpe > best_sharpe:
-                best_sharpe = sharpe
+            print(f"  -> WFV Folds IC: {[round(ic, 4) for ic in fold_ics]}")
+            print(f"  -> WFV Mean IC:  {mean_ic:.6f} ± {std_ic:.6f}")
+            print(f"  -> WFV Robust Score: {score:.6f} (used for selection)")
+    
+            # Choosing the model by WFV robust score based on PURE ML METRIC (IC)
+            # NOT by financial metrics like Sharpe
+            if score > best_ic_score:
+                best_ic_score = score
                 best_model = algo
                 best_model_name = algo.name()
                 
@@ -87,7 +96,7 @@ class Pipeline:
             
             if best_model is not None:
                 print(f"\n{'='*70}")
-                print(f"[Phase 3: Final Backtest] Winning Strategy: {best_model_name} (WFV Sharpe: {best_sharpe:.4f})")
+                print(f"[Phase 3: Final Backtest] Winning Strategy: {best_model_name} (WFV Robust Score: {best_ic_score:.6f})")
                 print(f"{'='*70}")
                 # Now we run the backtest ONLY on the Test Set that was not used for anything
                 self._run_backtest(best_model, test_df, feature_cols, target_col)
@@ -103,11 +112,14 @@ class Pipeline:
         )
 
     def _evaluate(self, algorithm: Algorithm, df: pd.DataFrame, features: list[str], target_col: str) -> dict[str, float]:
+        """Pure ML evaluation: Classification metrics only, no financial metrics."""
+        
         y_true = df[target_col].to_numpy()
         y_pred = algorithm.predict(df, features)
         y_prob = algorithm.predict_proba(df, features)
         actual_returns = df["return"].shift(-1).fillna(0).to_numpy()
 
+        # Pure Classification Metrics
         acc = accuracy_score(y_true, y_pred)
         prec = precision_score(y_true, y_pred, zero_division=0)
         rec = recall_score(y_true, y_pred, zero_division=0)
@@ -118,16 +130,17 @@ class Pipeline:
         except ValueError:
             auc = 0.5
 
-        # Sharpe Ratio: Simulate returns based on predictions
-        # If predicts 1 (up): buy, gain actual return
-        # If predicts 0 (down): stay in cash, return = 0
-        strategy_returns = np.where(y_pred == 1, actual_returns, 0)
+        # Information Coefficient (IC): Correlation between predicted probability and actual returns
+        # Measures how well the model ranks future returns, independent of threshold
+        ic = float(np.corrcoef(y_prob, actual_returns)[0, 1]) if len(y_prob) > 1 else 0.0
+        ic = 0.0 if np.isnan(ic) else ic
         
-        if len(strategy_returns) > 1 and np.std(strategy_returns) > 0:
-            # Sharpe Ratio = mean return / standard deviation (with risk-free rate = 0)
-            sharpe = np.mean(strategy_returns) / np.std(strategy_returns) * np.sqrt(252)  # Annualizing
-        else:
-            sharpe = 0.0
+        # Spearman Rank Correlation (rank-based, robust to outliers)
+        try:
+            spearman_corr, _ = spearmanr(y_prob, actual_returns)
+            spearman_corr = float(spearman_corr) if not np.isnan(spearman_corr) else 0.0
+        except:
+            spearman_corr = 0.0
 
         metrics = {
             "accuracy": float(acc),
@@ -135,9 +148,10 @@ class Pipeline:
             "recall": float(rec),
             "f1_score": float(f1),
             "auc": float(auc),
-            "sharpe_ratio": float(sharpe)
+            "information_coefficient": ic,
+            "spearman_correlation": spearman_corr
         }
-        print(f"[{algorithm.name()}] Acc: {acc:.4f} | Prec: {prec:.4f} | Rec: {rec:.4f} | F1: {f1:.4f} | AUC: {auc:.4f} | Sharpe: {sharpe:.4f}")
+        print(f"[{algorithm.name()}] Acc: {acc:.4f} | Prec: {prec:.4f} | Rec: {rec:.4f} | F1: {f1:.4f} | AUC: {auc:.4f} | IC: {ic:.4f} | Spearman: {spearman_corr:.4f}")
         return metrics
 
     def _save_json(self, metrics: dict[str, Any]) -> None:
@@ -159,20 +173,20 @@ class Pipeline:
         plt.tight_layout()
         plt.savefig(self.output_dir / "metrics_comparison.png", dpi=150, bbox_inches='tight')
         plt.close()
-    
+
     def _run_backtest(self, best_algo: Algorithm, test_df: pd.DataFrame, features: list[str], target_col: str) -> None:
-        """Run realistic out-of-sample backtest with the selected best model"""
+        """Run backtesting with multiple trading strategies based on probability thresholds."""
         
-        print("Running final simulation strictly on OOS (Test Set)...")
+        print("Running backtesting with multiple probability-based strategies...")
         
-        # Get predictions from best model already trained on full Train Set
-        y_pred = best_algo.predict(test_df, features)
+        # Get probability predictions from best model already trained on full Train Set
+        y_prob = best_algo.predict_proba(test_df, features)
         
         # Initialize backtest engine
         backtest = Backtest(test_df, initial_capital=10000)
         
-        # Run all strategies
-        backtest_results = backtest.run_all_strategies(y_pred)
+        # Run all strategies: thresholds + benchmarks
+        backtest_results = backtest.run_threshold_strategies(y_prob)
         
         # Save results
         backtest.save_backtest_summary(backtest_results, str(self.output_dir))
