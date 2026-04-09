@@ -23,7 +23,7 @@ class Backtest:
         
         results["ML Model"] = self._model_strategy(model_predictions)
         results["Buy & Hold"] = self._buy_and_hold()
-        results[f"Fixed Income {self.annual_rf_rate:.2%} anual"] = self._fixed_income()
+        results[f"Fixed Income {self.annual_rf_rate:.2%} annual"] = self._fixed_income()
         results["Mean Reversion"] = self._mean_reversion()
         results["Random Walk (Median)"] = self._random_walk_monte_carlo(n_runs=50)
         

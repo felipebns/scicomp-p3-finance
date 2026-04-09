@@ -47,7 +47,7 @@ class FeatureEngineer:
         df["return"] = df["close"].pct_change()
         features.append("return")
 
-        for i in range(1, 6): # Últimos 5 dias de retornos defasados
+        for i in range(1, 6): # Last 5 days of lagged returns
             col = f"return_lag_{i}"
             df[col] = df["return"].shift(i)
             features.append(col)

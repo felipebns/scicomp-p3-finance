@@ -44,16 +44,16 @@ class Pipeline:
         best_sharpe = -np.inf
         
         for algo in self.algorithms:
-            print(f"\n[Fase 1: Seleção] WFV para {algo.name()} no conjunto de Treino...")
+            print(f"\n[Phase 1: Selection] WFV for {algo.name()} on Training set...")
             try:
-                # Walk-forward validation apenas no train_df para seleção de hiperparâmetros/modelo
+                # Walk-forward validation only on train_df for hyperparameter/model selection
                 wfv_df, wfv_predictions = walk_forward_validation(
                     df=train_df,
                     algorithm=algo,
                     features=feature_cols,
                     target_col=target_col,
-                    train_window=750,  # ~3 anos de treino
-                    test_window=250    # ~1 ano de validação cega repetida
+                    train_window=750,  # ~3 years of training
+                    test_window=250    # ~1 year of blind validation repeated
                 )
                 wfv_actual_returns = wfv_df["return"].shift(-1).fillna(0).to_numpy()
                 strategy_returns = np.where(wfv_predictions == 1, wfv_actual_returns, 0)
@@ -63,21 +63,21 @@ class Pipeline:
                 else:
                     sharpe = 0.0
             except Exception as e:
-                print(f"  -> WFV falhou para {algo.name()} (treino muito curto?): {e}. Usando Sharpe 0.")
+                print(f"  -> WFV failed for {algo.name()} (training too short?): {e}. Using Sharpe 0.")
                 sharpe = 0.0
                 
             print(f"  -> WFV Sharpe: {sharpe:.4f}")
             
-            # Escolhendo o modelo pelo WFV (livre de test leakage)
+            # Choosing the model by WFV (free of test leakage)
             if sharpe > best_sharpe:
                 best_sharpe = sharpe
                 best_model = algo
                 best_model_name = algo.name()
                 
-            print(f"[Fase 2: Retreino] Treinando {algo.name()} no Train Set completo...")
+            print(f"[Phase 2: Retraining] Training {algo.name()} on complete Train Set...")
             algo.fit(train_df, pd.DataFrame(), feature_cols, target_col)
             
-            # Salvando métricas sobre o test_df apenas para relatório (NÃO decide qual modelo é o melhor)
+            # Saving metrics about test_df only for reporting (does NOT decide which model is best)
             metrics = self._evaluate(algo, test_df, feature_cols, target_col)
             results[algo.name()] = metrics
 
@@ -87,9 +87,9 @@ class Pipeline:
             
             if best_model is not None:
                 print(f"\n{'='*70}")
-                print(f"[Fase 3: Backtest Final] Estratégia Vencedora: {best_model_name} (WFV Sharpe: {best_sharpe:.4f})")
+                print(f"[Phase 3: Final Backtest] Winning Strategy: {best_model_name} (WFV Sharpe: {best_sharpe:.4f})")
                 print(f"{'='*70}")
-                # Agora rodamos o backtest APENAS no Test Set que não foi usado para absolutamente nada
+                # Now we run the backtest ONLY on the Test Set that was not used for anything
                 self._run_backtest(best_model, test_df, feature_cols, target_col)
             
         return results
@@ -118,14 +118,14 @@ class Pipeline:
         except ValueError:
             auc = 0.5
 
-        # Sharpe Ratio: Simular retornos com base nas predições
-        # Se prediz 1 (up): compra, ganha o retorno real
-        # Se prediz 0 (down): fica em cash, retorno = 0
+        # Sharpe Ratio: Simulate returns based on predictions
+        # If predicts 1 (up): buy, gain actual return
+        # If predicts 0 (down): stay in cash, return = 0
         strategy_returns = np.where(y_pred == 1, actual_returns, 0)
         
         if len(strategy_returns) > 1 and np.std(strategy_returns) > 0:
-            # Sharpe Ratio = média dos retornos / desvio padrão (com risk-free rate = 0)
-            sharpe = np.mean(strategy_returns) / np.std(strategy_returns) * np.sqrt(252)  # Anualizando
+            # Sharpe Ratio = mean return / standard deviation (with risk-free rate = 0)
+            sharpe = np.mean(strategy_returns) / np.std(strategy_returns) * np.sqrt(252)  # Annualizing
         else:
             sharpe = 0.0
 
@@ -163,7 +163,7 @@ class Pipeline:
     def _run_backtest(self, best_algo: Algorithm, test_df: pd.DataFrame, features: list[str], target_col: str) -> None:
         """Run realistic out-of-sample backtest with the selected best model"""
         
-        print("Executando simulação final estritamente no OOS (Test Set)...")
+        print("Running final simulation strictly on OOS (Test Set)...")
         
         # Get predictions from best model already trained on full Train Set
         y_pred = best_algo.predict(test_df, features)

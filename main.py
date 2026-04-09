@@ -11,7 +11,7 @@ if __name__ == "__main__":
     start = "2006-01-01" #20 years of data
     end = datetime.now(timezone.utc).date().isoformat()
 
-    print(f"Buscando dados históricos de {ticker} desde {start}...")
+    print(f"Fetching historical data for {ticker} since {start}...")
     stock = Stock(ticker=ticker, start=start, end=end)
 
     models = [
@@ -22,7 +22,7 @@ if __name__ == "__main__":
     ]
 
     print("\n============================================================")
-    print("INICIANDO PIPELINE DE CLASSIFICAÇÃO COM ENSEMBLE LEARNING")
+    print("STARTING CLASSIFICATION PIPELINE WITH ENSEMBLE LEARNING")
     print("============================================================")
 
     pipeline = Pipeline(
@@ -36,14 +36,16 @@ if __name__ == "__main__":
     results = pipeline.run(save=True)
 
     print("\n============================================================")
-    print("PIPELINE CONCLUÍDO. RESULTADOS SALVOS NO DIRETÓRIO 'output/'")
+    print("PIPELINE COMPLETED. RESULTS SAVED IN 'output/' DIRECTORY")
     print("============================================================")
 
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Manage multiple stocks, weighting, portfolio-level metrics"""
-"""Tirar portuges depois, deixar só inglês"""
 """Parameter tuning/more features ?"""
 """Test different buy/sell strategies, what is happening in sharpe strategy and _calculate_strategy_returns ?"""
 
+
+
+"""Clean requirements"""
 
 """1 Model per stock for now !!!"""
