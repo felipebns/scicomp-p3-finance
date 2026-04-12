@@ -1,31 +1,4 @@
 {
-  "Logistic Regression": {
-    "accuracy": 0.5202755905511811,
-    "precision": 0.5313152400835073,
-    "recall": 0.7605528576765036,
-    "f1_score": 0.6255953295437087,
-    "auc": 0.5051984110883685,
-    "information_coefficient": 0.008675022125080287,
-    "spearman_correlation": -0.0022009043708961676
-  },
-  "Support Vector Classifier": {
-    "accuracy": 0.522244094488189,
-    "precision": 0.533530042918455,
-    "recall": 0.7429958909226746,
-    "f1_score": 0.6210772833723653,
-    "auc": 0.4998352980204206,
-    "information_coefficient": 0.024744441170137656,
-    "spearman_correlation": 0.014107928078602878
-  },
-  "Random Forest": {
-    "accuracy": 0.5003937007874015,
-    "precision": 0.5231281198003328,
-    "recall": 0.5872245050429585,
-    "f1_score": 0.5533262935586061,
-    "auc": 0.4881179064085471,
-    "information_coefficient": -0.005995525786619744,
-    "spearman_correlation": -0.013668908486299512
-  },
   "Hybrid Ensemble": {
     "accuracy": 0.5084645669291339,
     "precision": 0.5232078390923156,

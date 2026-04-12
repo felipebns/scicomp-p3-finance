@@ -118,12 +118,9 @@ if __name__ == "__main__":
         logger.error(f"Pipeline failed with error: {e}", exc_info=True)
         raise
 
-
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Parameter tuning/more features ?"""
-"""Try new benchmarks for multi-assets"""
 """Slow, change to polars ? new framework ? | Parallelize WFV ? | Use more efficient backtesting framework ? | Pickle files ?"""
-"""Offer risk vs return Graph!"""
 
 """Add more stocks"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""

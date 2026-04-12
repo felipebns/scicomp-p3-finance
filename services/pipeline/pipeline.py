@@ -59,6 +59,9 @@ class Pipeline:
         self.metrics_evaluator = MetricsEvaluator()
         self.reporter = PipelineReporter(self.output_dir)
         self.logger = get_logger()
+        
+        # Timing tracking
+        self.phase_times = {}
     
     def run(self, save: bool = True) -> Dict[str, Any]:
         """Execute complete pipeline: data → features → model selection → backtest.
@@ -66,10 +69,13 @@ class Pipeline:
         Returns:
             Dictionary with metrics and backtest results
         """
+        pipeline_start = time.time()
+        
         self.reporter.log_phase_start(
             "0: Data Preparation",
             "Loading historical data and engineering features"
         )
+        phase_start = time.time()
         
         try:
             # Phase 0: Data preparation
@@ -85,6 +91,7 @@ class Pipeline:
             
             self.logger.info("Performing temporal train-test split (80-20)...")
             train_df, test_df = self._split(dataset)
+            self.phase_times["0_data_preparation"] = time.time() - phase_start
             self.reporter.log_phase_end("0: Data Preparation")
             
             # Phase 1: Model selection via walk-forward validation
@@ -92,10 +99,12 @@ class Pipeline:
                 "1: Model Selection",
                 "Using walk-forward validation with Information Coefficient"
             )
+            phase_start = time.time()
             self.logger.info(f"Testing {len(self.algorithms)} algorithms...")
             best_model, best_model_name, best_score = self.model_selector.select(
                 self.algorithms, train_df, feature_cols, target_col
             )
+            self.phase_times["1_model_selection"] = time.time() - phase_start
             self.reporter.log_model_selection(best_model_name, best_score, {})
             self.reporter.log_phase_end("1: Model Selection")
             
@@ -104,21 +113,20 @@ class Pipeline:
                 "2: Evaluation",
                 f"Retraining {best_model_name} on full train set"
             )
+            phase_start = time.time()
             self.logger.info(f"Retraining {best_model_name} on complete train set...")
             retrain_start = time.time()
             best_model.fit(train_df, pd.DataFrame(), feature_cols, target_col)
             retrain_time = time.time() - retrain_start
             self.logger.info(f"✓ Retraining completed in {retrain_time:.2f}s")
             
-            # Evaluate all algorithms on test set for comparison
-            self.logger.info("Evaluating all algorithms on test set...")
+            # Evaluate best model on test set (no need to re-train/evaluate others)
+            self.logger.info(f"Evaluating {best_model_name} on test set...")
             results = {}
-            for algo in self.algorithms:
-                self.logger.debug(f"Evaluating {algo.name()}...")
-                algo.fit(train_df, pd.DataFrame(), feature_cols, target_col)
-                metrics = self.metrics_evaluator.evaluate(algo, test_df, feature_cols, target_col)
-                results[algo.name()] = metrics
-            self.logger.info(f"✓ Evaluation completed for {len(results)} algorithms")
+            metrics = self.metrics_evaluator.evaluate(best_model, test_df, feature_cols, target_col)
+            results[best_model_name] = metrics
+            self.logger.info(f"✓ Evaluation completed for best model: {best_model_name}")
+            self.phase_times["2_evaluation"] = time.time() - phase_start
             self.reporter.log_phase_end("2: Evaluation")
             
             # Phase 3: Save and backtest
@@ -127,6 +135,7 @@ class Pipeline:
                     "3: Backtesting",
                     f"Final backtest on test set with {best_model_name}"
                 )
+                phase_start = time.time()
                 self.logger.info("Saving metrics to JSON...")
                 self.reporter.save_metrics(results)
                 
@@ -135,7 +144,12 @@ class Pipeline:
                 
                 self.logger.info("Running backtest with multiple strategies...")
                 self._run_backtest(best_model, test_df, feature_cols)
+                self.phase_times["3_backtesting"] = time.time() - phase_start
                 self.reporter.log_phase_end("3: Backtesting")
+            
+            # Log timing summary
+            total_time = time.time() - pipeline_start
+            self.reporter.log_timing_summary(self.phase_times, total_time)
             
             self.logger.info("="*80)
             self.logger.info("PIPELINE EXECUTION COMPLETED SUCCESSFULLY")
@@ -196,3 +210,4 @@ class Pipeline:
         backtest.plot_results(results, str(self.output_dir))
         
         self.reporter.log_backtest_results(results)
+

@@ -34,7 +34,8 @@ class PipelineReporter:
         """Save classification metrics to JSON file.
         
         Args:
-            metrics: Dictionary of metrics from model evaluation
+            metrics: Dictionary of metrics from best model evaluation
+            Note: Only saves best model metrics (performance optimization)
         """
         try:
             filepath = self.output_dir / "classification_metrics.json"
@@ -120,4 +121,25 @@ class PipelineReporter:
                 f"Sharpe={results.get('sharpe_ratio', 0):.4f}, "
                 f"MaxDD={results.get('max_drawdown', 0):.2%}"
             )
+    
+    def log_timing_summary(self, phase_times: Dict[str, float], total_time: float) -> None:
+        """Log a summary of execution times for all phases.
+        
+        Args:
+            phase_times: Dictionary mapping phase names to their durations
+            total_time: Total pipeline execution time
+        """
+        self.logger.info("")
+        self.logger.info("="*80)
+        self.logger.info("EXECUTION TIME SUMMARY")
+        self.logger.info("="*80)
+        
+        for phase, duration in phase_times.items():
+            phase_name = phase.replace("_", " ").title()
+            percentage = (duration / total_time) * 100 if total_time > 0 else 0
+            self.logger.info(f"  {phase_name:.<50} {duration:>7.2f}s ({percentage:>5.1f}%)")
+        
+        self.logger.info("-"*80)
+        self.logger.info(f"  {'Total Execution Time':.<50} {total_time:>7.2f}s (100.0%)")
+        self.logger.info("="*80)
 

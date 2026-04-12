@@ -2,6 +2,7 @@ import json
 import pandas as pd
 import numpy as np
 from typing import Dict
+from concurrent.futures import ThreadPoolExecutor
 
 from services.backtesting.metrics_calculator import MetricsCalculator
 from services.backtesting.position_normalizer import PositionNormalizer
@@ -28,19 +29,24 @@ class Backtest:
     
     def run_threshold_strategies(self, model_probabilities: np.ndarray, 
                                  thresholds: list[float] = None) -> Dict[str, Dict]:
-        """Run threshold-based strategies and benchmarks."""
+        """Run threshold-based strategies and benchmarks in parallel."""
         if thresholds is None:
             thresholds = [0.50, 0.55, 0.60, 0.65, 0.70]
         
         results = {}
         
-        # Test probability thresholds
-        for threshold in thresholds:
-            results[f"ML Threshold {threshold:.2f}"] = self._run_threshold_strategy(
-                model_probabilities, threshold
-            )
+        # Test probability thresholds in parallel
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            threshold_futures = {
+                executor.submit(self._run_threshold_strategy, model_probabilities, th): th
+                for th in thresholds
+            }
+            
+            for future in threshold_futures:
+                threshold = threshold_futures[future]
+                results[f"ML Threshold {threshold:.2f}"] = future.result()
         
-        # Add benchmarks
+        # Add benchmarks (sequential, fast)
         results["Buy & Hold"] = self._run_buy_and_hold()
         results[f"Fixed Income {self.annual_rf_rate:.2%} annual"] = self._run_fixed_income()
         results["Mean Reversion"] = self._run_mean_reversion()
