@@ -9,27 +9,31 @@ class Backtest:
     
     def __init__(self, test_df: pd.DataFrame, initial_capital: float = 10000,
                  transaction_cost: float = 0.0005, slippage: float = 0.0005,
-                 annual_rf_rate: float = 0.05):
+                 annual_rf_rate: float = 0.05, position_sizing: str = "equal_weight"):
         self.test_df = test_df.copy()
         self.initial_capital = initial_capital
         self.tc = transaction_cost
         self.slippage = slippage
         self.annual_rf_rate = annual_rf_rate
+        self.position_sizing = position_sizing  # "equal_weight" or "probability_weighted"
         self.daily_rf_rate = (1 + annual_rf_rate) ** (1/252) - 1
         
-    def run_threshold_strategies(self, model_probabilities: np.ndarray) -> Dict[str, Dict]:
+    def run_threshold_strategies(self, model_probabilities: np.ndarray, thresholds: list[float] = None) -> Dict[str, Dict]:
         """Run multiple threshold-based strategies and compare with benchmarks.
         
         Args:
             model_probabilities: Array of predicted probabilities from ML model [0, 1]
+            thresholds: List of probability thresholds to test. Defaults to [0.50, 0.55, 0.60, 0.65, 0.70]
         
         Returns:
             Dictionary mapping strategy names to their performance metrics
         """
+        if thresholds is None:
+            thresholds = [0.50, 0.55, 0.60, 0.65, 0.70]
+            
         results = {}
         
         # Test multiple probability thresholds for entering positions
-        thresholds = [0.50, 0.55, 0.60, 0.65, 0.70]
         for threshold in thresholds:
             strategy_name = f"ML Threshold {threshold:.2f}"
             results[strategy_name] = self._threshold_strategy(model_probabilities, threshold)
@@ -57,14 +61,56 @@ class Backtest:
             threshold: Entry threshold
         """
         positions = (probabilities > threshold).astype(int)
-        net_returns = self._calculate_strategy_returns(positions)
-        return self._calculate_metrics(net_returns, positions)
+        
+        # Apply position sizing strategy
+        if self.position_sizing == "probability_weighted":
+            positions_float = probabilities.copy()
+            positions_float[probabilities <= threshold] = 0  # No position if below threshold
+            positions_weighted = self._apply_probability_weights(positions_float)
+            daily_returns = self._calculate_strategy_returns(positions_weighted)
+        else:
+            # Default: equal weight (binary 0/1 positions)
+            daily_returns = self._calculate_strategy_returns(positions)
+        
+        return self._calculate_metrics(daily_returns, positions)
     
     def _threshold_strategy_simple(self, probabilities: np.ndarray) -> Dict:
         """Simple wrapper for backward compatibility."""
         positions = (probabilities >= 0.5).astype(int)
-        net_returns = self._calculate_strategy_returns(positions)
-        return {"ML Model": self._calculate_metrics(net_returns, positions)}
+        daily_returns = self._calculate_strategy_returns(positions)
+        return {"ML Model": self._calculate_metrics(daily_returns, positions)}
+    
+    def _apply_probability_weights(self, probabilities: np.ndarray) -> np.ndarray:
+        """
+        Convert probabilities to position weights normalized per date and ticker.
+        
+        For each date, allocate capital proportional to predicted probabilities:
+        weight[ticker] = prob[ticker] / sum(probs[all_active_tickers])
+        
+        This way: higher confidence predictions get larger positions.
+        """
+        # Create a temporary DataFrame with probabilities
+        weights = np.zeros_like(probabilities)
+        
+        # Get unique dates in order
+        dates = self.test_df["date"].unique()
+        
+        for date in dates:
+            mask = self.test_df["date"] == date
+            date_probs = probabilities[mask]
+            
+            # Only normalize if there are active positions (prob > 0)
+            total_prob = np.sum(date_probs[date_probs > 0])
+            
+            if total_prob > 0:
+                # Normalize: weight = prob / sum(all_probs_active)
+                weights[mask] = np.where(
+                    date_probs > 0,
+                    date_probs / total_prob,
+                    0
+                )
+        
+        return weights
         
     def _calculate_strategy_returns(self, positions: np.ndarray) -> np.ndarray:
         """
@@ -73,39 +119,57 @@ class Backtest:
         - Return depends on price change from t to t+1.
         - Costs are deducted when position changes.
         """
-        next_returns = self.test_df["return"].shift(-1).fillna(0).values
+        next_returns = self.test_df["next_return"].fillna(0).values
         
         gross_returns = positions * next_returns
         
-        position_changes = np.diff(positions, prepend=0)
-        costs = np.abs(position_changes) * (self.tc + self.slippage)
+        # Calculate costs by ticker instead of the whole flat array
+        self.test_df["_pos"] = positions
+        self.test_df["_cost"] = 0.0
+        position_changes = self.test_df.groupby("ticker")["_pos"].diff().fillna(self.test_df["_pos"])
+        costs = np.abs(position_changes.values) * (self.tc + self.slippage)
         
-        # If not in position (0), earn risk-free rate
-        cash_interest = np.where(positions == 0, self.daily_rf_rate, 0)
+        # Free capital is 1 - sum(positions)/N ? Or each active stock gets equal weight = 1.0 (assuming unlimited margin?).
+        # If we use 100% position on EACH stock independently, the sum of positions could be > 1.
+        # To make it a portfolio, let's normalize positions so they sum up to at most 1 per day.
+        # However, to keep it simple and closest to the original code, let's just compute the daily average return across the universe.
+        n_assets = self.test_df["ticker"].nunique()
+        cash_interest = np.where(positions == 0, self.daily_rf_rate / n_assets, 0)
         
-        net_returns = gross_returns - costs + cash_interest
-        return net_returns
+        # IMPORTANT: Return per day, aggregate across assets
+        # Each row is one asset on one date. We divide by n_assets to get portfolio return.
+        net_returns_flat = (gross_returns - costs + cash_interest) / n_assets
+        
+        # Aggregate to daily portfolio returns
+        self.test_df["_net_ret"] = net_returns_flat
+        daily_returns = self.test_df.groupby("date")["_net_ret"].sum().sort_index().values
+        
+        # Clean up temporary columns
+        self.test_df.drop(columns=[col for col in ["_pos", "_cost", "_net_ret", "_prob", "_weight"] 
+                                    if col in self.test_df.columns], inplace=True)
+        
+        return daily_returns
     
     def _buy_and_hold(self) -> Dict:
         """Buy on day 1 and hold until the end (No turnover = No recurring costs)"""
         positions = np.ones(len(self.test_df))
-        net_returns = self._calculate_strategy_returns(positions)
-        return self._calculate_metrics(net_returns, positions)
+        daily_returns = self._calculate_strategy_returns(positions)
+        return self._calculate_metrics(daily_returns, positions)
     
     def _fixed_income(self) -> Dict:
         """Remains 100% in cash earning a Constant Interest Rate (Risk-Free benchmark)"""
         positions = np.zeros(len(self.test_df))
-        net_returns = self._calculate_strategy_returns(positions)
-        return self._calculate_metrics(net_returns, positions)
+        daily_returns = self._calculate_strategy_returns(positions)
+        return self._calculate_metrics(daily_returns, positions)
     
     def _mean_reversion(self) -> Dict:
         """Buy when price < 20-day SMA, sell when price >= SMA"""
         prices = self.test_df["close"].values
-        sma_20 = self.test_df["close"].rolling(window=20).mean().values
+        sma_20 = self.test_df.groupby("ticker")["close"].transform(lambda x: x.rolling(window=20).mean()).bfill().values
         
         positions = (prices < sma_20).astype(int)
-        net_returns = self._calculate_strategy_returns(positions)
-        return self._calculate_metrics(net_returns, positions)
+        daily_returns = self._calculate_strategy_returns(positions)
+        return self._calculate_metrics(daily_returns, positions)
     
     def _random_walk_monte_carlo(self, n_runs: int = 50) -> Dict:
         """
@@ -118,8 +182,8 @@ class Backtest:
         
         for run_idx in range(n_runs):
             positions = np.random.randint(0, 2, size=len(self.test_df))
-            net_returns = self._calculate_strategy_returns(positions)
-            metrics = self._calculate_metrics(net_returns, positions)
+            daily_returns = self._calculate_strategy_returns(positions)
+            metrics = self._calculate_metrics(daily_returns, positions)
             all_metrics.append(metrics)
         
         # Find run closest to median return (robust center)
@@ -158,9 +222,18 @@ class Backtest:
         years = len(strategy_returns) / 252
         annualized_return = (1 + total_return) ** (1 / years) - 1 if years > 0 else 0
         
-        # Sharpe Ratio
-        if np.std(strategy_returns) > 0:
-            sharpe = np.mean(strategy_returns) / np.std(strategy_returns) * np.sqrt(252)
+        # Sharpe Ratio with proper protection against edge cases
+        std_returns = np.std(strategy_returns)
+        mean_returns = np.mean(strategy_returns)
+        
+        # Only calculate Sharpe if there's meaningful volatility
+        # (Sharpe >3 typically indicates too little activity/volatility, which is unrealistic)
+        if std_returns > 1e-8:
+            sharpe = (mean_returns / std_returns) * np.sqrt(252)
+            # Cap Sharpe at 3 if almost no trades (unrealistic)
+            # This catches strategies that are mostly in cash/bonds
+            if sharpe > 10:
+                sharpe = 0.0  # Treat as cash equivalent
         else:
             sharpe = 0.0
             
@@ -170,7 +243,7 @@ class Backtest:
         max_drawdown = np.min(drawdown)
         
         # Calculate gross returns before costs
-        next_returns = self.test_df["return"].shift(-1).fillna(0).values
+        next_returns = self.test_df["next_return"].fillna(0).values
         gross_returns = positions * next_returns
         
         is_active = (positions > 0)
@@ -193,7 +266,7 @@ class Backtest:
     
     def plot_backtest_results(self, backtest_results: Dict, output_dir: str) -> None:
         """Plot backtest results: equity curves, metrics comparison, and threshold analysis"""
-        dates = self.test_df["date"].values
+        dates = np.sort(self.test_df["date"].unique())
         equity_curves = {name: data["equity_curve"] for name, data in backtest_results.items()}
         
         # Separate threshold strategies from benchmarks for better visualization

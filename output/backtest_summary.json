@@ -1,83 +1,83 @@
 {
   "ML Threshold 0.50": {
-    "total_return": 0.030463551115715193,
-    "annualized_return": 0.0074708841484449895,
-    "sharpe_ratio": 0.12287460274343136,
-    "max_drawdown": -0.15725588335724228,
-    "active_hit_rate": 0.5363825363825364,
-    "final_equity": 10304.635511157152
+    "total_return": 0.045258827386778,
+    "annualized_return": 0.011039489584009132,
+    "sharpe_ratio": 0.25044060677203295,
+    "max_drawdown": -0.08504593771138083,
+    "active_hit_rate": 0.5232078390923156,
+    "final_equity": 10452.58827386778
   },
   "ML Threshold 0.55": {
-    "total_return": 0.04145884557099655,
-    "annualized_return": 0.010126581386830313,
-    "sharpe_ratio": 0.17270962755711491,
-    "max_drawdown": -0.20375637978588218,
-    "active_hit_rate": 0.5163398692810458,
-    "final_equity": 10414.588455709965
+    "total_return": -0.08693855369910697,
+    "annualized_return": -0.022306433971900685,
+    "sharpe_ratio": -0.4791073841656958,
+    "max_drawdown": -0.15343167724142964,
+    "active_hit_rate": 0.5103050288540808,
+    "final_equity": 9130.614463008931
   },
   "ML Threshold 0.60": {
-    "total_return": 0.22658323892894838,
-    "annualized_return": 0.05196104060409601,
-    "sharpe_ratio": 14.756335221261317,
-    "max_drawdown": -0.0008063694934560581,
-    "active_hit_rate": 1.0,
-    "final_equity": 12265.832389289484
+    "total_return": -0.05199002453421231,
+    "annualized_return": -0.013155168936352823,
+    "sharpe_ratio": -0.976876015632708,
+    "max_drawdown": -0.06245197161307716,
+    "active_hit_rate": 0.3333333333333333,
+    "final_equity": 9480.099754657876
   },
   "ML Threshold 0.65": {
-    "total_return": 0.21739039925690617,
-    "annualized_return": 0.049999999999971845,
+    "total_return": 0.040070814775275077,
+    "annualized_return": 0.00979249609026378,
     "sharpe_ratio": 0.0,
-    "max_drawdown": 0.0,
-    "active_hit_rate": 0.0,
-    "final_equity": 12173.903992569061
+    "max_drawdown": -0.00016127389869126127,
+    "active_hit_rate": 1.0,
+    "final_equity": 10400.70814775275
   },
   "ML Threshold 0.70": {
-    "total_return": 0.21739039925690617,
-    "annualized_return": 0.049999999999971845,
+    "total_return": 0.040129221728080644,
+    "annualized_return": 0.009806560821623123,
     "sharpe_ratio": 0.0,
     "max_drawdown": 0.0,
     "active_hit_rate": 0.0,
-    "final_equity": 12173.903992569061
+    "final_equity": 10401.292217280807
   },
   "Buy & Hold": {
-    "total_return": 0.48150943534900126,
-    "annualized_return": 0.10240220468711803,
-    "sharpe_ratio": 0.6429776564401191,
-    "max_drawdown": -0.2274726313750203,
-    "active_hit_rate": 0.5393700787401575,
-    "final_equity": 14815.094353490013
+    "total_return": 0.6492178730165208,
+    "annualized_return": 0.13211826079680766,
+    "sharpe_ratio": 0.6429265150128203,
+    "max_drawdown": -0.3380876728959846,
+    "active_hit_rate": 0.5269685039370079,
+    "final_equity": 16492.178730165208
   },
   "Fixed Income 5.00% annual": {
-    "total_return": 0.21739039925690617,
-    "annualized_return": 0.049999999999971845,
+    "total_return": 0.040129221728080644,
+    "annualized_return": 0.009806560821623123,
     "sharpe_ratio": 0.0,
     "max_drawdown": 0.0,
     "active_hit_rate": 0.0,
-    "final_equity": 12173.903992569061
+    "final_equity": 10401.292217280807
   },
   "Mean Reversion": {
-    "total_return": 0.3148595712509987,
-    "annualized_return": 0.07025145889229245,
-    "sharpe_ratio": 0.5619807412631154,
-    "max_drawdown": -0.1702306925164104,
-    "active_hit_rate": 0.5317919075144508,
-    "final_equity": 13148.595712509987
+    "total_return": 0.07983387295276634,
+    "annualized_return": 0.019233227342272174,
+    "sharpe_ratio": 0.19697686443267012,
+    "max_drawdown": -0.24062341062565396,
+    "active_hit_rate": 0.520952380952381,
+    "final_equity": 10798.338729527663
   },
   "Random Walk (Median)": {
-    "total_return": -0.2520884939255307,
-    "annualized_return": -0.06951177856533142,
-    "sharpe_ratio": -0.5504446397437,
-    "max_drawdown": -0.2761981587275971,
-    "active_hit_rate": 0.5249500998003992,
-    "final_equity": 7479.115060744693,
+    "total_return": -0.20289447021138662,
+    "annualized_return": -0.054693112898628216,
+    "sharpe_ratio": -0.359163371953803,
+    "max_drawdown": -0.3274449342252317,
+    "active_hit_rate": 0.5374749498997996,
+    "final_equity": 7971.055297886134,
     "_random_walk_metadata": {
       "n_runs": 50,
-      "median_return": -0.2525705253063461,
-      "representative_run_idx": 22,
-      "mean_return_all_runs": -0.2281097157893351,
-      "std_return_all_runs": 0.11864622724875423,
-      "min_return": -0.4289448603209053,
-      "max_return": 0.14252336171674385
+      "median_return": -0.20100100801366777,
+      "representative_run_idx": 7,
+      "mean_return_all_runs": -0.20812024641429805,
+      "std_return_all_runs": 0.09787340183329779,
+      "min_return": -0.45243320378764307,
+      "max_return": -0.023170572129154632
     }
   }
 }

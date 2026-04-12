@@ -2,11 +2,15 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+import time
+import warnings
 
 from pathlib import Path
 from typing import Any
 from scipy.stats import spearmanr
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
+
+warnings.filterwarnings('ignore')
 
 from services.transform import FeatureEngineer
 from services.algorithms.base import Algorithm
@@ -22,6 +26,14 @@ class Pipeline:
         output_dir: str = "output",
         test_size: float = 0.20,
         history_window: int = 250,
+        wfv_train_window: int = 750,
+        wfv_test_window: int = 250,
+        initial_capital: float = 10000,
+        transaction_cost: float = 0.0005,
+        slippage: float = 0.0005,
+        annual_rf_rate: float = 0.05,
+        probability_thresholds: list[float] = None,
+        position_sizing: str = "equal_weight",
     ) -> None:
         self.stock = stock
         self.algorithms = algorithms
@@ -30,6 +42,18 @@ class Pipeline:
         self.test_size = test_size
         self.history_window = history_window
         self.features = FeatureEngineer()
+        
+        # Walk-Forward Validation parameters
+        self.wfv_train_window = wfv_train_window
+        self.wfv_test_window = wfv_test_window
+        
+        # Backtesting parameters
+        self.initial_capital = initial_capital
+        self.transaction_cost = transaction_cost
+        self.slippage = slippage
+        self.annual_rf_rate = annual_rf_rate
+        self.probability_thresholds = probability_thresholds or [0.50, 0.55, 0.60, 0.65, 0.70]
+        self.position_sizing = position_sizing
 
     def run(self, save: bool = True) -> dict[str, Any]:
         raw_df = self.stock.fetch()
@@ -47,6 +71,7 @@ class Pipeline:
         
         for algo in self.algorithms:
             print(f"\n[Phase 1: Selection] WFV for {algo.name()} on Training set...")
+            algo_start = time.time()
             try:
                 # Walk-forward validation uses PURE ML METRICS (IC) for model selection
                 # IC = Information Coefficient (correlation between predictions and returns)
@@ -56,8 +81,8 @@ class Pipeline:
                     algorithm=algo,
                     features=feature_cols,
                     target_col=target_col,
-                    train_window=750,  # ~3 years of training
-                    test_window=250    # ~1 year of blind validation repeated
+                    train_window=self.wfv_train_window,
+                    test_window=self.wfv_test_window
                 )
                 
                 # Robust Model Selection Metric using PURE ML METRICS
@@ -71,10 +96,12 @@ class Pipeline:
                 mean_ic = 0.0
                 std_ic = 0.0
                 fold_ics = []
-                
+            
+            algo_elapsed = time.time() - algo_start
             print(f"  -> WFV Folds IC: {[round(ic, 4) for ic in fold_ics]}")
             print(f"  -> WFV Mean IC:  {mean_ic:.6f} ± {std_ic:.6f}")
             print(f"  -> WFV Robust Score: {score:.6f} (used for selection)")
+            print(f"  -> WFV Time: {algo_elapsed:.2f}s")
     
             # Choosing the model by WFV robust score based on PURE ML METRIC (IC)
             # NOT by financial metrics like Sharpe
@@ -84,7 +111,10 @@ class Pipeline:
                 best_model_name = algo.name()
                 
             print(f"[Phase 2: Retraining] Training {algo.name()} on complete Train Set...")
+            retrain_start = time.time()
             algo.fit(train_df, pd.DataFrame(), feature_cols, target_col)
+            retrain_elapsed = time.time() - retrain_start
+            print(f"  -> Retraining Time: {retrain_elapsed:.2f}s")
             
             # Saving metrics about test_df only for reporting (does NOT decide which model is best)
             metrics = self._evaluate(algo, test_df, feature_cols, target_col)
@@ -104,12 +134,14 @@ class Pipeline:
         return results
 
     def _split(self, df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-        n = len(df)
-        train_end = int(n * (1 - self.test_size))
-        return (
-            df.iloc[:train_end].copy(),
-            df.iloc[train_end:].copy(),
-        )
+        dates = df["date"].sort_values().unique()
+        n = len(dates)
+        train_end_idx = int(n * (1 - self.test_size))
+        split_date = dates[train_end_idx]
+        
+        train_df = df[df["date"] < split_date].copy()
+        test_df = df[df["date"] >= split_date].copy()
+        return train_df, test_df
 
     def _evaluate(self, algorithm: Algorithm, df: pd.DataFrame, features: list[str], target_col: str) -> dict[str, float]:
         """Pure ML evaluation: Classification metrics only, no financial metrics."""
@@ -117,7 +149,7 @@ class Pipeline:
         y_true = df[target_col].to_numpy()
         y_pred = algorithm.predict(df, features)
         y_prob = algorithm.predict_proba(df, features)
-        actual_returns = df["return"].shift(-1).fillna(0).to_numpy()
+        actual_returns = df["next_return"].fillna(0).to_numpy()
 
         # Pure Classification Metrics
         acc = accuracy_score(y_true, y_pred)
@@ -182,11 +214,18 @@ class Pipeline:
         # Get probability predictions from best model already trained on full Train Set
         y_prob = best_algo.predict_proba(test_df, features)
         
-        # Initialize backtest engine
-        backtest = Backtest(test_df, initial_capital=10000)
+        # Initialize backtest engine with configured parameters
+        backtest = Backtest(
+            test_df,
+            initial_capital=self.initial_capital,
+            transaction_cost=self.transaction_cost,
+            slippage=self.slippage,
+            annual_rf_rate=self.annual_rf_rate,
+            position_sizing=self.position_sizing
+        )
         
         # Run all strategies: thresholds + benchmarks
-        backtest_results = backtest.run_threshold_strategies(y_prob)
+        backtest_results = backtest.run_threshold_strategies(y_prob, self.probability_thresholds)
         
         # Save results
         backtest.save_backtest_summary(backtest_results, str(self.output_dir))

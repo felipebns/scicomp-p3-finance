@@ -2,3 +2,6 @@ venv
 .env
 __pycache__
 *.pdf
+
+ARCHITECTURE.md
+TUNING_GUIDE.md

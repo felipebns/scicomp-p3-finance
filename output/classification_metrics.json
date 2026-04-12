@@ -1,38 +1,38 @@
 {
   "Logistic Regression": {
-    "accuracy": 0.515748031496063,
-    "precision": 0.5397489539748954,
-    "recall": 0.7049180327868853,
-    "f1_score": 0.6113744075829384,
-    "auc": 0.5054469290085537,
-    "information_coefficient": 0.014903211891818672,
-    "spearman_correlation": -0.0015340011267358873
+    "accuracy": 0.5202755905511811,
+    "precision": 0.5313152400835073,
+    "recall": 0.7605528576765036,
+    "f1_score": 0.6255953295437087,
+    "auc": 0.5051984110883685,
+    "information_coefficient": 0.008675022125080287,
+    "spearman_correlation": -0.0022009043708961676
   },
   "Support Vector Classifier": {
-    "accuracy": 0.4704724409448819,
-    "precision": 0.5189003436426117,
-    "recall": 0.2750455373406193,
-    "f1_score": 0.3595238095238095,
-    "auc": 0.5260138152685631,
-    "information_coefficient": 0.016409226585815367,
-    "spearman_correlation": 0.03935010152282347
+    "accuracy": 0.522244094488189,
+    "precision": 0.533530042918455,
+    "recall": 0.7429958909226746,
+    "f1_score": 0.6210772833723653,
+    "auc": 0.4998352980204206,
+    "information_coefficient": 0.024744441170137656,
+    "spearman_correlation": 0.014107928078602878
   },
   "Random Forest": {
-    "accuracy": 0.47244094488188976,
-    "precision": 0.5195195195195195,
-    "recall": 0.3151183970856102,
-    "f1_score": 0.3922902494331066,
-    "auc": 0.47742049979912865,
-    "information_coefficient": 0.004336893547914925,
-    "spearman_correlation": 0.0013253519058610778
+    "accuracy": 0.5003937007874015,
+    "precision": 0.5231281198003328,
+    "recall": 0.5872245050429585,
+    "f1_score": 0.5533262935586061,
+    "auc": 0.4881179064085471,
+    "information_coefficient": -0.005995525786619744,
+    "spearman_correlation": -0.013668908486299512
   },
   "Hybrid Ensemble": {
-    "accuracy": 0.4940944881889764,
-    "precision": 0.5363825363825364,
-    "recall": 0.46994535519125685,
-    "f1_score": 0.5009708737864078,
-    "auc": 0.48193522971491876,
-    "information_coefficient": 0.008073856342656874,
-    "spearman_correlation": 0.00900103777462328
+    "accuracy": 0.5084645669291339,
+    "precision": 0.5232078390923156,
+    "recall": 0.7579379902876354,
+    "f1_score": 0.61906941266209,
+    "auc": 0.49098802688893894,
+    "information_coefficient": -0.00171262550461111,
+    "spearman_correlation": -0.010895124065088142
   }
 }

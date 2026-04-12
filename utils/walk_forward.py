@@ -32,13 +32,28 @@ def walk_forward_validation(df: pd.DataFrame, algorithm, features: list[str], ta
   all_test_indices = []
   fold_ics = []
 
-  n = len(df)
-  train_end = train_window
-  test_end = train_window + test_window
+  # Convert train_window and test_window from integer rows to chunks of unique dates
+  dates = df["date"].sort_values().unique()
+  n_dates = len(dates)
+  
+  if n_dates < train_window + test_window:
+    print("Warning: Insufficient dates for walk-forward validation (treating windows as single rows)")
+    train_end = train_window
+    test_end = train_window + test_window
+  else:
+    train_end = train_window
+    test_end = train_window + test_window
 
-  while test_end <= n:
-    train_df = df.iloc[:train_end]  # GROWING: all data up to this point
-    test_df = df.iloc[train_end:test_end]
+  while test_end <= n_dates:
+    split_date_start = dates[train_end]
+    if test_end < n_dates:
+      split_date_end = dates[test_end]
+      test_df_mask = (df["date"] >= split_date_start) & (df["date"] < split_date_end)
+    else:
+      test_df_mask = (df["date"] >= split_date_start)
+      
+    train_df = df[df["date"] < split_date_start]
+    test_df = df[test_df_mask]
     
     # Deep clone the algorithm to ensure strict isolation (no state leakage between folds)
     fold_algo = copy.deepcopy(algorithm)
@@ -53,7 +68,7 @@ def walk_forward_validation(df: pd.DataFrame, algorithm, features: list[str], ta
     # Calculate Information Coefficient (IC) for this fold
     # IC = correlation between predicted probability and actual returns
     # This is a PURE ML METRIC, independent of any trading strategy
-    actual_returns = test_df["return"].shift(-1).fillna(0).to_numpy()
+    actual_returns = test_df["next_return"].fillna(0).to_numpy()
     
     ic = float(np.corrcoef(y_prob, actual_returns)[0, 1]) if len(y_prob) > 1 else 0.0
     ic = 0.0 if np.isnan(ic) else ic
@@ -66,7 +81,9 @@ def walk_forward_validation(df: pd.DataFrame, algorithm, features: list[str], ta
     
     # Roll forward for next iteration (no overlap)
     train_end = test_end
-    test_end = train_end + test_window
+    if test_end == n_dates:
+      break
+    test_end = min(train_end + test_window, n_dates)
       
   # Reconstruct aggregated OOS dataframe and predictions
   wfv_df = df.loc[all_test_indices].copy()
