@@ -5,6 +5,7 @@ from services.algorithms.svc import SVCAlgorithm
 from services.algorithms.random_forest import RandomForestAlgorithm
 from services.algorithms.ensemble import EnsembleClassificationAlgorithm
 from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
+from services.logger_config import setup_logging, get_logger
 
 # ============================================================
 # CONFIGURATION: All parameters can be modified here
@@ -66,26 +67,34 @@ CONFIG = {
 }
 
 if __name__ == "__main__":
+    # Setup logging system
+    logger = setup_logging(log_dir="logs")
+    logger.info("="*80)
+    logger.info("STARTING CLASSIFICATION PIPELINE WITH ENSEMBLE LEARNING")
+    logger.info("="*80)
+    
     end_date = datetime.now(timezone.utc).date().isoformat()
     
-    print(f"Fetching historical data for {len(CONFIG['tickers'])} tickers since {CONFIG['start_date']}...")
+    logger.info(f"Fetching historical data for {len(CONFIG['tickers'])} tickers since {CONFIG['start_date']}...")
     stock = Stock(tickers=CONFIG["tickers"], start=CONFIG["start_date"], end=end_date)
+    logger.info(f"✓ Stock data initialized")
 
+    logger.info(f"Initializing {4} ML algorithms...")
     models = [
         LogisticRegressionAlgorithm(**CONFIG["model_params"]["LogisticRegression"]),
         SVCAlgorithm(**CONFIG["model_params"]["SVC"]),
         RandomForestAlgorithm(**CONFIG["model_params"]["RandomForest"]),
         EnsembleClassificationAlgorithm()
     ]
+    logger.info(f"✓ Algorithms initialized: {[m.name() for m in models]}")
 
-    print("\n============================================================")
-    print("STARTING CLASSIFICATION PIPELINE WITH ENSEMBLE LEARNING")
-    print("============================================================")
-    print(f"\nConfiguration:")
-    print(f"  Tickers: {CONFIG['tickers']}")
-    print(f"  Position Sizing: {CONFIG['position_sizing']}")
-    print(f"  Transaction Cost: {CONFIG['transaction_cost']:.4%}")
-    print(f"  Initial Capital: ${CONFIG['initial_capital']}")
+    logger.info("\nConfiguration:")
+    logger.info(f"  Tickers: {CONFIG['tickers']}")
+    logger.info(f"  Position Sizing: {CONFIG['position_sizing']}")
+    logger.info(f"  Transaction Cost: {CONFIG['transaction_cost']:.4%}")
+    logger.info(f"  Initial Capital: ${CONFIG['initial_capital']}")
+    logger.info(f"  WFV Windows: train={CONFIG['wfv_train_window']}, test={CONFIG['wfv_test_window']}")
+    logger.info(f"  Probability Thresholds: {CONFIG['probability_thresholds']}")
 
     pipeline = Pipeline(
         stock=stock, 
@@ -102,18 +111,19 @@ if __name__ == "__main__":
         position_sizing=CONFIG["position_sizing"],
     )
 
-    results = pipeline.run(save=True)
-
-    print("\n============================================================")
-    print("PIPELINE COMPLETED. RESULTS SAVED IN 'output/' DIRECTORY")
-    print("============================================================")
+    try:
+        results = pipeline.run(save=True)
+        logger.info("All results saved to 'output/' and 'logs/' directories")
+    except Exception as e:
+        logger.error(f"Pipeline failed with error: {e}", exc_info=True)
+        raise
 
 
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Parameter tuning/more features ?"""
 """Try new benchmarks for multi-assets"""
-"""Offer risk vs return tradeoff analysis for different strategies (thresholds)"""
 """Slow, change to polars ? new framework ? | Parallelize WFV ? | Use more efficient backtesting framework ? | Pickle files ?"""
+"""Offer risk vs return Graph!"""
 
 """Add more stocks"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
