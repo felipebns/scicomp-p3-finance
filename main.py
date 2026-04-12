@@ -18,7 +18,6 @@ CONFIG = {
     # Pipeline parameters
     "output_dir": "output",
     "test_size": 0.20,
-    "history_window": 100,  # Not currently used, placeholder for future feature engineering
     
     # Walk-Forward Validation parameters
     "wfv_train_window": 750,    # ~3 years of training data
@@ -29,7 +28,7 @@ CONFIG = {
     "transaction_cost": 0.0005,  # 0.05% per trade
     "slippage": 0.0005,          # 0.05% slippage
     "annual_rf_rate": 0.05,      # 5% annual risk-free rate
-    "probability_thresholds": [0.50, 0.55, 0.60, 0.65, 0.70],
+    "probability_thresholds": [0.50, 0.52, 0.53, 0.55, 0.57],
     "position_sizing": "probability_weighted",  # "equal_weight" or "probability_weighted"
     
     # Feature engineering parameters (placeholder for future extensions)
@@ -93,7 +92,6 @@ if __name__ == "__main__":
         algorithms=models, 
         output_dir=CONFIG["output_dir"],
         test_size=CONFIG["test_size"],
-        history_window=CONFIG["history_window"],
         wfv_train_window=CONFIG["wfv_train_window"],
         wfv_test_window=CONFIG["wfv_test_window"],
         initial_capital=CONFIG["initial_capital"],
@@ -112,10 +110,10 @@ if __name__ == "__main__":
 
 
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
-"""Parameter tuning/more features ? | Optimize models"""
-"""Shapre 79 ? to high, weird"""
-
-"""Verify working of multiple stocks and weighting across them (position sizing)!!!!"""
+"""Parameter tuning/more features ?"""
+"""Try new benchmarks for multi-assets"""
+"""Offer risk vs return tradeoff analysis for different strategies (thresholds)"""
+"""Slow, change to polars ? new framework ? | Parallelize WFV ? | Use more efficient backtesting framework ? | Pickle files ?"""
 
 """Add more stocks"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""

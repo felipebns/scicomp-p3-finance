@@ -114,41 +114,55 @@ class Backtest:
         
     def _calculate_strategy_returns(self, positions: np.ndarray) -> np.ndarray:
         """
-        Calculate net returns given a vector of target positions for each day.
-        - positions[t]: Position taken at the CLOSE of day t (1=long, 0=cash).
-        - Return depends on price change from t to t+1.
-        - Costs are deducted when position changes.
+        Calculate net returns given a vector of target positions for each asset-day.
+        
+        MULTI-ASSET PORTFOLIO CALCULATION:
+        - Data: Each row is one (date, ticker) pair
+        - positions[i] = allocation weight to asset i on that date
+        - For equal_weight strategy: positions ∈ {0, 1} (binary hold/cash)
+        - For probability_weighted: positions ∈ [0, 1], already normalized to sum=1.0 per date
+        
+        PORTFOLIO RETURN PER DAY:
+        daily_return = Σ(position_i × return_i) - trading_costs + cash_interest
+        
+        Where:
+        - position_i: fraction of capital allocated to asset i (summed across all 5)
+        - return_i: next-day return of asset i
+        - trading_costs: incurred when positions change
+        - cash_interest: earned on unallocated capital (1 - Σposition)
         """
         next_returns = self.test_df["next_return"].fillna(0).values
         
+        # Gross returns: position allocation × next-day return
         gross_returns = positions * next_returns
         
-        # Calculate costs by ticker instead of the whole flat array
+        # Trading costs by ticker (changes in position)
         self.test_df["_pos"] = positions
-        self.test_df["_cost"] = 0.0
         position_changes = self.test_df.groupby("ticker")["_pos"].diff().fillna(self.test_df["_pos"])
         costs = np.abs(position_changes.values) * (self.tc + self.slippage)
         
-        # Free capital is 1 - sum(positions)/N ? Or each active stock gets equal weight = 1.0 (assuming unlimited margin?).
-        # If we use 100% position on EACH stock independently, the sum of positions could be > 1.
-        # To make it a portfolio, let's normalize positions so they sum up to at most 1 per day.
-        # However, to keep it simple and closest to the original code, let's just compute the daily average return across the universe.
+        # Normalize by n_assets so each asset's contribution is averaged
+        # (since we have 5 rows per date, one per asset)
         n_assets = self.test_df["ticker"].nunique()
-        cash_interest = np.where(positions == 0, self.daily_rf_rate / n_assets, 0)
+        net_returns_flat = (gross_returns - costs) / n_assets
         
-        # IMPORTANT: Return per day, aggregate across assets
-        # Each row is one asset on one date. We divide by n_assets to get portfolio return.
-        net_returns_flat = (gross_returns - costs + cash_interest) / n_assets
-        
-        # Aggregate to daily portfolio returns
+        # Aggregate by date: sum across all 5 assets to get daily portfolio return
         self.test_df["_net_ret"] = net_returns_flat
-        daily_returns = self.test_df.groupby("date")["_net_ret"].sum().sort_index().values
+        daily_returns = self.test_df.groupby("date")["_net_ret"].sum()
         
-        # Clean up temporary columns
-        self.test_df.drop(columns=[col for col in ["_pos", "_cost", "_net_ret", "_prob", "_weight"] 
-                                    if col in self.test_df.columns], inplace=True)
+        # Cash interest: on undeployed capital
+        # Sum positions per date tells deployment level
+        total_deployed_per_date = self.test_df.groupby("date")["_pos"].sum()
+        cash_level = 1.0 - total_deployed_per_date
+        daily_cash_interest = cash_level * self.daily_rf_rate
         
-        return daily_returns
+        # Final: strategy returns + cash interest
+        final_daily_returns = daily_returns + daily_cash_interest
+        
+        # Clean up
+        self.test_df.drop(columns=["_pos", "_net_ret"], inplace=True)
+        
+        return final_daily_returns.sort_index().values
     
     def _buy_and_hold(self) -> Dict:
         """Buy on day 1 and hold until the end (No turnover = No recurring costs)"""

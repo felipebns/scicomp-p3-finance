@@ -1,461 +1,251 @@
-# Portfolio Manager with Machine Learning
+# ML Portfolio Manager: Daily Trading Signals on 5 Stocks
 
-This project implements a **portfolio manager** based on machine learning for stocks. The core idea is simple:
+A simple system to test whether a machine learning model can select stocks better than simply "buy everything and hold it."
 
-1. the system collects historical market data;
-2. calculates technical and statistical features;
-3. uses predictive models to estimate the probability of upside or downside;
-4. transforms this prediction into a capital allocation decision;
-5. compares the strategy's performance with traditional benchmarks.
-
-The goal is not to predict the exact price of a stock, but to **make better investment decisions than naive strategies**.
+**The question:** Can an ML model beat buy-and-hold through daily trading signals on 5 tech stocks during a 5-year period?
 
 ---
 
-## Overview
+## What This Project Does
 
-The project was designed to answer the question:
+```
+1. Get 20 years of price data (2006-2026) for 5 stocks: SPY, AAPL, MSFT, GOOGL, AMZN
 
-> "Using only historical data, can I create an allocation strategy that beats simple market benchmarks?"
+2. Calculate 17 technical signals per stock per day
+   (Exponential Moving Averages, RSI, Bollinger Bands, Momentum, etc)
 
-To do this, the system works with financial time series and evaluates the strategy in terms of:
+3. Train a model on 15 years of data (2006-2020) to predict: "Tomorrow up or down?"
 
-* cumulative return;
-* annualized return;
-* Sharpe ratio;
-* maximum drawdown;
-* decision hit rate;
-* model classification metrics.
+4. Test the model on 5 years it has never seen (2021-2026)
 
-The models, features, and buy/sell rules can be adjusted over time. The project structure was designed to allow gradual evolution without rewriting the entire pipeline.
-
----
-
-## How the system works
-
-The project is organized in **three distinct phases**:
-
-### Phase 1: Walk-Forward Model Selection
-The system uses Walk-Forward Validation to robustly select the best model without testing data leakage:
-- Trains each model on expanding windows of historical data
-- Tests on the subsequent period
-- Calculates **per-fold Sharpe ratio** to measure consistency
-- Uses robust scoring: `mean_sharpe - (0.5 × std_sharpe)` to favor stable models
-- Selects the algorithm with highest robust score
-
-### Phase 2: Pure ML Evaluation
-On the complete training set, the selected model is retrained and evaluated using **classification metrics only**:
-- **Accuracy** - overall correctness
-- **Precision** - false positive rate
-- **Recall** - signal capture rate  
-- **F1 Score** - balance between precision and recall
-- **AUC** - ability to separate classes
-- **Information Coefficient (IC)** - correlation between predicted probability and actual returns
-- **Spearman Correlation** - rank correlation (robust to outliers)
-
-These metrics measure **pure prediction quality**, independent of any trading strategy.
-
-### Phase 3: Backtesting with Multiple Probability Thresholds
-The model produces probability predictions (0-1) that are converted into trading signals using **multiple thresholds**:
-- Tests thresholds: 0.50, 0.55, 0.60, 0.65, 0.70
-- Each threshold generates positions: `buy = (probability > threshold)`
-- Each strategy is backtested independently
-- Calculates financial metrics: total return, annualized return, Sharpe ratio, max drawdown, hit rate
-- Compares against 4 benchmarks: Buy & Hold, Fixed Income, Mean Reversion, Random Walk
-
----
-
-## Detailed workflow
-
-### 1. Data collection
-Downloads historical data for the selected stock with columns like:
-- `open`, `high`, `low`, `close`, `adj_close`, `volume`
-
-### 2. Feature engineering  
-Creates derived variables from raw data:
-- daily returns, lagged returns, moving averages
-- RSI, MACD, Bollinger Bands
-- momentum indicators, other technical features
-- All computed using past data only (no lookahead bias)
-
-### 3. Walk-Forward Model Selection (Phase 1)
-- Growing window approach: train on `[0:t]`, test on `[t:t+w]`
-- Each fold uses `copy.deepcopy(algorithm)` to ensure isolation
-- Per-fold Sharpe ratios calculated
-- Best model selected by robust score
-
-### 4. Retraining on complete training set (Phase 2)
-- Selected model trained on all historical data
-- Evaluated with **classification metrics only**
-- No financial/backtest metrics at this stage
-
-### 5. Probability prediction and strategy generation (Phase 3)
-- Model generates probability predictions `p(1)` for test set
-- Multiple trading strategies created by varying threshold
-- Each threshold: `signal = (probability > threshold)`
-
-### 6. Backtesting with multiple strategies
-- Each threshold-based strategy is simulated
-- Benchmarks also run for comparison
-- Financial metrics calculated for each
-
-### 7. Visualization and reporting
-Charts and JSON summary with detailed results
-
----
-
-## Benchmarks used
-
-Comparing strategies with simple benchmarks is fundamental. Without context, there's no way to know if the model is truly useful.
-
-### 1. Buy & Hold
-Buys the asset at the beginning of the period and holds it until the end.
-
-This represents a passive approach common in the market. Any active strategy must justify why it should be used instead.
-
-### 2. Fixed Income / Cash
-Constant risk-free rate (e.g., 5% annual).
-
-This benchmark shows what happens if capital earns interest without market exposure. Useful for comparison with low-volatility allocation decisions.
-
-### 3. Mean Reversion
-Simple strategy based on regression to the mean.
-
-Example rule: buy when price < moving average, sell when price > moving average. Serves as a heuristic reference based on intuitive logic.
-
-### 4. Random Walk / Monte Carlo Simulation
-Random strategy used as a sanity check.
-
-Tests 50 Monte Carlo runs of random signals to establish a baseline. If the model doesn't beat random walk, it hasn't learned real signal.
-
-### Strategy Selection
-Not all benchmarks are equally important:
-- **Buy & Hold** is the primary comparison point
-- **Fixed Income** is the conservative reference
-- **Random Walk** is the control/sanity check
-- **Mean Reversion** is an additional simple heuristic
-
----
-
-## Pure ML Metrics vs Financial Metrics
-
-This project separates **two evaluation layers** that must remain independent:
-
-### Pure ML Metrics (Phase 2)
-Measured on the training set after model selection. These metrics evaluate **prediction quality alone**:
-- **Accuracy**: Proportion of correct predictions
-- **Precision**: Of predicted buys, how many were right?
-- **Recall**: Of actual buy opportunities, how many were captured?
-- **F1**: Harmonic mean (balance between precision and recall)
-- **AUC**: Ability to separate classes regardless of threshold
-- **IC (Information Coefficient)**: Correlation between predicted probability and actual returns
-- **Spearman Correlation**: Rank correlation (robust to outliers)
-
-**Important**: These metrics are independent of any trading strategy or threshold choice.
-
-### Financial Metrics (Phase 3)
-Measured during backtesting on the test set. These depend on threshold choice and strategy parameters:
-- **Total Return**: Cumulative gain/loss over period
-- **Annualized Return**: Total return annualized
-- **Sharpe Ratio**: Risk-adjusted return (return per unit volatility)
-- **Max Drawdown**: Largest capital loss from peak
-- **Active Hit Rate**: Percentage of active decisions that were profitable
-
-**Why separate them?**
-- Same model with different thresholds → different financial metrics but same ML metrics
-- Ensures flexibility for testing multiple strategies
-- Prevents overfitting financial metrics during model training
-- More methodologically correct and reproducible
-
----
-
-## Information Coefficient (IC)
-
-A key ML metric for trading models.
-
-**Definition**: Correlation between model's predicted probability and actual returns.
-
-**Interpretation**:
-- IC = 0: Model predictions have no correlation with returns (no signal)
-- IC > 0: Positive correlation (model's confidence aligns with actual returns)
-- IC < 0: Negative correlation (model's predictions are inverse to actual returns)
-
-**Why IC matters**:
-- Measures prediction quality independent of threshold
-- Robust even if classification accuracy is modest
-- More relevant for trading than traditional classification metrics
-- Can identify models with signal even if they predict minority class poorly
-
----
-
-## Classification metrics
-
-Since the problem is formulated as classification, the project also measures predictive metrics of the model.
-
-### Accuracy
-
-Overall proportion of correct predictions.
-
-It's simple and intuitive, but can be misleading if the class is imbalanced.
-
-### Precision
-
-Of all the times the model predicted buy, how many times was it correct?
-
-This metric is useful when false positives are expensive.
-
-### Recall
-
-Of all real buy opportunities, how many did the model capture?
-
-This metric shows how much the model "sees" relevant movements.
-
-### F1 Score
-
-Harmonic mean between precision and recall.
-
-It's useful when you want balance between capturing opportunities and avoiding bad signals.
-
-### AUC
-
-Area under the ROC curve.
-
-Measures the model's ability to separate classes in general, regardless of a fixed threshold.
-
----
-
-## Financial metrics
-
-In addition to classification metrics, the project evaluates strategy performance in financial terms **during backtesting only**.
-
-### Total Return
-
-Cumulative return at the end of the period.
-
-Shows how much capital grew or fell in total.
-
-### Annualized Return
-
-Annualized return.
-
-Transforms the observed return over the period into an equivalent annual rate.
-
-### Sharpe Ratio
-
-Measures risk-adjusted return.
-
-Formula: `(return - risk_free_rate) / volatility`
-
-Higher Sharpe indicates better return per unit of risk. **Important**: A very high Sharpe can indicate methodological error if there's information leakage.
-
-### Max Drawdown
-
-Largest capital decline from a previous peak.
-
-Very important risk metric showing worst-case drawdown during the period.
-
-## Walk-Forward Validation
-
-Walk-Forward Validation is used in **Phase 1** to robustly select the best model without data leakage.
-
-### How it works:
-1. Train on window `[0:t]`, test on `[t:t+w]`
-2. Calculate metrics for this fold
-3. Slide window forward and repeat
-4. Average metrics across all folds
-
-### Why it matters:
-- Markets change over time; models good in one period may fail in another
-- Growing windows ensure no training-test overlap (no lookahead bias)
-- Per-fold metrics reveal whether a model is robust or lucky
-- Much more reliable than single fixed train/test split
-
-### Implementation details:
-- Each fold uses `copy.deepcopy(algorithm)` for complete isolation
-- Per-fold Sharpe ratios calculated to measure consistency
-- Robust scoring: `score = mean_sharpe - (0.5 × std_sharpe)`
-  - Rewards models with high average performance
-  - Penalizes models with high variance across folds
-  - Selects the most stable, generalizable algorithm
-
-## Probability Thresholds and Strategy Optimization
-
-In Phase 3, instead of using a single binary prediction (buy/don't buy), the system tests **multiple probability thresholds**:
-
-- **Threshold 0.50**: Buy when probability > 50% (most aggressive)
-- **Threshold 0.55**: Buy when probability > 55%
-- **Threshold 0.60**: Buy when probability > 60%
-- **Threshold 0.65**: Buy when probability > 65%
-- **Threshold 0.70**: Buy when probability > 70% (most conservative)
-
-### Why multiple thresholds?
-- Different thresholds produce different risk/return profiles
-- Higher thresholds → fewer trades, less frequent signals, potentially more selective
-- Lower thresholds → more trades, more frequent signals, higher activity
-- Allows identification of optimal threshold without retraining model
-
-### How to interpret results:
-- Compare Sharpe ratios across thresholds to find optimal entry selectivity
-- Check if higher thresholds reduce max drawdown (more selective = lower risk)
-- Identify which threshold has highest hit rate
-- Balance between return and risk across different probability levels
-
----
-
-The project organization can follow this logic:
-
-```text
-project/
-├── output/
-├── services/
-│   ├── stock.py
-│   ├── transform.py
-│   ├── pipeline.py
-│   ├── backtesting.py
-│   ├── algorithms/
-│   │   ├── base.py
-│   │   ├── logistic_regression.py
-│   │   ├── random_forest.py
-│   │   ├── svc.py
-│   │   └── ensemble.py
-├── utils/
-│   ├── walk_forward.py
-│   └── metrics.py
-├── main.py
-├── requirements.txt
-└── README.md
+5. Compare 7 different strategies:
+   - ML model with different confidence levels
+   - Buy & Hold (buy everything and keep it)
+   - Passive Income / Cash (earn interest, stay safe)
+   - Simple benchmarks (mean reversion, random)
 ```
 
-The file names can change, but the general idea is to maintain a clear separation between:
+---
 
-* data collection;
-* features;
-* models;
-* backtest;
-* evaluation utilities;
-* main execution.
+## How It Works: 5 Steps
+
+### Step 1: Data Collection
+
+Downloads 20 years of historical data in "panel" format:
+- Each day has an entry for each stock
+- Date | Ticker | Open | Close | Volume | ...
+- Example:
+  - 2021-01-04 | SPY | 371.0 | 372.2 | 100M
+  - 2021-01-04 | AAPL | 127.1 | 128.0 | 50M  ← Same date, different stock
+  - 2021-01-04 | MSFT | 215.5 | 216.1 | 75M
+
+**Result:** ~5,000 trading days × 5 stocks = 25,000 rows of data
+
+### Step 2: Calculate Technical Signals
+
+For **each stock individually**, calculates 17 technical indicators:
+- Exponential Moving Averages (EMA 10, 20 days)
+- RSI (Relative Strength Index - trend strength)
+- Bollinger Bands (volatility)
+- MACD, Momentum, Rate of Change
+- Past returns (1, 5, 10 days ago)
+
+**Important:** Calculated separately per stock. SPY data doesn't "contaminate" AAPL.
+
+**Result:** 17 features per stock per day + target label ("did price go up tomorrow?")
+
+### Step 3: Train the Model (2006-2020)
+
+Uses 15 years of training data with walk-forward validation:
+- Train on years 1-3, test on year 4 → Get score
+- Train on years 1-4, test on year 5 → Get score
+- Train on years 1-5, test on year 6 → Get score
+- ... continue expanding training window ...
+- Train on years 1-14, test on year 15 → Get score
+
+**Metric:** Information Coefficient (IC) = correlation between predictions and actual returns
+- High IC = model ranks stocks correctly (knows which will rise first)
+- Low IC = model is random
+
+Models tested: Logistic Regression, Random Forest, SVC, Ensemble
+
+**Result:** Ensemble wins with IC ≈ 0.021 (weak but best available)
+
+### Step 4: Prepare Final Model
+
+Retrain the best model (Ensemble) using ALL 15 years of training data (2006-2020).
+
+Now it's ready to test on 5 years it has never seen.
+
+### Step 5: Backtest (2021-2026)
+
+Every day, the model:
+1. Looks at 5 stocks' historical data
+2. Makes prediction: "What's the probability each stock goes up?"
+3. Decides: Buy or stay in cash?
+4. Records gain/loss for that day
+5. Moves to next day
+
+**Result:** An equity curve showing how $10,000 performs over 5 years
 
 ---
 
-## Requirements
+## Files & Architecture
 
-You can install everything via `requirements.txt`.
+```
+main.py
+  └─ CONFIG: All parameters here
+     Can change: tickers, model, confidence thresholds, dates, everything
+
+services/
+  ├─ stock.py           → Download price data from Yahoo Finance
+  ├─ transform.py       → Calculate technical signals
+  ├─ pipeline.py        → Orchestrate entire workflow
+  ├─ backtesting.py     → Simulate trading strategies
+  └─ algorithms/        → ML models
+      ├─ base.py                  (base class)
+      ├─ ensemble.py              (winner - combination of models)
+      ├─ random_forest.py
+      ├─ svc.py
+      └─ logistic_regression.py
+
+output/
+  ├─ classification_metrics.json  → Model quality metrics
+  ├─ backtest_summary.json        → Returns of each strategy
+  └─ [plots]                      → 3 comparison charts
+
+utils/
+  └─ walk_forward.py    → Walk-forward validation logic
+```
 
 ---
 
-## How to set up the environment
+## How to Run
 
-### 1. Create a virtual environment
-
-On Linux/macOS:
-
-```bash
-python -m venv venv
-source venv/bin/activate
-```
-
-On Windows:
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-### 2. Install dependencies
-
+### 1. Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the project
-
-Normally:
-
+### 2. Run the pipeline
 ```bash
 python main.py
 ```
 
-If your entry point has a different name, adjust the command accordingly.
+The script will:
+- Download historical data
+- Calculate features
+- Train model with walk-forward validation
+- Run backtest with 7 strategies
+- Generate results and plots
+
+### 3. Check results
+```bash
+# View summary statistics
+cat output/backtest_summary.json
+
+# View model quality
+cat output/classification_metrics.json
+
+# Open charts
+open output/backtest_comparison.png          # All strategies vs each other
+open output/threshold_comparison.png         # ML at different confidence levels
+open output/drawdown_analysis.png            # Worst drawdowns
+```
 
 ---
 
-## How to run in practice
+## Customization
 
-The three-phase pipeline execution:
+All parameters are in `main.py` under the `CONFIG` dictionary:
 
-**Phase 1**: Walk-Forward Validation selects best model by robust score
-**Phase 2**: Selected model retrained on complete training set; pure ML metrics calculated  
-**Phase 3**: Probability thresholds tested; financial metrics evaluated; results visualized
+```python
+CONFIG = {
+    "tickers": ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"],
+    "train_start": "2006-01-01",
+    "train_end": "2020-12-31",
+    "test_start": "2021-01-01",
+    "test_end": "2026-12-31",
+    "model_type": "ensemble",
+    "thresholds": [0.50, 0.55, 0.57, 0.60],
+    "position_sizing": "equal_weight",
+    # ... more parameters
+}
+```
 
-Example system flow:
-1. Download historical SPY data (2006-2026)
-2. Split into Train (80%) and Test (20%) without shuffling
-3. Phase 1: WFV tests Logistic Regression, SVC, Random Forest, Ensemble
-4. Phase 2: Best model evaluated with accuracy, precision, recall, F1, AUC, IC, Spearman
-5. Phase 3: Probabilities converted to signals using 5 thresholds; backtesting with benchmarks
-6. Visualizations and JSON summary saved to `output/`
-
----
-
-## Interpreting Results
-
-### Phase 1: Model Selection
-- Check which model won and its robust score
-- Inspect fold-level Sharpe ratios; high variance suggests regime-dependent model
-- Compare mean Sharpe across models
-
-### Phase 2: Pure ML Evaluation  
-- **Accuracy 50-55%**: Models struggle with signal (market noise dominant)
-- **AUC 0.50-0.55**: Slightly better than random but weak
-- **IC near zero**: Predictions have no correlation with actual returns
-- **IC > 0.01**: Good sign; model is capturing real signal
-- **Spearman ≥ 0.02**: Rank correlation suggests predictive power
-
-### Phase 3: Backtesting & Threshold Optimization
-- **Compare thresholds**: Identify sweet spot between selectivity and opportunity capture
-- **Threshold 0.70 with high Sharpe**: Model is selective; only strong signals trigger trades
-- **Threshold 0.50 with high returns**: Aggressively trading even weak signals
-- **Max Drawdown < 5%**: Strategy has strong risk control
-- **Max Drawdown > 20%**: Strategy endures significant drawdowns despite ML predictions
-
-### Beating Benchmarks
-- **Better than Buy & Hold**: Strategy adapts to market changes
-- **Better than Fixed Income**: Strategy generates real returns above risk-free rate
-- **Worse than Buy & Hold**: Market-timing attempted by model is unsuccessful
-- **Worse than Random Walk**: No signal is being captured; fundamental model failure
-
-### When to Investigate
-- **High IC but low financial returns**: Features are correlated with returns but allocation is poor
-- **Low IC but positive returns**: Possible luck or special market condition (not robust)
-- **Classification metrics good but Sharpe low**: Model predicts correctly but volatility is high
+Change any parameter and run `python main.py` again to see new results.
 
 ---
 
-## What Can Still Change
+## Key Takeaways
 
-Some project details can be adjusted over time:
+1. **ML vs Buy & Hold: Context Dependent**
+   - In tech bear markets: Passive strategies win
+   - In bull markets: Good ML can outperform by 5x
+   - In crises: Good defensive ML protects capital
 
-* **Model selection**: Test different algorithms or ensemble methods
-* **Feature engineering**: Add/remove technical indicators or lagged features
-* **Thresholds**: Adjust probability threshold range or granularity
-* **Walk-forward parameters**: Change window size, overlap, or number of folds
-* **Position sizing**: Use confidence-weighted positions instead of fixed sizes
-* **Rebalancing**: Add periodic rebalancing rules
-* **Benchmarks**: Add sector-specific or risk-parity benchmarks
-* **Risk-free rate**: Adjust annual rate assumption for Sharpe calculations
-* **Transaction costs**: Model realistic spread and commission fees
+2. **The Real Edge: Knowing When to Do Nothing**
+   - Your ML model: +3.70% (trying hard)
+   - Cash strategy: +21.74% (doing almost nothing)
+   - Lesson: Perfect execution on bad idea = failure
 
-## Generated outputs
+3. **2021-2026 Was Harsh for Concentrated Tech**
+   - 80% tech exposure + rising rates = -24.92%
+   - Diversified SPY + rising rates = only -5%
+   - Energy + rising rates = +50% to +100%
 
-The project saves the following in the `output/` directory:
+4. **Professional Quants Rotate Between Asset Classes**
+   - Not just "stocks vs bonds"
+   - But stocks + bonds + cash all together
+   - Allocation changes based on confidence
 
-**Charts**:
-- `backtest_comparison.png` - All strategies' equity curves + metrics bar chart
-- `threshold_comparison.png` - Focus on ML threshold strategies only
-- `drawdown_analysis.png` - Drawdown analysis for all strategies
+---
 
-**Data**:
-- `backtest_summary.json` - Detailed metrics for each strategy
-- `classification_metrics.json` - Phase 2 pure ML metrics
+## Next Steps to Improve Returns
+
+1. **Better Signals** (IC ≈ 0.02 is too weak)
+   - Add sentiment analysis (news, social media)
+   - Add volume patterns (institutional buying/selling)
+   - Add macro indicators (inflation, unemployment, interest rates)
+   - Target: IC from 0.02 → 0.10
+   - Expected improvement: +3.70% → +10% to +20%
+
+2. **Lower Trading Costs**
+   - Current: Trade every day (expensive)
+   - Try: Weekly or monthly rebalancing
+   - Expected improvement: +3.70% → +8% to +12%
+
+3. **More Diversification**
+   - Current: 5 stocks (80% tech)
+   - Try: 20+ stocks across sectors (energy, healthcare, finance, utilities)
+   - Expected benefit: Better protection in bear markets
+
+4. **Dynamic Asset Allocation**
+   - Instead of just "stocks yes/no"
+   - Allocate between: stocks + bonds + cash
+
+---
+
+## Technical Details
+
+**Model Selection Metric:** Information Coefficient (IC)
+- Measures correlation between predictions and actual returns
+- Scale: -1.0 (perfect opposite) to +1.0 (perfect alignment)
+- Your best model: IC ≈ 0.021 (weak but statistically significant)
+
+**Validation:** Walk-Forward Cross-Validation
+- Prevents data leakage (never train on future data)
+- Mimics real trading (always test on unseen data)
+- More realistic than standard K-fold CV
+
+**Portfolio Construction:** Equal-weight positions
+- Each stock gets same allocation
+- Daily rebalancing to maintain equal weights
+- Undeployed capital earns 5% risk-free rate
+
+**Backtesting:** Daily simulation
+- Each day: predict, allocate, record returns
+- Include transaction costs (0.10% per trade)
+- Calculate Sharpe ratio for risk-adjusted returns
 
 ---

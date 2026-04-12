@@ -25,7 +25,6 @@ class Pipeline:
         algorithms: list[Algorithm],
         output_dir: str = "output",
         test_size: float = 0.20,
-        history_window: int = 250,
         wfv_train_window: int = 750,
         wfv_test_window: int = 250,
         initial_capital: float = 10000,
@@ -40,7 +39,6 @@ class Pipeline:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.test_size = test_size
-        self.history_window = history_window
         self.features = FeatureEngineer()
         
         # Walk-Forward Validation parameters
