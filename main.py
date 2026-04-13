@@ -14,20 +14,22 @@ from services.logger_config import setup_logging, get_logger
 
 CONFIG = {
     # Data parameters - 16 stocks
-    "tickers": [
-        # Tech (5)
-        "SPY", "AAPL", "MSFT", "GOOGL", "AMZN",
-        # Financial (3)
-        "JPM", "BAC", "GS",
-        # Healthcare (3)
-        "JNJ", "PFE", "UNH",
-        # Energy (2)
-        "XOM", "CVX",
-        # Utilities (2)
-        "NEE", "DUK",
-        # Consumer (2)
-        "WMT", "HD"
-    ],
+    # "tickers": [
+    #     # Tech (5)
+    #     "SPY", "AAPL", "MSFT", "GOOGL", "AMZN",
+    #     # Financial (3)
+    #     "JPM", "BAC", "GS",
+    #     # Healthcare (3)
+    #     "JNJ", "PFE", "UNH",
+    #     # Energy (2)
+    #     "XOM", "CVX",
+    #     # Utilities (2)
+    #     "NEE", "DUK",
+    #     # Consumer (2)
+    #     "WMT", "HD"
+    # ],
+    # testing with 5 stocks also...
+    "tickers": ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"],
     "start_date": "2006-01-01",
     
     # Pipeline parameters
@@ -182,12 +184,12 @@ if __name__ == "__main__":
 
 """Need to create test files, too many things can break now"""
 """Run with unity, try all possibilities!"""
-"""Broken backtest and plotting, fix top 5 ?"""
-"""Garantee results..."""
+"""Figuere out best stocks option to balance, best with 5 stocks for now..."""
+"""Stock selection frequency ? didnt get it plot..."""
 
 """Good to have"""
 
-"""Add more stocks"""
+"""Stocks selection"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
 """Test more buy/sell strategies"""

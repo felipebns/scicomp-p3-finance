@@ -115,6 +115,7 @@ class Backtest:
         
         # Apply position selection filter (e.g., top_5)
         # Skip for benchmarks that should hold everything or nothing
+        """"Note: Buy and hold should not use weights from the model, keep as neutral baseline"""
         if strategy_name not in ["fixed_income", "buy_and_hold"]:
             positions = self._apply_position_selection(positions, probabilities)
         

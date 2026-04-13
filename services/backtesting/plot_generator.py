@@ -192,17 +192,31 @@ class PlotGenerator:
         """Plot all strategies together for overall comparison."""
         fig, ax = plt.subplots(figsize=(16, 8))
         
-        # Select best threshold version (0.50) for each ML strategy, and include all benchmarks
+        # Select BEST threshold for each ML strategy, and include all benchmarks
         selected = {}
+        ml_by_strategy = {}
+        
+        # Group ML strategies by name (different thresholds)
         for name, data in results.items():
             if name.startswith("ML "):
-                # Select 0.50 threshold only
-                if name.endswith(" 0.50"):
-                    short_name = " ".join(name.split()[1:-1]).replace("_", " ").title()
-                    selected[short_name] = data
+                parts = name.split()
+                strategy_name = " ".join(parts[1:-1])  # "ensemble_smart", "momentum", etc.
+                threshold = float(parts[-1])
+                
+                if strategy_name not in ml_by_strategy:
+                    ml_by_strategy[strategy_name] = {}
+                ml_by_strategy[strategy_name][threshold] = (name, data)
             else:
-                # Include ALL benchmarks and baselines (Buy & Hold, Fixed Income, etc.)
+                # Include ALL benchmarks and baselines
                 selected[name] = data
+        
+        # For each strategy, select the threshold with highest return
+        for strategy_name, threshold_dict in ml_by_strategy.items():
+            best_threshold = max(threshold_dict.items(), 
+                                key=lambda x: x[1][1].get("total_return", 0))
+            best_name, best_data = best_threshold[1]
+            short_name = strategy_name.replace("_", " ").title()
+            selected[short_name] = best_data
         
         # Plot with different colors
         color_map = {
@@ -240,13 +254,28 @@ class PlotGenerator:
         """Plot metrics comparison for top strategies only."""
         # Select best threshold for each strategy
         selected = {}
+        ml_by_strategy = {}
+        
+        # Group ML strategies by name
         for name, data in results.items():
             if name.startswith("ML "):
-                if name.endswith(" 0.50"):
-                    short_name = " ".join(name.split()[1:-1]).replace("_", " ").title()
-                    selected[short_name] = data
+                parts = name.split()
+                strategy_name = " ".join(parts[1:-1])
+                threshold = float(parts[-1])
+                
+                if strategy_name not in ml_by_strategy:
+                    ml_by_strategy[strategy_name] = {}
+                ml_by_strategy[strategy_name][threshold] = (name, data)
             else:
                 selected[name] = data
+        
+        # For each strategy, select the threshold with highest return
+        for strategy_name, threshold_dict in ml_by_strategy.items():
+            best_threshold = max(threshold_dict.items(), 
+                                key=lambda x: x[1][1].get("total_return", 0))
+            best_name, best_data = best_threshold[1]
+            short_name = strategy_name.replace("_", " ").title()
+            selected[short_name] = best_data
         
         metrics = ["annualized_return", "sharpe_ratio", "max_drawdown", "active_hit_rate"]
         
@@ -329,19 +358,37 @@ class PlotGenerator:
     
     def _plot_drawdown_analysis(self, results: Dict, dates: np.ndarray, output_dir: str) -> None:
         """Plot maximum drawdown for each strategy."""
-        max_drawdowns = []
-        strategy_names = []
-        
         # Select best threshold for each strategy
+        selected = {}
+        ml_by_strategy = {}
+        
+        # Group ML strategies by name
         for name, data in results.items():
             if name.startswith("ML "):
-                if name.endswith(" 0.50"):
-                    short_name = " ".join(name.split()[1:-1]).replace("_", " ").title()
-                    strategy_names.append(short_name)
-                    max_drawdowns.append(data.get("max_drawdown", 0) * 100)
+                parts = name.split()
+                strategy_name = " ".join(parts[1:-1])
+                threshold = float(parts[-1])
+                
+                if strategy_name not in ml_by_strategy:
+                    ml_by_strategy[strategy_name] = {}
+                ml_by_strategy[strategy_name][threshold] = (name, data)
             else:
-                strategy_names.append(name)
-                max_drawdowns.append(data.get("max_drawdown", 0) * 100)
+                selected[name] = data
+        
+        # For each ML strategy, select the threshold with highest return
+        for strategy_name, threshold_dict in ml_by_strategy.items():
+            best_threshold = max(threshold_dict.items(), 
+                                key=lambda x: x[1][1].get("total_return", 0))
+            best_name, best_data = best_threshold[1]
+            short_name = strategy_name.replace("_", " ").title()
+            selected[short_name] = best_data
+        
+        # Prepare data for plotting
+        max_drawdowns = []
+        strategy_names = []
+        for name, data in selected.items():
+            strategy_names.append(name)
+            max_drawdowns.append(data.get("max_drawdown", 0) * 100)
         
         fig, ax = plt.subplots(figsize=(12, 6))
         
