@@ -4,7 +4,6 @@ import copy
 from typing import Tuple, List
 from concurrent.futures import ThreadPoolExecutor
 
-
 class WalkForwardValidator:
     """Walk-Forward Validation for model selection without data leakage.
     
@@ -131,8 +130,6 @@ class WalkForwardValidator:
         Returns:
             (predictions, probabilities, ic, test_indices)
         """
-        import copy
-        import numpy as np
         
         # Deep clone algorithm to ensure isolation
         fold_algo = copy.deepcopy(algorithm)

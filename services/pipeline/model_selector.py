@@ -13,9 +13,12 @@ from services.logger_config import get_logger
 class ModelSelector:
     """Selects best ML model using walk-forward validation with parallel evaluation."""
     
-    def __init__(self, wfv_train_window: int, wfv_test_window: int):
+    def __init__(self, wfv_train_window: int, wfv_test_window: int, 
+                 max_workers: int = 2, fold_workers: int = 4):
         self.wfv_train_window = wfv_train_window
         self.wfv_test_window = wfv_test_window
+        self.max_workers = max_workers
+        self.fold_workers = fold_workers
         self.best_model = None
         self.best_model_name = None
         self.best_score = -np.inf
@@ -29,12 +32,12 @@ class ModelSelector:
         Returns:
             (best_algorithm, algorithm_name, best_score)
         """
-        self.logger.info(f"Evaluating {len(algorithms)} algorithms in parallel...")
+        self.logger.info(f"Evaluating {len(algorithms)} algorithms in parallel (max_workers={self.max_workers})...")
         
         results_data = {}
         
         # Parallel evaluation using ProcessPoolExecutor
-        with ProcessPoolExecutor(max_workers=4) as executor:
+        with ProcessPoolExecutor(max_workers=self.max_workers) as executor:
             futures = {
                 executor.submit(
                     self._evaluate_algorithm,
@@ -87,7 +90,6 @@ class ModelSelector:
         
         Static method to be pickle-able for ProcessPoolExecutor.
         """
-        import time
         start_time = time.time()
         
         validator = WalkForwardValidator(train_window, test_window)

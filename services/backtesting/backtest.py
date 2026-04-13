@@ -1,13 +1,19 @@
 import json
 import pandas as pd
 import numpy as np
-from typing import Dict
+from typing import Dict, Optional
 from concurrent.futures import ThreadPoolExecutor
 
 from services.backtesting.metrics_calculator import MetricsCalculator
 from services.backtesting.position_normalizer import PositionNormalizer
 from services.backtesting.return_calculator import ReturnCalculator
 from services.backtesting.plot_generator import PlotGenerator
+from services.strategies import (
+    MomentumStrategy, MeanReversionStrategy, 
+    VolatilityWeightedStrategy, EnsembleSmartStrategy,
+    ThresholdStrategy, BuyAndHoldStrategy, FixedIncomeStrategy,
+    SimpleReversalStrategy
+)
 
 
 class Backtest:
@@ -15,108 +21,162 @@ class Backtest:
     
     def __init__(self, test_df: pd.DataFrame, initial_capital: float = 10000,
                  transaction_cost: float = 0.0005, slippage: float = 0.0005,
-                 annual_rf_rate: float = 0.05, position_sizing: str = "equal_weight"):
+                 annual_rf_rate: float = 0.05, position_sizing: str = "equal_weight",
+                 position_selection: str = "top_5",
+                 threshold_workers: int = 3):
         self.test_df = test_df.copy()
         self.initial_capital = initial_capital
         self.annual_rf_rate = annual_rf_rate
         self.position_sizing = position_sizing
+        self.position_selection = position_selection
+        self.threshold_workers = threshold_workers
         
         # Initialize components
         self.position_normalizer = PositionNormalizer()
         self.return_calculator = ReturnCalculator(transaction_cost, slippage, annual_rf_rate)
         self.metrics_calculator = MetricsCalculator(initial_capital, annual_rf_rate)
         self.plot_generator = PlotGenerator(initial_capital)
+        
+        # Initialize strategies
+        self.strategies = {
+            # Smart strategies (ML + technical)
+            "momentum": MomentumStrategy(),
+            "mean_reversion": MeanReversionStrategy(),
+            "volatility_weighted": VolatilityWeightedStrategy(),
+            "ensemble_smart": EnsembleSmartStrategy(),
+            # Simple/baseline strategies
+            "threshold": ThresholdStrategy(),
+            "buy_and_hold": BuyAndHoldStrategy(),
+            "fixed_income": FixedIncomeStrategy(),
+            "simple_reversal": SimpleReversalStrategy()
+        }
     
     def run_threshold_strategies(self, model_probabilities: np.ndarray, 
                                  thresholds: list[float] = None) -> Dict[str, Dict]:
-        """Run threshold-based strategies and benchmarks in parallel."""
+        """Run all 8 strategies with multiple probability thresholds in parallel."""
         if thresholds is None:
             thresholds = [0.50, 0.55, 0.60, 0.65, 0.70]
         
         results = {}
         
-        # Test probability thresholds in parallel
-        with ThreadPoolExecutor(max_workers=5) as executor:
-            threshold_futures = {
-                executor.submit(self._run_threshold_strategy, model_probabilities, th): th
-                for th in thresholds
-            }
-            
-            for future in threshold_futures:
-                threshold = threshold_futures[future]
-                results[f"ML Threshold {threshold:.2f}"] = future.result()
+        # All strategies to test (4 intelligent + 4 benchmarks)
+        ml_strategies = ["ensemble_smart", "momentum", "mean_reversion", "volatility_weighted"]
         
-        # Add benchmarks (sequential, fast)
-        results["Buy & Hold"] = self._run_buy_and_hold()
-        results[f"Fixed Income {self.annual_rf_rate:.2%} annual"] = self._run_fixed_income()
-        results["Mean Reversion"] = self._run_mean_reversion()
-        results["Random Walk (Median)"] = self._run_random_walk()
+        # Test all ML strategies with all thresholds in parallel
+        with ThreadPoolExecutor(max_workers=self.threshold_workers) as executor:
+            futures = {}
+            
+            # Submit all ML strategy + threshold combinations
+            for strategy_name in ml_strategies:
+                for threshold in thresholds:
+                    future = executor.submit(
+                        self._run_strategy, model_probabilities, threshold, strategy_name
+                    )
+                    futures[future] = (strategy_name, threshold)
+            
+            # Collect results
+            for future in futures:
+                strategy_name, threshold = futures[future]
+                results[f"ML {strategy_name} {threshold:.2f}"] = future.result()
+        
+        # Add baseline strategies (sequential, don't need parallelization)
+        results["Threshold Only (baseline)"] = \
+            self._run_strategy(model_probabilities, 0.5, "threshold")
+        results["Buy & Hold (benchmark)"] = \
+            self._run_strategy(model_probabilities, 0.5, "buy_and_hold")
+        results[f"Fixed Income {self.annual_rf_rate:.2%} (benchmark)"] = \
+            self._run_strategy(model_probabilities, 0.5, "fixed_income")
+        results["Simple Reversal SMA20 (benchmark)"] = \
+            self._run_strategy(model_probabilities, 0.5, "simple_reversal")
         
         return results
     
-    def _run_threshold_strategy(self, probabilities: np.ndarray, threshold: float) -> Dict:
-        """Strategy: Buy when probability > threshold."""
-        positions = (probabilities > threshold).astype(int)
+    def _run_strategy(self, probabilities: np.ndarray, threshold: float, 
+                      strategy_name: str) -> Dict:
+        """Run a specific strategy by name."""
+        strategy = self.strategies.get(strategy_name)
+        
+        if strategy is None:
+            # Fallback to threshold strategy
+            positions = (probabilities > threshold).astype(int)
+        else:
+            # Get per-ticker data for strategy application
+            positions = np.zeros(len(self.test_df))
+            tickers = self.test_df["ticker"].unique()
+            
+            for ticker in tickers:
+                mask = self.test_df["ticker"] == ticker
+                ticker_df = self.test_df[mask].reset_index(drop=True)
+                ticker_probs = probabilities[mask]
+                
+                # Apply strategy
+                ticker_positions = strategy.apply(ticker_df, ticker_probs, threshold)
+                positions[mask] = ticker_positions
+        
+        # Apply position selection filter (e.g., top_5)
+        positions = self._apply_position_selection(positions, probabilities)
         
         if self.position_sizing == "probability_weighted":
-            positions = probabilities.copy()
-            positions[probabilities <= threshold] = 0
+            # Weight the binary positions by their probabilities
+            # This respects the strategy while weighting by confidence
+            positions = positions * probabilities  # Element-wise multiply
+            positions = self._apply_position_selection(positions, probabilities)
             positions = self._apply_probability_weights(positions)
         
         positions = self.position_normalizer.normalize(positions, self.test_df)
         daily_returns = self.return_calculator.calculate(positions, self.test_df)
         return self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
     
-    def _run_buy_and_hold(self) -> Dict:
-        """Buy on day 1 and hold."""
-        positions = np.ones(len(self.test_df))
-        positions = self.position_normalizer.normalize(positions, self.test_df)
-        daily_returns = self.return_calculator.calculate(positions, self.test_df)
-        return self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
-    
-    def _run_fixed_income(self) -> Dict:
-        """Stay 100% in cash."""
-        positions = np.zeros(len(self.test_df))
-        daily_returns = self.return_calculator.calculate(positions, self.test_df)
-        return self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
-    
-    def _run_mean_reversion(self) -> Dict:
-        """Buy when price < 20-day SMA."""
-        prices = self.test_df["close"].values
-        sma_20 = self.test_df.groupby("ticker")["close"].transform(
-            lambda x: x.rolling(window=20).mean()
-        ).bfill().values
+    def _apply_position_selection(self, positions: np.ndarray, 
+                                  probabilities: np.ndarray) -> np.ndarray:
+        """Filter positions based on position_selection strategy (e.g., top_5).
         
-        positions = (prices < sma_20).astype(int)
-        positions = self.position_normalizer.normalize(positions, self.test_df)
-        daily_returns = self.return_calculator.calculate(positions, self.test_df)
-        return self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
-    
-    def _run_random_walk(self, n_runs: int = 50) -> Dict:
-        """Random walk baseline."""
-        np.random.seed(42)
-        all_metrics = []
+        Args:
+            positions: Position array (0 or 1 for each row)
+            probabilities: Model probability for each row
+            
+        Returns:
+            Filtered position array with TOP-N selection applied
+        """
+        if self.position_selection == "all":
+            return positions
         
-        for _ in range(n_runs):
-            positions = np.random.randint(0, 2, size=len(self.test_df))
-            positions = self.position_normalizer.normalize(positions, self.test_df)
-            daily_returns = self.return_calculator.calculate(positions, self.test_df)
-            metrics = self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
-            all_metrics.append(metrics)
+        # Parse position selection method (e.g., "top_5" → 5)
+        if not self.position_selection.startswith("top_"):
+            return positions
         
-        # Find median-representative run
-        returns = [m["total_return"] for m in all_metrics]
-        median_return = np.median(returns)
-        median_idx = np.argmin(np.abs(np.array(returns) - median_return))
+        try:
+            n_top = int(self.position_selection.split("_")[1])
+        except (IndexError, ValueError):
+            return positions
         
-        result = all_metrics[median_idx]
-        result["_metadata"] = {
-            "n_runs": n_runs,
-            "median_return": float(median_return),
-            "mean_return": float(np.mean(returns)),
-            "std_return": float(np.std(returns))
-        }
-        return result
+        filtered_positions = positions.copy()
+        dates = self.test_df["date"].unique()
+        
+        for date in dates:
+            mask = self.test_df["date"] == date
+            date_positions = positions[mask]
+            date_probs = probabilities[mask]
+            
+            # Only apply filter if there are positions to take
+            n_positions = np.sum(date_positions > 0)
+            
+            if n_positions > n_top:
+                # Get indices of top N positions by probability
+                # Need to account for positions that are 0 or 1
+                position_indices = np.where(date_positions > 0)[0]
+                position_probs = date_probs[position_indices]
+                
+                # Sort by probability descending, take top N
+                top_indices = position_indices[np.argsort(-position_probs)[:n_top]]
+                
+                # Zero out all positions for this date
+                filtered_positions[mask] = 0
+                
+                # Re-add only the top N
+                filtered_positions[mask][top_indices] = 1
+        
+        return filtered_positions
     
     def _apply_probability_weights(self, probabilities: np.ndarray) -> np.ndarray:
         """Normalize probabilities per date."""

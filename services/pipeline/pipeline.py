@@ -33,6 +33,8 @@ class Pipeline:
         annual_rf_rate: float = 0.05,
         probability_thresholds: list[float] = None,
         position_sizing: str = "equal_weight",
+        position_selection: str = "top_5",
+        parallelization: Dict[str, int] = None,
     ):
         """Initialize pipeline with data source and algorithms."""
         self.stock = stock
@@ -53,9 +55,21 @@ class Pipeline:
         self.annual_rf_rate = annual_rf_rate
         self.probability_thresholds = probability_thresholds or [0.50, 0.55, 0.60, 0.65, 0.70]
         self.position_sizing = position_sizing
+        self.position_selection = position_selection
+        
+        # Parallelization settings (with defaults)
+        self.parallelization = parallelization or {
+            "algorithm_selection": 2,
+            "fold_evaluation": 4,
+            "threshold_testing": 3,
+        }
         
         # Initialize components
-        self.model_selector = ModelSelector(wfv_train_window, wfv_test_window)
+        self.model_selector = ModelSelector(
+            wfv_train_window, wfv_test_window,
+            max_workers=self.parallelization.get("algorithm_selection", 2),
+            fold_workers=self.parallelization.get("fold_evaluation", 4)
+        )
         self.metrics_evaluator = MetricsEvaluator()
         self.reporter = PipelineReporter(self.output_dir)
         self.logger = get_logger()
@@ -108,44 +122,62 @@ class Pipeline:
             self.reporter.log_model_selection(best_model_name, best_score, {})
             self.reporter.log_phase_end("1: Model Selection")
             
-            # Phase 2: Retrain best model and evaluate
+            # Save model selection results for visualization
+            model_results = {}
+            for model_name, model_data in self.model_selector.results.items():
+                model_results[model_name] = {
+                    "mean_ic": model_data['mean_ic'],
+                    "std_ic": model_data['std_ic'],
+                    "wfv_score": model_data['score'],
+                    "elapsed_time": model_data['elapsed']
+                }
+            
+            # Phase 2: Fit best model on full train set (required for predictions)
             self.reporter.log_phase_start(
-                "2: Evaluation",
-                f"Retraining {best_model_name} on full train set"
+                "2: Model Training",
+                f"Training {best_model_name} on full training dataset"
             )
             phase_start = time.time()
-            self.logger.info(f"Retraining {best_model_name} on complete train set...")
-            retrain_start = time.time()
+            self.logger.info(f"Training {best_model_name} on full train set ({len(train_df)} samples)...")
             best_model.fit(train_df, pd.DataFrame(), feature_cols, target_col)
-            retrain_time = time.time() - retrain_start
-            self.logger.info(f"✓ Retraining completed in {retrain_time:.2f}s")
+            train_time = time.time() - phase_start
+            self.logger.info(f"✓ Training completed in {train_time:.2f}s")
+            self.phase_times["2_model_training"] = train_time
+            self.reporter.log_phase_end("2: Model Training")
             
-            # Evaluate best model on test set (no need to re-train/evaluate others)
-            self.logger.info(f"Evaluating {best_model_name} on test set...")
-            results = {}
-            metrics = self.metrics_evaluator.evaluate(best_model, test_df, feature_cols, target_col)
-            results[best_model_name] = metrics
-            self.logger.info(f"✓ Evaluation completed for best model: {best_model_name}")
-            self.phase_times["2_evaluation"] = time.time() - phase_start
-            self.reporter.log_phase_end("2: Evaluation")
-            
-            # Phase 3: Save and backtest
+            # Phase 3: Backtesting (use trained model for predictions)
             if save:
                 self.reporter.log_phase_start(
                     "3: Backtesting",
-                    f"Final backtest on test set with {best_model_name}"
+                    f"Running backtest on test set using {best_model_name}"
                 )
                 phase_start = time.time()
-                self.logger.info("Saving metrics to JSON...")
-                self.reporter.save_metrics(results)
-                
-                self.logger.info("Generating metrics comparison plot...")
-                self.reporter.plot_metrics_comparison(results)
-                
-                self.logger.info("Running backtest with multiple strategies...")
-                self._run_backtest(best_model, test_df, feature_cols)
+                self.logger.info(f"Running backtest with {best_model_name} predictions on test set...")
+                backtest_results = self._run_backtest(best_model, test_df, feature_cols)
                 self.phase_times["3_backtesting"] = time.time() - phase_start
                 self.reporter.log_phase_end("3: Backtesting")
+            
+            # Phase 4: Visualization (save results and generate plots)
+            if save:
+                self.reporter.log_phase_start(
+                    "4: Visualization",
+                    "Saving results and generating all plots"
+                )
+                phase_start = time.time()
+                
+                # Save model selection results to JSON
+                import json
+                models_output = self.output_dir / "models_comparison.json"
+                with open(models_output, 'w') as f:
+                    json.dump(model_results, f, indent=2)
+                self.logger.info(f"✓ Model comparison saved to {models_output}")
+                
+                self.logger.info(f"Generating visualization plots...")
+                # Store model metrics for visualization
+                self.reporter.plot_model_metrics_comparison(model_results)
+                
+                self.phase_times["4_visualization"] = time.time() - phase_start
+                self.reporter.log_phase_end("4: Visualization")
             
             # Log timing summary
             total_time = time.time() - pipeline_start
@@ -155,7 +187,7 @@ class Pipeline:
             self.logger.info("PIPELINE EXECUTION COMPLETED SUCCESSFULLY")
             self.logger.info("="*80)
             
-            return results
+            return backtest_results if save else {}
         
         except Exception as e:
             self.logger.error(f"Pipeline execution failed: {e}", exc_info=True)
@@ -182,8 +214,12 @@ class Pipeline:
         return train_df, test_df
     
     def _run_backtest(self, best_algo: Algorithm, test_df: pd.DataFrame, 
-                     features: list[str]) -> None:
-        """Run backtesting with multiple probability thresholds."""
+                     features: list[str]) -> Dict[str, Any]:
+        """Run backtesting with multiple probability thresholds and smart trading strategies.
+        
+        Returns:
+            Dictionary with backtest results from all strategies
+        """
         self.logger.info("Initializing backtest engine...")
         
         # Get predictions
@@ -196,10 +232,13 @@ class Pipeline:
             transaction_cost=self.transaction_cost,
             slippage=self.slippage,
             annual_rf_rate=self.annual_rf_rate,
-            position_sizing=self.position_sizing
+            position_sizing=self.position_sizing,
+            position_selection=self.position_selection,
+            threshold_workers=self.parallelization.get("threshold_testing", 3)
         )
         
-        self.logger.info(f"Running strategies with probability thresholds: {self.probability_thresholds}")
+        self.logger.info(f"Running backtest with all 8 strategies and {len(self.probability_thresholds)} thresholds...")
+        self.logger.info(f"Probability thresholds: {self.probability_thresholds}")
         results = backtest.run_threshold_strategies(y_prob, self.probability_thresholds)
         
         # Save and plot
@@ -210,4 +249,6 @@ class Pipeline:
         backtest.plot_results(results, str(self.output_dir))
         
         self.reporter.log_backtest_results(results)
+        
+        return results
 

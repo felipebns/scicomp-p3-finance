@@ -74,5 +74,5 @@ class FeatureEngineer:
         
         # Sort by date then ticker so time-based splits and backtests work natively
         df = df.sort_values(by=["date", "ticker"]).reset_index(drop=True)
-
+        
         return df, features, target_col
