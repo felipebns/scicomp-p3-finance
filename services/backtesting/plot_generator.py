@@ -387,22 +387,22 @@ class PlotGenerator:
             n_stocks = test_df['ticker'].nunique()
             
             summary_text = f"""
-Test Set Summary
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Total Trading Days:    {n_dates}
-Unique Stocks:         {n_stocks}
-Total Observations:    {len(test_df)}
+                Test Set Summary
+                ━━━━━━━━━━━━━━━━━━━━━━━━━
+                Total Trading Days:    {n_dates}
+                Unique Stocks:         {n_stocks}
+                Total Observations:    {len(test_df)}
 
-Date Range:
-  Start: {test_df['date'].min().date()}
-  End:   {test_df['date'].max().date()}
+                Date Range:
+                Start: {test_df['date'].min().date()}
+                End:   {test_df['date'].max().date()}
 
-Expected Observations:
-  (if all stocks every day): {n_dates * n_stocks}
-  Actual: {len(test_df)}
+                Expected Observations:
+                (if all stocks every day): {n_dates * n_stocks}
+                Actual: {len(test_df)}
 
-Portfolio Allocation:
-{chr(10).join([f"  {ticker}: {count:>4} days ({count/n_dates*100:>5.1f}%)" 
+                Portfolio Allocation:
+                {chr(10).join([f"  {ticker}: {count:>4} days ({count/n_dates*100:>5.1f}%)" 
               for ticker, count in ticker_counts.items()])}
             """
             
@@ -421,21 +421,23 @@ Portfolio Allocation:
     def _plot_portfolio_allocation_summary(self, backtest_results: Dict, test_df: pd.DataFrame, output_dir: str) -> None:
         """Plot portfolio allocation: which stocks were SELECTED and their average weights.
         
-        Shows actual position weights from the best-performing strategy (ML ensemble at 0.50 threshold).
-        This tells you which stocks mattered for the decision-making.
+        Uses actual position data from the best ML strategy to show:
+        - Which stocks were selected
+        - Average weight per stock
+        - Selection frequency (% of days selected)
         
         Args:
-            backtest_results: Backtest results with equity curves
+            backtest_results: Backtest results with equity curves and position data
             test_df: Test dataframe with ticker column
             output_dir: Output directory for the plot
         """
         try:
-            # Select the best ML strategy result (ensemble at 0.50 threshold)
+            # Find the best ML strategy result (highest return)
             best_strategy_key = None
             best_return = -np.inf
             
             for strategy_name, data in backtest_results.items():
-                if "ensemble_smart" in strategy_name and "0.50" in strategy_name:
+                if strategy_name.startswith("ML ") and " 0.50" in strategy_name:
                     ret = data.get("total_return", 0)
                     if ret > best_return:
                         best_return = ret
@@ -443,78 +445,54 @@ Portfolio Allocation:
             
             if best_strategy_key is None:
                 # Fallback: just pick the first ML strategy if no ensemble
-                for strategy_name in backtest_results.keys():
+                for strategy_name in sorted(backtest_results.keys()):
                     if strategy_name.startswith("ML ") and " 0.50" in strategy_name:
                         best_strategy_key = strategy_name
                         break
             
-            if best_strategy_key is None:
-                return  # No ML strategy found, skip
+            if best_strategy_key is None or "positions_by_ticker" not in backtest_results[best_strategy_key]:
+                # No position data available, skip
+                return
             
-            # Note: To get actual weights, we'd need to track positions in backtest
-            # For now, show which stocks were in the test set and their frequency
-            # This is a proxy for "selection" - more data points = more selection opportunities
+            positions_by_ticker = backtest_results[best_strategy_key]["positions_by_ticker"]
             
-            ticker_counts = test_df['ticker'].value_counts().sort_values(ascending=False)
-            n_dates = test_df['date'].nunique()
+            # Prepare data
+            tickers = sorted(positions_by_ticker.keys())
+            avg_weights = [positions_by_ticker[t]["avg_position_weight"] * 100 for t in tickers]  # Convert to %
+            selection_rates = [positions_by_ticker[t]["selection_rate"] * 100 for t in tickers]
+            days_selected = [positions_by_ticker[t]["days_selected"] for t in tickers]
             
-            fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+            fig, axes = plt.subplots(1, 2, figsize=(16, 7))
             
-            # Left: Bar chart of stock frequency (proxy for selection opportunity)
+            # Left: Average position weight per stock
             ax = axes[0]
-            tickers = ticker_counts.index
-            counts = ticker_counts.values
-            percentages = (counts / n_dates) * 100
+            colors_weight = ['darkgreen' if w > 5 else 'orange' if w > 1 else 'lightgray' for w in avg_weights]
+            bars = ax.barh(tickers, avg_weights, color=colors_weight, alpha=0.8, edgecolor='black', linewidth=1)
             
-            colors_list = ['green' if p > 90 else 'orange' if p > 50 else 'red' for p in percentages]
-            bars = ax.barh(tickers, percentages, color=colors_list, alpha=0.7)
+            ax.set_xlabel("Average Position Weight (%)", fontsize=11, fontweight='bold')
+            ax.set_title(f"Stock Selection Weights\nStrategy: {best_strategy_key}", 
+                        fontweight='bold', fontsize=12)
+            ax.set_xlim(0, max(avg_weights) * 1.1 if avg_weights else 10)
+            ax.grid(True, alpha=0.3, axis='x')
             
-            ax.set_xlabel("Days Present in Test Set (%)")
-            ax.set_title("Stock Selection Opportunity\n(% of trading days with data available)", 
+            # Add weight labels
+            for i, (ticker, weight) in enumerate(zip(tickers, avg_weights)):
+                ax.text(weight + 0.1, i, f'{weight:.2f}%', va='center', fontsize=9, fontweight='bold')
+            
+            # Right: Selection frequency and summary
+            ax = axes[1]
+            colors_freq = ['darkgreen' if r > 50 else 'orange' if r > 10 else 'red' for r in selection_rates]
+            bars = ax.barh(tickers, selection_rates, color=colors_freq, alpha=0.8, edgecolor='black', linewidth=1)
+            
+            ax.set_xlabel("Days Selected (%)", fontsize=11, fontweight='bold')
+            ax.set_title("Stock Selection Frequency\n(% of days position was active)", 
                         fontweight='bold', fontsize=12)
             ax.set_xlim(0, 105)
             ax.grid(True, alpha=0.3, axis='x')
             
-            # Add percentage labels
-            for i, (ticker, pct) in enumerate(zip(tickers, percentages)):
-                ax.text(pct + 1, i, f'{pct:.1f}%', va='center', fontsize=9, fontweight='bold')
-            
-            # Right: Summary statistics
-            ax = axes[1]
-            summary_stats = f"""
-Portfolio Composition Analysis
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Selected Strategy:
-  {best_strategy_key}
-
-Stock Universe:
-  Total stocks: {n_stocks := len(tickers)}
-  Trading days analyzed: {n_dates}
-
-Selection Frequency (days available):
-  High (>90%):    {len([p for p in percentages if p > 90])} stocks
-  Medium (50-90%): {len([p for p in percentages if 50 <= p <= 90])} stocks
-  Low (<50%):     {len([p for p in percentages if p < 50])} stocks
-
-Stock Details:
-{chr(10).join([f"  {ticker:6s}: {count:3d} days ({pct:5.1f}%)" 
-              for ticker, count, pct in zip(tickers, counts, percentages)])}
-
-Note: Position WEIGHTS are determined by your 
-position_sizing strategy (equal_weight vs 
-probability_weighted). This chart shows selection
-OPPORTUNITY for each stock based on data availability.
-
-To see actual portfolio weights over time,
-review the equity curves and position histories
-in the detailed backtest logs.
-            """
-            
-            ax.text(0.05, 0.95, summary_stats, transform=ax.transAxes, 
-                   fontfamily='monospace', fontsize=9.5, verticalalignment='top',
-                   bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.5))
-            ax.axis('off')
+            # Add frequency labels and day count
+            for i, (ticker, freq, days) in enumerate(zip(tickers, selection_rates, days_selected)):
+                ax.text(freq + 1, i, f'{freq:.1f}% ({days}d)', va='center', fontsize=9, fontweight='bold')
             
             plt.tight_layout()
             plt.savefig(f"{output_dir}/portfolio_allocation_summary.png", dpi=150, bbox_inches='tight')
@@ -522,4 +500,4 @@ in the detailed backtest logs.
         
         except Exception as e:
             # Silently skip if error
-            pass
+            print(f"Warning: Could not generate portfolio allocation summary: {e}")

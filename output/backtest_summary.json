@@ -40,84 +40,84 @@
     "final_equity": 7267.304878424325
   },
   "ML momentum 0.50": {
-    "total_return": -0.023614713151384303,
-    "annualized_return": -0.005909926285776579,
-    "sharpe_ratio": -0.03689767347747856,
-    "max_drawdown": -0.1582403879944882,
-    "active_hit_rate": 0.5082304526748971,
-    "final_equity": 9763.852868486158
+    "total_return": -0.5654732627331465,
+    "annualized_return": -0.1867638192642751,
+    "sharpe_ratio": -1.1640008281087542,
+    "max_drawdown": -0.596562535748847,
+    "active_hit_rate": 0.5173745173745173,
+    "final_equity": 4345.267372668535
   },
   "ML momentum 0.52": {
-    "total_return": -0.08199207904357664,
-    "annualized_return": -0.020995373695149366,
-    "sharpe_ratio": -0.1799214564040069,
-    "max_drawdown": -0.21911662639677906,
-    "active_hit_rate": 0.5158371040723982,
-    "final_equity": 9180.079209564234
+    "total_return": -0.5722923009393637,
+    "annualized_return": -0.18994808053905887,
+    "sharpe_ratio": -1.1810764595548628,
+    "max_drawdown": -0.6015249393922975,
+    "active_hit_rate": 0.5192187824641595,
+    "final_equity": 4277.076990606363
   },
   "ML momentum 0.53": {
-    "total_return": -0.17322231552028344,
-    "annualized_return": -0.04608471638743972,
-    "sharpe_ratio": -0.4013504710546597,
-    "max_drawdown": -0.2864973447403924,
-    "active_hit_rate": 0.5155615696887687,
-    "final_equity": 8267.776844797165
+    "total_return": -0.5563917189644104,
+    "annualized_return": -0.18258087656209943,
+    "sharpe_ratio": -1.09214333220482,
+    "max_drawdown": -0.5903081270215326,
+    "active_hit_rate": 0.5222152032006738,
+    "final_equity": 4436.082810355896
   },
   "ML momentum 0.55": {
-    "total_return": -0.2846240843293335,
-    "annualized_return": -0.07972011726972483,
-    "sharpe_ratio": -0.6584443353691348,
-    "max_drawdown": -0.36493400209276106,
-    "active_hit_rate": 0.5132450331125827,
-    "final_equity": 7153.759156706665
+    "total_return": -0.6161681215724142,
+    "annualized_return": -0.2114052520377221,
+    "sharpe_ratio": -1.293975275075199,
+    "max_drawdown": -0.6364518022490674,
+    "active_hit_rate": 0.5199738048461034,
+    "final_equity": 3838.318784275858
   },
   "ML momentum 0.57": {
-    "total_return": -0.3090810158435545,
-    "annualized_return": -0.08762606484145796,
-    "sharpe_ratio": -0.6130134639295138,
-    "max_drawdown": -0.3917017261851196,
-    "active_hit_rate": 0.5146935348446684,
-    "final_equity": 6909.189841564455
+    "total_return": -0.5997348836355396,
+    "annualized_return": -0.20316258918443397,
+    "sharpe_ratio": -1.1710959924600894,
+    "max_drawdown": -0.6209411320217688,
+    "active_hit_rate": 0.522381276982504,
+    "final_equity": 4002.651163644604
   },
   "ML mean_reversion 0.50": {
-    "total_return": 0.209765872755439,
-    "annualized_return": 0.04836505044731454,
-    "sharpe_ratio": 0.5449364677483688,
-    "max_drawdown": -0.11531030400480156,
-    "active_hit_rate": 0.5390781563126252,
-    "final_equity": 12097.65872755439
+    "total_return": -0.4305778011413648,
+    "annualized_return": -0.13035895972704337,
+    "sharpe_ratio": -0.6419405293642464,
+    "max_drawdown": -0.5323889661564637,
+    "active_hit_rate": 0.522311330454452,
+    "final_equity": 5694.221988586352
   },
   "ML mean_reversion 0.52": {
-    "total_return": -0.1494773499163785,
-    "annualized_return": -0.03936172905361768,
-    "sharpe_ratio": -0.29830681474900544,
-    "max_drawdown": -0.2583984021483694,
-    "active_hit_rate": 0.5241046831955923,
-    "final_equity": 8505.226500836216
+    "total_return": -0.4647758962002496,
+    "annualized_return": -0.14361649328949,
+    "sharpe_ratio": -0.6992364920354985,
+    "max_drawdown": -0.561868932207546,
+    "active_hit_rate": 0.521021021021021,
+    "final_equity": 5352.241037997504
   },
   "ML mean_reversion 0.53": {
-    "total_return": -0.29310650033518126,
-    "annualized_return": -0.08243879243130725,
-    "sharpe_ratio": -0.5782131694467111,
-    "max_drawdown": -0.36965390880187776,
-    "active_hit_rate": 0.5253126861226921,
-    "final_equity": 7068.934996648188
+    "total_return": -0.4267820088272539,
+    "annualized_return": -0.12892469510512428,
+    "sharpe_ratio": -0.5948843382151446,
+    "max_drawdown": -0.5341189419723159,
+    "active_hit_rate": 0.5241775226319276,
+    "final_equity": 5732.17991172746
   },
   "ML mean_reversion 0.55": {
-    "total_return": -0.3961922337530466,
-    "annualized_return": -0.11761935062577034,
-    "sharpe_ratio": -0.7438937919590218,
-    "max_drawdown": -0.5124625284449343,
-    "active_hit_rate": 0.5189131592967501,
-    "final_equity": 6038.0776624695345
+    "total_return": -0.4369051922908883,
+    "annualized_return": -0.1327658685067148,
+    "sharpe_ratio": -0.5853627534187757,
+    "max_drawdown": -0.5553989426033022,
+    "active_hit_rate": 0.5218644882268141,
+    "final_equity": 5630.948077091117
   },
   "ML mean_reversion 0.57": {
-    "total_return": -0.3718134125357855,
-    "annualized_return": -0.10891398423494703,
-    "sharpe_ratio": -0.5980729418319859,
-    "max_drawdown": -0.4757290207739286,
-    "active_hit_rate": 0.5201392342118349,
-    "final_equity": 6281.865874642145
+    "total_return": -0.3993767569139607,
+    "annualized_return": -0.1187759195550121,
+    "sharpe_ratio": -0.48578452804641137,
+    "max_drawdown": -0.5175726608078434,
+    "active_hit_rate": 0.52071638599305,
+    "final_equity": 6006.232430860393
   },
   "ML volatility_weighted 0.50": {
     "total_return": -0.10419848319700231,
@@ -160,12 +160,12 @@
     "final_equity": 7946.120751815171
   },
   "Threshold Only (baseline)": {
-    "total_return": 0.1390463749857178,
-    "annualized_return": 0.03281859775447793,
-    "sharpe_ratio": 0.8315383700079084,
-    "max_drawdown": -0.0858467249455074,
-    "active_hit_rate": 0.5952380952380952,
-    "final_equity": 11390.463749857177
+    "total_return": -0.5348585552849299,
+    "annualized_return": -0.17291409542275782,
+    "sharpe_ratio": -0.9677333946772482,
+    "max_drawdown": -0.5867201093521088,
+    "active_hit_rate": 0.5210682492581602,
+    "final_equity": 4651.414447150702
   },
   "Buy & Hold (benchmark)": {
     "total_return": 0.5072634811984025,
@@ -184,11 +184,11 @@
     "final_equity": 12173.903992569061
   },
   "Simple Reversal SMA20 (benchmark)": {
-    "total_return": -0.04936222736370177,
-    "annualized_return": -0.012477398667880335,
-    "sharpe_ratio": -0.038328240697017804,
-    "max_drawdown": -0.20538062307152177,
-    "active_hit_rate": 0.508300395256917,
-    "final_equity": 9506.377726362982
+    "total_return": -0.2980235191022256,
+    "annualized_return": -0.0840259816182245,
+    "sharpe_ratio": -0.34346633343104194,
+    "max_drawdown": -0.3862043932903475,
+    "active_hit_rate": 0.5175,
+    "final_equity": 7019.764808977744
   }
 }

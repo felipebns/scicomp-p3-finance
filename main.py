@@ -180,14 +180,10 @@ if __name__ == "__main__":
 
 """TODOs"""
 
-"""Whats happening with the benchmarks ? Why are they doing so well ?"""
-"""Solve plotting problems, not plotting what I want, better plots"""
-"""Many metrics not being used for plotting and comparing"""
 """Need to create test files, too many things can break now"""
-"""Make with thresholds below 50 ? """
-"""Verify correctness of backtest"""
-"""which stocks were selected each day ?"""
-
+"""Run with unity, try all possibilities!"""
+"""Broken backtest and plotting, fix top 5 ?"""
+"""Garantee results..."""
 
 """Good to have"""
 

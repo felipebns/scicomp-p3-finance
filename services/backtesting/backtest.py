@@ -127,7 +127,37 @@ class Backtest:
         
         positions = self.position_normalizer.normalize(positions, self.test_df)
         daily_returns = self.return_calculator.calculate(positions, self.test_df)
-        return self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
+        metrics = self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
+        
+        # Store position information by ticker for visualization
+        metrics["positions_by_ticker"] = self._aggregate_positions_by_ticker(positions)
+        
+        return metrics
+    
+    def _aggregate_positions_by_ticker(self, positions: np.ndarray) -> Dict[str, Dict]:
+        """Aggregate positions by ticker to show average weight and frequency.
+        
+        Returns:
+            Dict mapping ticker → {avg_weight, selection_days, selection_rate}
+        """
+        positions_df = self.test_df.copy()
+        positions_df["_position"] = positions
+        
+        result = {}
+        for ticker in positions_df["ticker"].unique():
+            ticker_data = positions_df[positions_df["ticker"] == ticker]
+            total_days = len(ticker_data)
+            active_days = np.sum(ticker_data["_position"] > 0)
+            avg_weight = ticker_data["_position"].mean()
+            
+            result[ticker] = {
+                "avg_position_weight": float(avg_weight),
+                "days_selected": int(active_days),
+                "total_days": int(total_days),
+                "selection_rate": float(active_days / total_days) if total_days > 0 else 0.0
+            }
+        
+        return result
     
     def _apply_position_selection(self, positions: np.ndarray, 
                                   probabilities: np.ndarray) -> np.ndarray:
@@ -157,26 +187,26 @@ class Backtest:
         
         for date in dates:
             mask = self.test_df["date"] == date
-            date_positions = positions[mask]
-            date_probs = probabilities[mask]
+            date_positions = positions[mask.values]  # Convert mask to numpy array
+            date_probs = probabilities[mask.values]
             
             # Only apply filter if there are positions to take
             n_positions = np.sum(date_positions > 0)
             
             if n_positions > n_top:
-                # Get indices of top N positions by probability
-                # Need to account for positions that are 0 or 1
-                position_indices = np.where(date_positions > 0)[0]
+                # Get indices of top N positions by probability (local to this date)
+                position_indices = np.where(date_positions > 0)[0]  # Local indices within date
                 position_probs = date_probs[position_indices]
                 
-                # Sort by probability descending, take top N
-                top_indices = position_indices[np.argsort(-position_probs)[:n_top]]
+                # Sort by probability descending, take top N (still local indices)
+                local_top_indices = position_indices[np.argsort(-position_probs)[:n_top]]
                 
                 # Zero out all positions for this date
-                filtered_positions[mask] = 0
+                filtered_positions[mask.values] = 0
                 
-                # Re-add only the top N
-                filtered_positions[mask][top_indices] = 1
+                # Re-add only the top N (using local indices)
+                global_indices = np.where(mask.values)[0][local_top_indices]
+                filtered_positions[global_indices] = 1
         
         return filtered_positions
     
