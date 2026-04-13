@@ -5,7 +5,7 @@ from typing import Tuple, Dict, Any
 from services.pipeline.model_selector import ModelSelector
 from services.pipeline.metrics_evaluator import MetricsEvaluator
 from services.pipeline.reporter import PipelineReporter
-from services.backtesting import Backtest
+from services.backtesting import Backtest, PlotGenerator
 from services.stock import Stock
 from services.transform import FeatureEngineer
 from services.algorithms.base import Algorithm
@@ -129,6 +129,9 @@ class Pipeline:
                     "mean_ic": model_data['mean_ic'],
                     "std_ic": model_data['std_ic'],
                     "wfv_score": model_data['score'],
+                    "accuracy": model_data.get('accuracy', 0),
+                    "f1_score": model_data.get('f1_score', 0),
+                    "auc": model_data.get('auc', 0.5),
                     "elapsed_time": model_data['elapsed']
                 }
             
@@ -172,9 +175,10 @@ class Pipeline:
                     json.dump(model_results, f, indent=2)
                 self.logger.info(f"✓ Model comparison saved to {models_output}")
                 
-                self.logger.info(f"Generating visualization plots...")
-                # Store model metrics for visualization
-                self.reporter.plot_model_metrics_comparison(model_results)
+                # Generate model metrics comparison plot via PlotGenerator
+                self.logger.info(f"Generating model selection comparison plot...")
+                plot_gen_for_models = PlotGenerator(self.initial_capital)
+                plot_gen_for_models.plot_model_metrics_comparison(model_results, str(self.output_dir))
                 
                 self.phase_times["4_visualization"] = time.time() - phase_start
                 self.reporter.log_phase_end("4: Visualization")

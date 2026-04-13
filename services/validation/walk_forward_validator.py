@@ -114,11 +114,12 @@ class WalkForwardValidator:
         # Reconstruct aggregated OOS dataframe and predictions
         wfv_df = df.loc[all_test_indices].copy()
         wfv_predictions = np.array(all_predictions)
+        wfv_probs = np.array(all_probs)
         
         mean_ic = float(np.mean(fold_ics)) if fold_ics else 0.0
         std_ic = float(np.std(fold_ics)) if fold_ics else 0.0
         
-        return wfv_df, wfv_predictions, fold_ics, mean_ic, std_ic
+        return wfv_df, wfv_predictions, wfv_probs, fold_ics, mean_ic, std_ic
     
     @staticmethod
     def _evaluate_fold(algorithm, train_df: pd.DataFrame, test_df: pd.DataFrame,

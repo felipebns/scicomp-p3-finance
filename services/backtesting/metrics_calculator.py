@@ -25,7 +25,8 @@ class MetricsCalculator:
             "active_hit_rate": self._calculate_hit_rate(positions, test_df),
             "final_equity": float(equity_curve[-1]),
             "equity_curve": equity_curve,
-            "daily_returns": strategy_returns
+            "daily_returns": strategy_returns,
+            "positions": positions
         }
     
     def _calculate_annualized_return(self, total_return: float, n_days: int) -> float:

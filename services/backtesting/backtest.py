@@ -114,9 +114,11 @@ class Backtest:
                 positions[mask] = ticker_positions
         
         # Apply position selection filter (e.g., top_5)
-        positions = self._apply_position_selection(positions, probabilities)
+        # Skip for benchmarks that should hold everything or nothing
+        if strategy_name not in ["fixed_income", "buy_and_hold"]:
+            positions = self._apply_position_selection(positions, probabilities)
         
-        if self.position_sizing == "probability_weighted":
+        if self.position_sizing == "probability_weighted" and strategy_name not in ["fixed_income", "buy_and_hold", "simple_reversal"]:
             # Weight the binary positions by their probabilities
             # This respects the strategy while weighting by confidence
             positions = positions * probabilities  # Element-wise multiply
