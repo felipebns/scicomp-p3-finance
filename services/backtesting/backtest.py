@@ -5,7 +5,7 @@ from typing import Dict, Optional
 from concurrent.futures import ThreadPoolExecutor
 
 from services.backtesting.metrics_calculator import MetricsCalculator
-from services.backtesting.position_normalizer import PositionNormalizer
+from services.backtesting.allocation_manager import AllocationManager
 from services.backtesting.return_calculator import ReturnCalculator
 from services.backtesting.plot_generator import PlotGenerator
 from services.strategies import (
@@ -17,14 +17,22 @@ from services.strategies import (
 
 
 class Backtest:
-    """Backtesting engine for multi-asset trading strategies."""
+    """Backtesting engine for multi-asset trading strategies.
+    
+    Architecture separates:
+    - Signal generation (from model)
+    - Asset selection (threshold-based)
+    - Capital allocation (AllocationManager)
+    - Position normalization (final weights)
+    """
     
     def __init__(self, test_df: pd.DataFrame, initial_capital: float = 10000,
                  transaction_cost: float = 0.0005, slippage: float = 0.0005,
                  annual_rf_rate: float = 0.05, position_sizing: str = "equal_weight",
                  position_selection: str = "top_5",
                  allocation_mode: str = "full_deployment",
-                 purchase_threshold: float = 0.50,
+                 min_assets_for_investment: int = 1,
+                 portfolio_confidence_threshold: float = 0.50,
                  threshold_workers: int = 3):
         self.test_df = test_df.copy()
         self.initial_capital = initial_capital
@@ -32,11 +40,19 @@ class Backtest:
         self.position_sizing = position_sizing
         self.position_selection = position_selection
         self.allocation_mode = allocation_mode
-        self.purchase_threshold = purchase_threshold
+        self.min_assets_for_investment = min_assets_for_investment
+        self.portfolio_confidence_threshold = portfolio_confidence_threshold
         self.threshold_workers = threshold_workers
         
         # Initialize components
-        self.position_normalizer = PositionNormalizer()
+        self.allocation_manager = AllocationManager(
+            test_df,
+            position_selection=position_selection,
+            position_sizing=position_sizing,
+            allocation_mode=allocation_mode,
+            min_assets_for_investment=min_assets_for_investment,
+            portfolio_confidence_threshold=portfolio_confidence_threshold
+        )
         self.return_calculator = ReturnCalculator(transaction_cost, slippage, annual_rf_rate)
         self.metrics_calculator = MetricsCalculator(initial_capital, annual_rf_rate)
         self.plot_generator = PlotGenerator(initial_capital)
@@ -97,7 +113,14 @@ class Backtest:
     
     def _run_strategy(self, probabilities: np.ndarray, threshold: float, 
                       strategy_name: str) -> Dict:
-        """Run a specific strategy by name."""
+        """Run a specific strategy.
+        
+        Pipeline:
+        1. Generate signals (model probabilities)
+        2. Apply strategy (binary selection)
+        3. Allocate capital (AllocationManager)
+        4. Calculate metrics
+        """
         strategy = self.strategies.get(strategy_name)
         
         if strategy is None:
@@ -117,26 +140,13 @@ class Backtest:
                 ticker_positions = strategy.apply(ticker_df, ticker_probs, threshold)
                 positions[mask] = ticker_positions
         
-        # Apply position selection filter (e.g., top_5)
-        # Skip for benchmarks that should hold everything or nothing
-        """
-        Note: Buy and hold should not use weights from the model, keep as neutral baseline
-        Meaning it should hold all stocks equally regardless of probabilities, to show pure buy-and-hold performance.
-        """
-        if strategy_name not in ["fixed_income", "buy_and_hold"]:
-            positions = self._apply_position_selection(positions, probabilities)
-        
-        if self.position_sizing == "probability_weighted" and strategy_name not in ["fixed_income", "buy_and_hold", "simple_reversal"]:
-            # Weight the binary positions by their probabilities
-            # This respects the strategy while weighting by confidence
-            positions = positions * probabilities  # Element-wise multiply
-            positions = self._apply_probability_weights(positions)
-        
-        positions = self.position_normalizer.normalize(
-            positions, self.test_df, 
-            allocation_mode=self.allocation_mode,
-            purchase_threshold=self.purchase_threshold
+        # CONSOLIDATED: Allocation pipeline (top-k + weighting + normalization)
+        positions = self.allocation_manager.allocate(
+            positions, 
+            probabilities,
+            strategy_name
         )
+        
         daily_returns = self.return_calculator.calculate(positions, self.test_df)
         metrics = self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
         
@@ -176,76 +186,6 @@ class Backtest:
             }
         
         return result
-    
-    def _apply_position_selection(self, positions: np.ndarray, 
-                                  probabilities: np.ndarray) -> np.ndarray:
-        """Filter positions based on position_selection strategy (e.g., top_5).
-        
-        Args:
-            positions: Position array (0 or 1 for each row)
-            probabilities: Model probability for each row
-            
-        Returns:
-            Filtered position array with TOP-N selection applied
-        """
-        if self.position_selection == "all":
-            return positions
-        
-        # Parse position selection method (e.g., "top_5" → 5)
-        if not self.position_selection.startswith("top_"):
-            return positions
-        
-        try:
-            n_top = int(self.position_selection.split("_")[1])
-        except (IndexError, ValueError):
-            return positions
-        
-        filtered_positions = positions.copy()
-        dates = self.test_df["date"].unique()
-        
-        for date in dates:
-            mask = self.test_df["date"] == date
-            date_positions = positions[mask.values]  # Convert mask to numpy array
-            date_probs = probabilities[mask.values]
-            
-            # Only apply filter if there are positions to take
-            n_positions = np.sum(date_positions > 0)
-            
-            if n_positions > n_top:
-                # Get indices of top N positions by probability (local to this date)
-                position_indices = np.where(date_positions > 0)[0]  # Local indices within date
-                position_probs = date_probs[position_indices]
-                
-                # Sort by probability descending, take top N (still local indices)
-                local_top_indices = position_indices[np.argsort(-position_probs)[:n_top]]
-                
-                # Zero out all positions for this date
-                filtered_positions[mask.values] = 0
-                
-                # Re-add only the top N (using local indices)
-                global_indices = np.where(mask.values)[0][local_top_indices]
-                filtered_positions[global_indices] = 1
-        
-        return filtered_positions
-    
-    def _apply_probability_weights(self, probabilities: np.ndarray) -> np.ndarray:
-        """Normalize probabilities per date."""
-        weights = np.zeros_like(probabilities)
-        dates = self.test_df["date"].unique()
-        
-        for date in dates:
-            mask = self.test_df["date"] == date
-            date_probs = probabilities[mask]
-            total_prob = np.sum(date_probs[date_probs > 0])
-            
-            if total_prob > 0:
-                weights[mask] = np.where(
-                    date_probs > 0,
-                    date_probs / total_prob,
-                    0
-                )
-        
-        return weights
     
     def save_summary(self, backtest_results: Dict, output_dir: str) -> None:
         """Save backtest summary to JSON."""

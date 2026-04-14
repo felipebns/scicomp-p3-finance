@@ -74,30 +74,34 @@ CONFIG = {
     # ============================================================================
     "position_selection": "top_5",           # How many stocks to select per day
     
-    # ================== ALLOCATION MODE ==================
-    # CHOOSE BETWEEN TWO PORTFOLIO STRATEGIES:
+    # ================== ALLOCATION MODE & THRESHOLDS ==================
+    # NEW ARCHITECTURE: Clear separation of signal → selection → allocation
     #
-    # 1. "cash_allocation" (CONSERVATIVE)
-    #    - If model selects N stocks (N < all): invest in N, rest stays in CASH
-    #    - Example: Model picks 2 of 5 stocks → 50% invested, 50% in CASH
-    #    - Only goes 100% cash if NO stock beats purchase_threshold
-    #    - ✓ Best for: Risk-averse, selective timing, avoid overexposure
-    #    - Example use: "I only invest when I'm really confident"
+    # probability_thresholds: Per-stock asset selection gate
+    #    - Test 11 values from 0.50 to 0.60
+    #    - Decides which stocks enter the portfolio
+    #    - Higher = more selective (fewer stocks selected)
     #
-    # 2. "full_deployment" (AGGRESSIVE)
-    #    - If model selects N stocks: invest 100% equally across those N
-    #    - Example: Model picks 2 of 5 stocks → 50% each (100% deployed)
-    #    - Only goes 100% cash if NO stock beats purchase_threshold
-    #    - ✓ Best for: Capital efficiency, always deployed, avoids underutilization
-    #    - Example use: "Deploy all capital to best opportunities, no idle cash"
+    # portfolio_confidence_threshold: Final gate for portfolio
+    #    - If no stock beats this → 100% CASH
+    #    - Default 0.50 means need 50%+ confidence
     #
-    # purchase_threshold: Minimum probability required to open ANY position
-    #    - If best probability < purchase_threshold → 100% CASH (no position opened)
-    #    - Only matters when NO selected stock beats this level
-    #    - Example: purchase_threshold=0.52 → needs at least 52% confidence
+    # allocation_mode: How to use selected assets
+    #    1. "cash_allocation": Deploy proportional to selected
+    #       - 2 of 5 selected → invest only in 2, 60% CASH
+    #       - Only deploy if min_assets_for_investment threshold met
+    #    
+    #    2. "full_deployment": Deploy 100% among selected
+    #       - 2 of 5 selected → 50% each (100% deployed)
+    #       - More capital efficient
+    #
+    # min_assets_for_investment: Minimum selected assets to open position
+    #    - For cash_allocation: only deploy if >= this many
+    #    - For full_deployment: deploy regardless
     # ============================================================================
-    "allocation_mode": "full_deployment",    # "cash_allocation" or "full_deployment"
-    "purchase_threshold": 0.50,              # Minimum confidence to open any position
+    "portfolio_confidence_threshold": 0.50,    # Final gate: min confidence to invest
+    "allocation_mode": "full_deployment",      # "cash_allocation" or "full_deployment"
+    "min_assets_for_investment": 1,            # Minimum selected assets to deploy
     
     # Model hyperparameters
     "model_params": {
@@ -156,7 +160,7 @@ if __name__ == "__main__":
     logger.info(f"  Position Sizing: {CONFIG['position_sizing']}")
     logger.info(f"  Position Selection: {CONFIG['position_selection']} (top N stocks per day)")
     logger.info(f"  Allocation Mode: {CONFIG['allocation_mode']}")
-    logger.info(f"  Purchase Threshold: {CONFIG['purchase_threshold']:.2%}")
+    logger.info(f"  Portfolio Confidence Threshold: {CONFIG['portfolio_confidence_threshold']:.2%}")
     logger.info(f"  Transaction Cost: {CONFIG['transaction_cost']:.4%}")
     logger.info(f"  Initial Capital: ${CONFIG['initial_capital']}")
     logger.info(f"  WFV Windows: train={CONFIG['wfv_train_window']}, test={CONFIG['wfv_test_window']}")
@@ -198,7 +202,8 @@ if __name__ == "__main__":
         position_sizing=CONFIG["position_sizing"],
         position_selection=CONFIG["position_selection"],
         allocation_mode=CONFIG["allocation_mode"],
-        purchase_threshold=CONFIG["purchase_threshold"],
+        min_assets_for_investment=CONFIG["min_assets_for_investment"],
+        portfolio_confidence_threshold=CONFIG["portfolio_confidence_threshold"],
         parallelization=CONFIG["parallelization"],
     )
 
@@ -213,7 +218,7 @@ if __name__ == "__main__":
 
 """Need to create test files, too many things can break now"""
 """Run with unity, try all possibilities!"""
-"""Test what is more effective, full deployment or cash fallbacks | Make a better explanation of why it is useful"""
+"""Test what is more effective, full deployment or cash fallbacks"""
 
 """Good to have"""
 

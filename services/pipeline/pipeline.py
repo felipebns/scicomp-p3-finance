@@ -35,7 +35,8 @@ class Pipeline:
         position_sizing: str = "equal_weight",
         position_selection: str = "top_5",
         allocation_mode: str = "full_deployment",
-        purchase_threshold: float = 0.50,
+        min_assets_for_investment: int = 1,
+        portfolio_confidence_threshold: float = 0.50,
         parallelization: Dict[str, int] = None,
     ):
         """Initialize pipeline with data source and algorithms."""
@@ -59,7 +60,8 @@ class Pipeline:
         self.position_sizing = position_sizing
         self.position_selection = position_selection
         self.allocation_mode = allocation_mode
-        self.purchase_threshold = purchase_threshold
+        self.min_assets_for_investment = min_assets_for_investment
+        self.portfolio_confidence_threshold = portfolio_confidence_threshold
         
         # Parallelization settings (with defaults)
         self.parallelization = parallelization or {
@@ -233,7 +235,7 @@ class Pipeline:
         # Get predictions
         y_prob = best_algo.predict_proba(test_df, features)
         
-        # Run backtest
+        # Run backtest with new architecture
         backtest = Backtest(
             test_df,
             initial_capital=self.initial_capital,
@@ -243,7 +245,8 @@ class Pipeline:
             position_sizing=self.position_sizing,
             position_selection=self.position_selection,
             allocation_mode=self.allocation_mode,
-            purchase_threshold=self.purchase_threshold,
+            min_assets_for_investment=self.min_assets_for_investment,
+            portfolio_confidence_threshold=self.portfolio_confidence_threshold,
             threshold_workers=self.parallelization.get("threshold_testing", 3)
         )
         
