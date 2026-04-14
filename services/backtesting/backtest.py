@@ -23,12 +23,16 @@ class Backtest:
                  transaction_cost: float = 0.0005, slippage: float = 0.0005,
                  annual_rf_rate: float = 0.05, position_sizing: str = "equal_weight",
                  position_selection: str = "top_5",
+                 allocation_mode: str = "full_deployment",
+                 purchase_threshold: float = 0.50,
                  threshold_workers: int = 3):
         self.test_df = test_df.copy()
         self.initial_capital = initial_capital
         self.annual_rf_rate = annual_rf_rate
         self.position_sizing = position_sizing
         self.position_selection = position_selection
+        self.allocation_mode = allocation_mode
+        self.purchase_threshold = purchase_threshold
         self.threshold_workers = threshold_workers
         
         # Initialize components
@@ -115,7 +119,10 @@ class Backtest:
         
         # Apply position selection filter (e.g., top_5)
         # Skip for benchmarks that should hold everything or nothing
-        """"Note: Buy and hold should not use weights from the model, keep as neutral baseline"""
+        """
+        Note: Buy and hold should not use weights from the model, keep as neutral baseline
+        Meaning it should hold all stocks equally regardless of probabilities, to show pure buy-and-hold performance.
+        """
         if strategy_name not in ["fixed_income", "buy_and_hold"]:
             positions = self._apply_position_selection(positions, probabilities)
         
@@ -123,10 +130,13 @@ class Backtest:
             # Weight the binary positions by their probabilities
             # This respects the strategy while weighting by confidence
             positions = positions * probabilities  # Element-wise multiply
-            positions = self._apply_position_selection(positions, probabilities)
             positions = self._apply_probability_weights(positions)
         
-        positions = self.position_normalizer.normalize(positions, self.test_df)
+        positions = self.position_normalizer.normalize(
+            positions, self.test_df, 
+            allocation_mode=self.allocation_mode,
+            purchase_threshold=self.purchase_threshold
+        )
         daily_returns = self.return_calculator.calculate(positions, self.test_df)
         metrics = self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
         
@@ -136,23 +146,30 @@ class Backtest:
         return metrics
     
     def _aggregate_positions_by_ticker(self, positions: np.ndarray) -> Dict[str, Dict]:
-        """Aggregate positions by ticker to show average weight and frequency.
+        """Aggregate positions by ticker to show final weight and historical metrics.
         
         Returns:
-            Dict mapping ticker → {avg_weight, selection_days, selection_rate}
+            Dict mapping ticker → {final_weight, avg_weight, selection_days, selection_rate}
         """
         positions_df = self.test_df.copy()
         positions_df["_position"] = positions
         
         result = {}
+        last_date = positions_df["date"].max()
+        
         for ticker in positions_df["ticker"].unique():
             ticker_data = positions_df[positions_df["ticker"] == ticker]
             total_days = len(ticker_data)
             active_days = np.sum(ticker_data["_position"] > 0)
             avg_weight = ticker_data["_position"].mean()
             
+            # Get final weight (last day of backtest)
+            last_day_data = ticker_data[ticker_data["date"] == last_date]
+            final_weight = float(last_day_data["_position"].values[0]) if len(last_day_data) > 0 else 0.0
+            
             result[ticker] = {
-                "avg_position_weight": float(avg_weight),
+                "final_weight": final_weight,  # Weight to use in production
+                "avg_position_weight": float(avg_weight),  # Historical average
                 "days_selected": int(active_days),
                 "total_days": int(total_days),
                 "selection_rate": float(active_days / total_days) if total_days > 0 else 0.0
@@ -242,6 +259,8 @@ class Backtest:
                 "active_hit_rate": metrics["active_hit_rate"],
                 "final_equity": metrics["final_equity"]
             }
+            if "positions_by_ticker" in metrics:
+                summary[strategy_name]["positions_by_ticker"] = metrics["positions_by_ticker"]
             if "_metadata" in metrics:
                 summary[strategy_name]["_metadata"] = metrics["_metadata"]
         

@@ -34,6 +34,8 @@ class Pipeline:
         probability_thresholds: list[float] = None,
         position_sizing: str = "equal_weight",
         position_selection: str = "top_5",
+        allocation_mode: str = "full_deployment",
+        purchase_threshold: float = 0.50,
         parallelization: Dict[str, int] = None,
     ):
         """Initialize pipeline with data source and algorithms."""
@@ -56,6 +58,8 @@ class Pipeline:
         self.probability_thresholds = probability_thresholds or [0.50, 0.55, 0.60, 0.65, 0.70]
         self.position_sizing = position_sizing
         self.position_selection = position_selection
+        self.allocation_mode = allocation_mode
+        self.purchase_threshold = purchase_threshold
         
         # Parallelization settings (with defaults)
         self.parallelization = parallelization or {
@@ -238,6 +242,8 @@ class Pipeline:
             annual_rf_rate=self.annual_rf_rate,
             position_sizing=self.position_sizing,
             position_selection=self.position_selection,
+            allocation_mode=self.allocation_mode,
+            purchase_threshold=self.purchase_threshold,
             threshold_workers=self.parallelization.get("threshold_testing", 3)
         )
         

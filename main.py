@@ -28,24 +28,24 @@ CONFIG = {
     #     # Consumer (2)
     #     "WMT", "HD"
     # ],
-    # testing with 5 stocks also...
+    # testing with 5 stocks also... works better to reduce overfitting
     "tickers": ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"],
     "start_date": "2006-01-01",
-    
+
     # Pipeline parameters
     "output_dir": "output",
     "test_size": 0.20,
-    
+
     # Walk-Forward Validation parameters
     "wfv_train_window": 750,    # ~3 years of training data
     "wfv_test_window": 250,     # ~1 year of validation data
-    
+
     # Backtesting parameters
     "initial_capital": 10000,
     "transaction_cost": 0.0005,  # 0.05% per trade
     "slippage": 0.0005,          # 0.05% slippage
     "annual_rf_rate": 0.05,      # 5% annual risk-free rate
-    "probability_thresholds": [0.50, 0.52, 0.53, 0.55, 0.57],
+    "probability_thresholds": [0.50, 0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 0.60],  # Thresholds to test for position sizing
     "position_sizing": "probability_weighted",  # "equal_weight" or "probability_weighted"
     
     # Feature engineering parameters (placeholder for future extensions)
@@ -73,6 +73,31 @@ CONFIG = {
     #   "top_10"  - Trade top 10 stocks (diversified)
     # ============================================================================
     "position_selection": "top_5",           # How many stocks to select per day
+    
+    # ================== ALLOCATION MODE ==================
+    # CHOOSE BETWEEN TWO PORTFOLIO STRATEGIES:
+    #
+    # 1. "cash_allocation" (CONSERVATIVE)
+    #    - If model selects N stocks (N < all): invest in N, rest stays in CASH
+    #    - Example: Model picks 2 of 5 stocks → 50% invested, 50% in CASH
+    #    - Only goes 100% cash if NO stock beats purchase_threshold
+    #    - ✓ Best for: Risk-averse, selective timing, avoid overexposure
+    #    - Example use: "I only invest when I'm really confident"
+    #
+    # 2. "full_deployment" (AGGRESSIVE)
+    #    - If model selects N stocks: invest 100% equally across those N
+    #    - Example: Model picks 2 of 5 stocks → 50% each (100% deployed)
+    #    - Only goes 100% cash if NO stock beats purchase_threshold
+    #    - ✓ Best for: Capital efficiency, always deployed, avoids underutilization
+    #    - Example use: "Deploy all capital to best opportunities, no idle cash"
+    #
+    # purchase_threshold: Minimum probability required to open ANY position
+    #    - If best probability < purchase_threshold → 100% CASH (no position opened)
+    #    - Only matters when NO selected stock beats this level
+    #    - Example: purchase_threshold=0.52 → needs at least 52% confidence
+    # ============================================================================
+    "allocation_mode": "full_deployment",    # "cash_allocation" or "full_deployment"
+    "purchase_threshold": 0.50,              # Minimum confidence to open any position
     
     # Model hyperparameters
     "model_params": {
@@ -130,6 +155,8 @@ if __name__ == "__main__":
     logger.info(f"  Tickers: {CONFIG['tickers']} ({len(CONFIG['tickers'])} stocks)")
     logger.info(f"  Position Sizing: {CONFIG['position_sizing']}")
     logger.info(f"  Position Selection: {CONFIG['position_selection']} (top N stocks per day)")
+    logger.info(f"  Allocation Mode: {CONFIG['allocation_mode']}")
+    logger.info(f"  Purchase Threshold: {CONFIG['purchase_threshold']:.2%}")
     logger.info(f"  Transaction Cost: {CONFIG['transaction_cost']:.4%}")
     logger.info(f"  Initial Capital: ${CONFIG['initial_capital']}")
     logger.info(f"  WFV Windows: train={CONFIG['wfv_train_window']}, test={CONFIG['wfv_test_window']}")
@@ -170,6 +197,8 @@ if __name__ == "__main__":
         probability_thresholds=CONFIG["probability_thresholds"],
         position_sizing=CONFIG["position_sizing"],
         position_selection=CONFIG["position_selection"],
+        allocation_mode=CONFIG["allocation_mode"],
+        purchase_threshold=CONFIG["purchase_threshold"],
         parallelization=CONFIG["parallelization"],
     )
 
@@ -184,12 +213,11 @@ if __name__ == "__main__":
 
 """Need to create test files, too many things can break now"""
 """Run with unity, try all possibilities!"""
-"""Figuere out best stocks option to balance, best with 5 stocks for now..."""
-"""Stock selection frequency ? didnt get it plot..."""
+"""Test what is more effective, full deployment or cash fallbacks | Make a better explanation of why it is useful"""
 
 """Good to have"""
 
-"""Stocks selection"""
+"""Stocks selection, more than 5 causes overfitting, need to think of a way to get "similar" stocks to diversify"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
 """Test more buy/sell strategies"""
