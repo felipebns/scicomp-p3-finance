@@ -1,25 +1,29 @@
 import pandas as pd
 import numpy as np
+from services.logger_config import get_logger
+
+logger = get_logger()
 
 
 class AllocationManager:
     """
     Capital allocation orchestrator.
     
-    Centralized responsibility for:
-    1. Top-K asset selection (position_selection)
-    2. Probability weighting (position_sizing)
-    3. Position normalization (allocation_mode)
+    Consolidates the three-step allocation pipeline while maintaining
+    the exact logic of the original implementation:
+    1. Top-K asset selection
+    2. Probability weighting
+    3. Position normalization (with confidence gate)
     
-    Separates allocation logic from backtesting engine.
+    Separates allocation logic from backtesting engine for better
+    testability and maintainability.
     """
     
     def __init__(self, test_df: pd.DataFrame, 
                  position_selection: str = "top_5",
                  position_sizing: str = "equal_weight",
                  allocation_mode: str = "full_deployment",
-                 min_assets_for_investment: int = 1,
-                 portfolio_confidence_threshold: float = 0.50):
+                 purchase_threshold: float = 0.50):
         """
         Initialize allocation manager.
         
@@ -28,26 +32,23 @@ class AllocationManager:
             position_selection: "all", "top_1", "top_5", etc.
             position_sizing: "equal_weight" or "probability_weighted"
             allocation_mode: "full_deployment" or "cash_allocation"
-            min_assets_for_investment: Minimum selected assets to deploy capital
-            portfolio_confidence_threshold: Minimum confidence to invest (global gate)
+            purchase_threshold: Minimum confidence to invest (confidence gate)
         """
         self.test_df = test_df
         self.position_selection = position_selection
         self.position_sizing = position_sizing
         self.allocation_mode = allocation_mode
-        self.min_assets_for_investment = min_assets_for_investment
-        self.portfolio_confidence_threshold = portfolio_confidence_threshold
+        self.purchase_threshold = purchase_threshold
     
     def allocate(self, positions: np.ndarray, probabilities: np.ndarray,
                  strategy_name: str) -> np.ndarray:
         """
         Execute complete allocation pipeline.
         
-        Pipeline:
-        1. Apply top-K filtering
-        2. Apply probability weighting
-        3. Apply portfolio confidence gate (global minimum)
-        4. Normalize positions
+        Pipeline (same logic as original):
+        1. Apply top-K filtering (skip for benchmarks)
+        2. Apply probability weighting if enabled
+        3. Normalize positions (apply allocation mode + confidence gate)
         
         Args:
             positions: Binary positions (0/1) from strategy
@@ -57,30 +58,38 @@ class AllocationManager:
         Returns:
             Allocated and normalized positions
         """
+        n_selected_before = np.sum(positions > 0)
+        
         # STEP 1: Top-K filtering (skip for benchmarks)
         if strategy_name not in ["fixed_income", "buy_and_hold"]:
-            positions = self._apply_top_k_filter(positions, probabilities)
+            positions = self._apply_position_selection(positions, probabilities)
+            n_selected_after_topk = np.sum(positions > 0)
+            logger.debug(f"[{strategy_name}] Top-K Filter ({self.position_selection}): "
+                        f"{n_selected_before} → {n_selected_after_topk} selected")
         
         # STEP 2: Probability weighting (skip for benchmarks)
         if self.position_sizing == "probability_weighted" and \
             strategy_name not in ["fixed_income", "buy_and_hold", "simple_reversal"]:
+            # Weight the binary positions by their probabilities
             positions = positions * probabilities
-            positions = self._normalize_probability_weights(positions)
+            positions = self._apply_probability_weights(positions)
+            logger.debug(f"[{strategy_name}] Probability weighting applied (weighted mode)")
         
-        # STEP 3: Apply portfolio confidence gate (skip for benchmarks)
-        # If max probability for a date is below threshold → 100% CASH
-        if strategy_name not in ["fixed_income", "buy_and_hold"]:
-            positions = self._apply_confidence_gate(positions, probabilities)
-        
-        # STEP 4: Normalize positions (apply allocation mode)
+        # STEP 3: Normalize positions (apply allocation mode + confidence gate)
         positions = self._normalize_positions(positions)
+        n_final = np.sum(positions > 0)
+        logger.debug(f"[{strategy_name}] Normalization complete: "
+                    f"allocation_mode={self.allocation_mode}, "
+                    f"purchase_threshold={self.purchase_threshold}, "
+                    f"final_active={n_final}")
         
         return positions
     
-    def _apply_top_k_filter(self, positions: np.ndarray, 
-                           probabilities: np.ndarray) -> np.ndarray:
-        """
-        Filter positions keeping only top-K by probability.
+    def _apply_position_selection(self, positions: np.ndarray, 
+                                   probabilities: np.ndarray) -> np.ndarray:
+        """Filter positions keeping only top-K by probability.
+        
+        This is EXACT copy of the original backtest._apply_position_selection
         
         Args:
             positions: Position array (0 or 1 for each row)
@@ -109,51 +118,37 @@ class AllocationManager:
             date_positions = positions[mask.values]
             date_probs = probabilities[mask.values]
             
+            # Only apply filter if there are positions to take
             n_positions = np.sum(date_positions > 0)
             
             if n_positions > n_top:
-                # Keep only top N by probability
+                # Get indices of top N positions by probability (local to this date)
                 position_indices = np.where(date_positions > 0)[0]
                 position_probs = date_probs[position_indices]
                 
+                # Sort by probability descending, take top N (still local indices)
                 local_top_indices = position_indices[np.argsort(-position_probs)[:n_top]]
                 
+                # Zero out all positions for this date
                 filtered_positions[mask.values] = 0
+                
+                # Re-add only the top N (using local indices)
                 global_indices = np.where(mask.values)[0][local_top_indices]
                 filtered_positions[global_indices] = 1
         
         return filtered_positions
     
-    def _apply_confidence_gate(self, positions: np.ndarray, 
-                               probabilities: np.ndarray) -> np.ndarray:
-        """
-        Apply global confidence gate: if max probability for a date < threshold, go 100% CASH.
+    def _apply_probability_weights(self, probabilities: np.ndarray) -> np.ndarray:
+        """Normalize probabilities per date.
+        
+        This is EXACT copy of the original backtest._apply_probability_weights
         
         Args:
-            positions: Position array (0 or 1 for each row, or weighted)
-            probabilities: Model probability for each row
+            probabilities: Array of probability values
         
         Returns:
-            Positions with confidence gate applied (0 if below threshold for that date)
+            Normalized probability weights per date
         """
-        gated_positions = positions.copy()
-        dates = self.test_df["date"].unique()
-        
-        for date in dates:
-            mask = self.test_df["date"] == date
-            date_probs = probabilities[mask.values]
-            
-            # Get max probability for this date
-            max_prob = np.max(date_probs) if len(date_probs) > 0 else 0.0
-            
-            # If max probability below threshold → liquidate all positions for this date
-            if max_prob < self.portfolio_confidence_threshold:
-                gated_positions[mask.values] = 0
-        
-        return gated_positions
-    
-    def _normalize_probability_weights(self, probabilities: np.ndarray) -> np.ndarray:
-        """Normalize probabilities per date to sum to 1."""
         weights = np.zeros_like(probabilities)
         dates = self.test_df["date"].unique()
         
@@ -172,73 +167,24 @@ class AllocationManager:
         return weights
     
     def _normalize_positions(self, positions: np.ndarray) -> np.ndarray:
+        """Normalize positions based on allocation mode.
+        
+        This delegates to PositionNormalizer to maintain exact original logic.
+        The confidence gate is applied INSIDE the normalization, which is the
+        critical difference from the broken refactored version.
+        
+        Args:
+            positions: Position array (binary or weighted)
+        
+        Returns:
+            Normalized positions respecting allocation mode and confidence gate
         """
-        Normalize positions based on allocation mode.
+        from services.backtesting.position_normalizer import PositionNormalizer
         
-        Architecture:
-        1. Count selected assets per date
-        2. Check minimum assets threshold
-        3. Apply allocation mode (full_deployment vs cash_allocation)
-        """
-        test_df_copy = self.test_df.copy()
-        test_df_copy["_pos"] = positions
-        
-        is_binary = np.all((positions == 0) | (positions == 1))
-        
-        if is_binary:
-            return self._normalize_binary_positions(positions, test_df_copy)
-        else:
-            return self._normalize_weighted_positions(positions, test_df_copy)
-    
-    def _normalize_binary_positions(self, positions: np.ndarray,
-                                   test_df_copy: pd.DataFrame) -> np.ndarray:
-        """Normalize binary positions (0 or 1)."""
-        def normalize_by_date(group):
-            active_count = np.sum(group > 0)
-            
-            # No assets selected → 100% CASH
-            if active_count == 0:
-                return np.zeros_like(group)
-            
-            # Check minimum assets threshold
-            if active_count < self.min_assets_for_investment:
-                return np.zeros_like(group)
-            
-            # Allocate among selected
-            if self.allocation_mode == "full_deployment":
-                # Deploy 100% equally among selected
-                return group / active_count
-            elif self.allocation_mode == "cash_allocation":
-                # Deploy proportionally, rest stays CASH
-                return group / active_count
-            else:
-                return group / active_count
-        
-        normalized = test_df_copy.groupby("date")["_pos"].transform(normalize_by_date)
-        return normalized.values
-    
-    def _normalize_weighted_positions(self, positions: np.ndarray,
-                                     test_df_copy: pd.DataFrame) -> np.ndarray:
-        """Normalize weighted positions (from probability multiplication)."""
-        def normalize_by_date(group):
-            total = np.sum(group)
-            
-            if total == 0:
-                return np.zeros_like(group)
-            
-            active_count = np.sum(group > 0)
-            
-            if active_count < self.min_assets_for_investment:
-                return np.zeros_like(group)
-            
-            if self.allocation_mode == "full_deployment":
-                # Deploy 100% (normalize to sum = 1)
-                return group / total
-            elif self.allocation_mode == "cash_allocation":
-                # Keep proportional weights (sum <= 1, rest is CASH)
-                return group
-            else:
-                return group / total if total > 0 else group
-        
-        normalized = test_df_copy.groupby("date")["_pos"].transform(normalize_by_date)
-        return normalized.values
+        normalizer = PositionNormalizer()
+        return normalizer.normalize(
+            positions, 
+            self.test_df,
+            allocation_mode=self.allocation_mode,
+            purchase_threshold=self.purchase_threshold
+        )

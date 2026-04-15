@@ -8,6 +8,7 @@ from services.backtesting.metrics_calculator import MetricsCalculator
 from services.backtesting.allocation_manager import AllocationManager
 from services.backtesting.return_calculator import ReturnCalculator
 from services.backtesting.plot_generator import PlotGenerator
+from services.logger_config import get_logger
 from services.strategies import (
     MomentumStrategy, MeanReversionStrategy, 
     VolatilityWeightedStrategy, EnsembleSmartStrategy,
@@ -15,24 +16,18 @@ from services.strategies import (
     SimpleReversalStrategy
 )
 
+logger = get_logger()
+
 
 class Backtest:
-    """Backtesting engine for multi-asset trading strategies.
-    
-    Architecture separates:
-    - Signal generation (from model)
-    - Asset selection (threshold-based)
-    - Capital allocation (AllocationManager)
-    - Position normalization (final weights)
-    """
+    """Backtesting engine for multi-asset trading strategies."""
     
     def __init__(self, test_df: pd.DataFrame, initial_capital: float = 10000,
                  transaction_cost: float = 0.0005, slippage: float = 0.0005,
                  annual_rf_rate: float = 0.05, position_sizing: str = "equal_weight",
                  position_selection: str = "top_5",
                  allocation_mode: str = "full_deployment",
-                 min_assets_for_investment: int = 1,
-                 portfolio_confidence_threshold: float = 0.50,
+                 purchase_threshold: float = 0.50,
                  threshold_workers: int = 3):
         self.test_df = test_df.copy()
         self.initial_capital = initial_capital
@@ -40,8 +35,7 @@ class Backtest:
         self.position_sizing = position_sizing
         self.position_selection = position_selection
         self.allocation_mode = allocation_mode
-        self.min_assets_for_investment = min_assets_for_investment
-        self.portfolio_confidence_threshold = portfolio_confidence_threshold
+        self.purchase_threshold = purchase_threshold
         self.threshold_workers = threshold_workers
         
         # Initialize components
@@ -50,8 +44,7 @@ class Backtest:
             position_selection=position_selection,
             position_sizing=position_sizing,
             allocation_mode=allocation_mode,
-            min_assets_for_investment=min_assets_for_investment,
-            portfolio_confidence_threshold=portfolio_confidence_threshold
+            purchase_threshold=purchase_threshold
         )
         self.return_calculator = ReturnCalculator(transaction_cost, slippage, annual_rf_rate)
         self.metrics_calculator = MetricsCalculator(initial_capital, annual_rf_rate)
@@ -113,19 +106,13 @@ class Backtest:
     
     def _run_strategy(self, probabilities: np.ndarray, threshold: float, 
                       strategy_name: str) -> Dict:
-        """Run a specific strategy.
-        
-        Pipeline:
-        1. Generate signals (model probabilities)
-        2. Apply strategy (binary selection)
-        3. Allocate capital (AllocationManager)
-        4. Calculate metrics
-        """
+        """Run a specific strategy by name."""
         strategy = self.strategies.get(strategy_name)
         
         if strategy is None:
             # Fallback to threshold strategy
             positions = (probabilities > threshold).astype(int)
+            logger.debug(f"[{strategy_name} @ {threshold:.2f}] Fallback threshold selection")
         else:
             # Get per-ticker data for strategy application
             positions = np.zeros(len(self.test_df))
@@ -140,18 +127,18 @@ class Backtest:
                 ticker_positions = strategy.apply(ticker_df, ticker_probs, threshold)
                 positions[mask] = ticker_positions
         
-        # CONSOLIDATED: Allocation pipeline (top-k + weighting + normalization)
-        positions = self.allocation_manager.allocate(
-            positions, 
-            probabilities,
-            strategy_name
-        )
+        # Consolidated allocation pipeline (top-k + weighting + normalization)
+        # AllocationManager maintains exact original logic
+        positions = self.allocation_manager.allocate(positions, probabilities, strategy_name)
         
         daily_returns = self.return_calculator.calculate(positions, self.test_df)
         metrics = self.metrics_calculator.calculate(daily_returns, positions, self.test_df)
         
         # Store position information by ticker for visualization
         metrics["positions_by_ticker"] = self._aggregate_positions_by_ticker(positions)
+        
+        logger.debug(f"[{strategy_name} @ {threshold:.2f}] Return={metrics['total_return']:.2%}, "
+                    f"Sharpe={metrics['sharpe_ratio']:.4f}, MaxDD={metrics['max_drawdown']:.2%}")
         
         return metrics
     
@@ -186,6 +173,7 @@ class Backtest:
             }
         
         return result
+    
     
     def save_summary(self, backtest_results: Dict, output_dir: str) -> None:
         """Save backtest summary to JSON."""

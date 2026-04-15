@@ -74,34 +74,17 @@ CONFIG = {
     # ============================================================================
     "position_selection": "top_5",           # How many stocks to select per day
     
-    # ================== ALLOCATION MODE & THRESHOLDS ==================
-    # NEW ARCHITECTURE: Clear separation of signal → selection → allocation
+    # ================== ALLOCATION LOGIC ==================
+    # allocation_mode: How to deploy capital among selected stocks
+    #   - "cash_allocation": Deploy only in selected, rest in CASH
+    #   - "full_deployment": Deploy 100% equally among selected (RECOMMENDED)
     #
-    # probability_thresholds: Per-stock asset selection gate
-    #    - Test 11 values from 0.50 to 0.60
-    #    - Decides which stocks enter the portfolio
-    #    - Higher = more selective (fewer stocks selected)
-    #
-    # portfolio_confidence_threshold: Final gate for portfolio
-    #    - If no stock beats this → 100% CASH
-    #    - Default 0.50 means need 50%+ confidence
-    #
-    # allocation_mode: How to use selected assets
-    #    1. "cash_allocation": Deploy proportional to selected
-    #       - 2 of 5 selected → invest only in 2, 60% CASH
-    #       - Only deploy if min_assets_for_investment threshold met
-    #    
-    #    2. "full_deployment": Deploy 100% among selected
-    #       - 2 of 5 selected → 50% each (100% deployed)
-    #       - More capital efficient
-    #
-    # min_assets_for_investment: Minimum selected assets to open position
-    #    - For cash_allocation: only deploy if >= this many
-    #    - For full_deployment: deploy regardless
+    # purchase_threshold: Global confidence gate (applied BEFORE normalization)
+    #   - If best signal < threshold → 100% CASH (no position opened)
+    #   - Default 0.50 = requires 50%+ confidence minimum
     # ============================================================================
-    "portfolio_confidence_threshold": 0.50,    # Final gate: min confidence to invest
-    "allocation_mode": "full_deployment",      # "cash_allocation" or "full_deployment"
-    "min_assets_for_investment": 1,            # Minimum selected assets to deploy
+    "allocation_mode": "full_deployment",
+    "purchase_threshold": 0.50,
     
     # Model hyperparameters
     "model_params": {
@@ -160,7 +143,7 @@ if __name__ == "__main__":
     logger.info(f"  Position Sizing: {CONFIG['position_sizing']}")
     logger.info(f"  Position Selection: {CONFIG['position_selection']} (top N stocks per day)")
     logger.info(f"  Allocation Mode: {CONFIG['allocation_mode']}")
-    logger.info(f"  Portfolio Confidence Threshold: {CONFIG['portfolio_confidence_threshold']:.2%}")
+    logger.info(f"  Purchase Threshold: {CONFIG['purchase_threshold']:.2%}")
     logger.info(f"  Transaction Cost: {CONFIG['transaction_cost']:.4%}")
     logger.info(f"  Initial Capital: ${CONFIG['initial_capital']}")
     logger.info(f"  WFV Windows: train={CONFIG['wfv_train_window']}, test={CONFIG['wfv_test_window']}")
@@ -202,8 +185,7 @@ if __name__ == "__main__":
         position_sizing=CONFIG["position_sizing"],
         position_selection=CONFIG["position_selection"],
         allocation_mode=CONFIG["allocation_mode"],
-        min_assets_for_investment=CONFIG["min_assets_for_investment"],
-        portfolio_confidence_threshold=CONFIG["portfolio_confidence_threshold"],
+        purchase_threshold=CONFIG["purchase_threshold"],
         parallelization=CONFIG["parallelization"],
     )
 
@@ -217,14 +199,14 @@ if __name__ == "__main__":
 """TODOs"""
 
 """Need to create test files, too many things can break now"""
-"""Run with unity, try all possibilities!"""
-"""Test what is more effective, full deployment or cash fallbacks"""
 
 """Good to have"""
 
+"""Test what is more effective, full deployment or cash fallbacks"""
 """Stocks selection, more than 5 causes overfitting, need to think of a way to get "similar" stocks to diversify"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
 """Test more buy/sell strategies"""
 """Parameter tuning/more features ?"""
-"""Clean requirements.txt"""
+"""Encapsulating framework"""
+"""Possible signal decomposotion"""
