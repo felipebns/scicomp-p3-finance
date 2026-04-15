@@ -8,7 +8,7 @@ from services.backtesting.metrics_calculator import MetricsCalculator
 from services.backtesting.allocation_manager import AllocationManager
 from services.backtesting.return_calculator import ReturnCalculator
 from services.backtesting.plot_generator import PlotGenerator
-from services.logger_config import get_logger
+from services.log.logger_config import get_logger
 from services.strategies import (
     MomentumStrategy, MeanReversionStrategy, 
     VolatilityWeightedStrategy, EnsembleSmartStrategy,

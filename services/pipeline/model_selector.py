@@ -7,7 +7,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 from services.validation.walk_forward_validator import WalkForwardValidator
 from services.algorithms.base import Algorithm
-from services.logger_config import get_logger
+from services.log.logger_config import get_logger
 
 
 class ModelSelector:

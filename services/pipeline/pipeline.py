@@ -6,10 +6,10 @@ from services.pipeline.model_selector import ModelSelector
 from services.pipeline.metrics_evaluator import MetricsEvaluator
 from services.pipeline.reporter import PipelineReporter
 from services.backtesting import Backtest, PlotGenerator
-from services.stock import Stock
-from services.transform import FeatureEngineer
+from services.stock.stock import Stock
+from services.stock.transform import FeatureEngineer
 from services.algorithms.base import Algorithm
-from services.logger_config import get_logger
+from services.log.logger_config import get_logger
 
 
 class Pipeline:
