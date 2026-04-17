@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Tuple, Dict, Any
 from services.pipeline.model_selector import ModelSelector
 from services.pipeline.metrics_evaluator import MetricsEvaluator
-from services.pipeline.reporter import PipelineReporter
+from services.log.reporters import PipelineReporter
 from services.backtesting import Backtest, PlotGenerator
 from services.stock.stock import Stock
 from services.stock.transform import FeatureEngineer
@@ -244,7 +244,8 @@ class Pipeline:
             position_selection=self.position_selection,
             allocation_mode=self.allocation_mode,
             purchase_threshold=self.purchase_threshold,
-            threshold_workers=self.parallelization.get("threshold_testing", 3)
+            threshold_workers=self.parallelization.get("threshold_testing", 3),
+            output_dir=str(self.output_dir)
         )
         
         self.logger.info(f"Running backtest with all 8 strategies and {len(self.probability_thresholds)} thresholds...")

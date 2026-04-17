@@ -9,6 +9,7 @@ from services.backtesting.allocation_manager import AllocationManager
 from services.backtesting.return_calculator import ReturnCalculator
 from services.backtesting.plot_generator import PlotGenerator
 from services.log.logger_config import get_logger
+from services.log.reporters import BacktestReporter
 from services.strategies import (
     MomentumStrategy, MeanReversionStrategy, 
     VolatilityWeightedStrategy, EnsembleSmartStrategy,
@@ -27,7 +28,8 @@ class Backtest:
                  position_selection: str = "top_5",
                  allocation_mode: str = "full_deployment",
                  purchase_threshold: float = 0.50,
-                 threshold_workers: int = 3):
+                 threshold_workers: int = 3,
+                 output_dir: str = "output"):
         self.test_df = test_df.copy()
         self.initial_capital = initial_capital
         self.annual_rf_rate = annual_rf_rate
@@ -48,6 +50,7 @@ class Backtest:
         self.return_calculator = ReturnCalculator(transaction_cost, slippage, annual_rf_rate)
         self.metrics_calculator = MetricsCalculator(initial_capital, annual_rf_rate)
         self.plot_generator = PlotGenerator(initial_capital)
+        self.reporter = BacktestReporter(output_dir)
         
         # Initialize strategies
         self.strategies = {
@@ -135,8 +138,11 @@ class Backtest:
         # Store position information by ticker for visualization
         metrics["positions_by_ticker"] = self._aggregate_positions_by_ticker(positions)
         
-        logger.debug(f"[{strategy_name} @ {threshold:.2f}] Return={metrics['total_return']:.2%}, "
-                    f"Sharpe={metrics['sharpe_ratio']:.4f}, MaxDD={metrics['max_drawdown']:.2%}")
+        # Log strategy execution via reporter
+        self.reporter.log_strategy_execution(
+            strategy_name, threshold, 
+            metrics['total_return'], metrics['sharpe_ratio'], metrics['max_drawdown']
+        )
         
         return metrics
     
@@ -174,58 +180,8 @@ class Backtest:
     
     
     def save_summary(self, backtest_results: Dict, output_dir: str) -> None:
-        """Save backtest summary to JSON."""
-        summary = {}
-        for strategy_name, metrics in backtest_results.items():
-            summary[strategy_name] = {
-                "total_return": metrics["total_return"],
-                "annualized_return": metrics["annualized_return"],
-                "sharpe_ratio": metrics["sharpe_ratio"],
-                "max_drawdown": metrics["max_drawdown"],
-                "active_hit_rate": metrics["active_hit_rate"],
-                "final_equity": metrics["final_equity"]
-            }
-            if "positions_by_ticker" in metrics:
-                summary[strategy_name]["positions_by_ticker"] = metrics["positions_by_ticker"]
-            if "_metadata" in metrics:
-                summary[strategy_name]["_metadata"] = metrics["_metadata"]
-        
-        with open(f"{output_dir}/backtest_summary.json", 'w') as f:
-            json.dump(summary, f, indent=2)
-        
-        self._print_summary(summary)
-    
-    def _print_summary(self, summary: Dict) -> None:
-        """Print backtest summary to console."""
-        print("\n" + "="*90)
-        print("BACKTEST SUMMARY - STRATEGY COMPARISON")
-        print("="*90)
-        
-        threshold_results = {k: v for k, v in summary.items() if "Threshold" in k}
-        if threshold_results:
-            print("\nMULTIPLE PROBABILITY THRESHOLDS:")
-            print("-" * 90)
-            for name in sorted(threshold_results.keys()):
-                self._print_strategy_metrics(name, threshold_results[name])
-        
-        benchmark_results = {k: v for k, v in summary.items() if "Threshold" not in k}
-        if benchmark_results:
-            print("\n\nBENCHMARK STRATEGIES:")
-            print("-" * 90)
-            for name, metrics in benchmark_results.items():
-                self._print_strategy_metrics(name, metrics)
-        
-        print("\n" + "="*90 + "\n")
-    
-    def _print_strategy_metrics(self, name: str, metrics: Dict) -> None:
-        """Print metrics for a single strategy."""
-        print(f"\n{name}:")
-        print(f"  Total Return:     {metrics['total_return']*100:>8.2f}%")
-        print(f"  Annualized Ret:   {metrics['annualized_return']*100:>8.2f}%")
-        print(f"  Sharpe Ratio:     {metrics['sharpe_ratio']:>8.4f}")
-        print(f"  Max Drawdown:     {metrics['max_drawdown']*100:>8.2f}%")
-        print(f"  Active Hit Rate:  {metrics['active_hit_rate']*100:>8.2f}%")
-        print(f"  Final Equity:     ${metrics['final_equity']:>12,.2f}")
+        """Save backtest summary to JSON using reporter."""
+        self.reporter.save_summary(backtest_results)
     
     def plot_results(self, backtest_results: Dict, output_dir: str) -> None:
         """Generate all plots."""

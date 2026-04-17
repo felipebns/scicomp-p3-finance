@@ -92,20 +92,13 @@ if __name__ == "__main__":
 
 """TODOs"""
 
-"""Centralize logging reporter in new folder, all responsabilities should be there"""
+"""How is the data being centralized in a big dataframe ? problems with time splitting ?"""
 """Need to create test files, too many things can break now"""
-"""
-Check backtesting, i might be multiplying the same starting number by the return, is this wrong ?
-Should i always multiply the most recent result by the newest return ? how is it right now ?
-Right now it looks like each day is independent from each other
-"""
-"""Understand better my code"""
 """Undestand fully the strategies, create new ones"""
-"""Implement ways to run only parts of the code"""
 """Why does mean reversion need threshold ? can it just not have ? adjust periods..."""
 """Put clearer parameter usage of strategies in README"""
 
-"""Good to have"""
+"""Future testing"""
 
 """Test what is more effective, full deployment or cash fallbacks"""
 """Stocks selection, more than 5 causes overfitting, need to think of a way to get "similar" stocks to diversify"""
@@ -114,5 +107,6 @@ Right now it looks like each day is independent from each other
 """Test more buy/sell strategies"""
 """Validation fine tunning, find right number of windows days..."""
 """Parameter tuning/more features ?"""
-"""Encapsulating framework"""
 """Possible signal decomposotion"""
+"""Eigen portfolios pca ?"""
+"""Encapsulating framework"""
