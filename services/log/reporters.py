@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import json
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List
 from services.log.logger_config import get_logger
 
 
@@ -39,6 +39,93 @@ class BaseReporter:
         with open(filepath, 'w') as f:
             json.dump(data, f, indent=2)
         return filepath
+
+
+class ApplicationReporter(BaseReporter):
+    """Handles application initialization and configuration logging.
+    
+    Responsibilities:
+    - Log application startup
+    - Log data initialization (Stock, Algorithms)
+    - Log configuration parameters
+    - Log parallelization settings
+    """
+    
+    def log_startup(self) -> None:
+        """Log application startup."""
+        self.logger.info("=" * 80)
+        self.logger.info("STARTING CLASSIFICATION PIPELINE WITH ENSEMBLE LEARNING")
+        self.logger.info("=" * 80)
+    
+    def log_data_initialization(self, n_tickers: int, start_date: str) -> None:
+        """Log stock data initialization.
+        
+        Args:
+            n_tickers: Number of tickers being fetched
+            start_date: Start date for historical data
+        """
+        self.logger.info(f"Fetching historical data for {n_tickers} tickers since {start_date}...")
+        self.logger.info("✓ Stock data initialized")
+    
+    def log_algorithms_initialization(self, algorithm_names: List[str]) -> None:
+        """Log ML algorithms initialization.
+        
+        Args:
+            algorithm_names: List of algorithm names
+        """
+        self.logger.info(f"Initializing {len(algorithm_names)} ML algorithms...")
+        self.logger.info(f"✓ Algorithms initialized: {algorithm_names}")
+    
+    def log_configuration(self, config: Dict) -> None:
+        """Log pipeline configuration parameters.
+        
+        Args:
+            config: Configuration dictionary
+        """
+        self.logger.info("\nConfiguration:")
+        self.logger.info(f"  Tickers: {config['tickers']} ({len(config['tickers'])} stocks)")
+        self.logger.info(f"  Position Sizing: {config['position_sizing']}")
+        self.logger.info(f"  Position Selection: {config['position_selection']} (top N stocks per day)")
+        self.logger.info(f"  Allocation Mode: {config['allocation_mode']}")
+        self.logger.info(f"  Purchase Threshold: {config['purchase_threshold']:.2%}")
+        self.logger.info(f"  Transaction Cost: {config['transaction_cost']:.4%}")
+        self.logger.info(f"  Initial Capital: ${config['initial_capital']}")
+        self.logger.info(f"  WFV Windows: train={config['wfv_train_window']}, test={config['wfv_test_window']}")
+        self.logger.info(f"  Probability Thresholds: {config['probability_thresholds']}")
+    
+    def log_backtesting_plan(self, n_strategies: int, n_thresholds: int) -> None:
+        """Log backtesting plan.
+        
+        Args:
+            n_strategies: Number of strategies to test
+            n_thresholds: Number of probability thresholds
+        """
+        self.logger.info(f"\n  Backtesting will test ALL {n_strategies} STRATEGIES with {n_thresholds} thresholds each")
+        self.logger.info(f"  Total combinations: {n_strategies} strategies × {n_thresholds} thresholds = {n_strategies * n_thresholds} tests")
+    
+    def log_parallelization(self, n_algorithms: int, n_strategies: int, n_thresholds: int, 
+                           parallelization: Dict, n_cpu: int) -> None:
+        """Log parallelization settings.
+        
+        Args:
+            n_algorithms: Number of algorithms
+            n_strategies: Number of strategies
+            n_thresholds: Number of thresholds
+            parallelization: Parallelization configuration dictionary
+            n_cpu: Number of CPU cores available
+        """
+        self.logger.info(f"\n  Parallelization (CPU cores available: {n_cpu}):")
+        self.logger.info(f"    - Algorithm selection: {parallelization['algorithm_selection']} workers (for {n_algorithms} algorithms)")
+        self.logger.info(f"    - Fold evaluation: {parallelization['fold_evaluation']} workers (for 14 WFV folds)")
+        self.logger.info(f"    - Threshold testing: {parallelization['threshold_testing']} workers (for {n_strategies * n_thresholds} combinations)")
+    
+    def log_completion(self) -> None:
+        """Log successful completion."""
+        self.logger.info("All results saved to 'output/' and 'logs/' directories")
+    
+    def save_summary(self, *args, **kwargs) -> None:
+        """Not applicable for ApplicationReporter."""
+        pass
 
 
 class PipelineReporter(BaseReporter):

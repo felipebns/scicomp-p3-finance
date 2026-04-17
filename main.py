@@ -7,41 +7,36 @@ from services.algorithms.random_forest import RandomForestAlgorithm
 from services.algorithms.ensemble import EnsembleClassificationAlgorithm
 from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
 from services.log.logger_config import setup_logging, get_logger
+from services.log.reporters import ApplicationReporter
 
 from config.config import CONFIG
 
 if __name__ == "__main__":
     # Setup logging system
     logger = setup_logging(log_dir="logs")
-    logger.info("="*80)
-    logger.info("STARTING CLASSIFICATION PIPELINE WITH ENSEMBLE LEARNING")
-    logger.info("="*80)
+    app_reporter = ApplicationReporter(output_dir=CONFIG["output_dir"])
+    
+    # Log startup
+    app_reporter.log_startup()
     
     end_date = datetime.now(timezone.utc).date().isoformat()
     
-    logger.info(f"Fetching historical data for {len(CONFIG['tickers'])} tickers since {CONFIG['start_date']}...")
+    # Log data initialization
+    app_reporter.log_data_initialization(len(CONFIG['tickers']), CONFIG['start_date'])
     stock = Stock(tickers=CONFIG["tickers"], start=CONFIG["start_date"], end=end_date)
-    logger.info(f"✓ Stock data initialized")
 
-    logger.info(f"Initializing {4} ML algorithms...")
+    # Log algorithms initialization
+    model_names = ['Logistic Regression', 'Support Vector Classifier', 'Random Forest', 'Hybrid Ensemble']
+    app_reporter.log_algorithms_initialization(model_names)
     models = [
         LogisticRegressionAlgorithm(**CONFIG["model_params"]["LogisticRegression"]),
         SVCAlgorithm(**CONFIG["model_params"]["SVC"]),
         RandomForestAlgorithm(**CONFIG["model_params"]["RandomForest"]),
         EnsembleClassificationAlgorithm()
     ]
-    logger.info(f"✓ Algorithms initialized: {[m.name() for m in models]}")
 
-    logger.info("\nConfiguration:")
-    logger.info(f"  Tickers: {CONFIG['tickers']} ({len(CONFIG['tickers'])} stocks)")
-    logger.info(f"  Position Sizing: {CONFIG['position_sizing']}")
-    logger.info(f"  Position Selection: {CONFIG['position_selection']} (top N stocks per day)")
-    logger.info(f"  Allocation Mode: {CONFIG['allocation_mode']}")
-    logger.info(f"  Purchase Threshold: {CONFIG['purchase_threshold']:.2%}")
-    logger.info(f"  Transaction Cost: {CONFIG['transaction_cost']:.4%}")
-    logger.info(f"  Initial Capital: ${CONFIG['initial_capital']}")
-    logger.info(f"  WFV Windows: train={CONFIG['wfv_train_window']}, test={CONFIG['wfv_test_window']}")
-    logger.info(f"  Probability Thresholds: {CONFIG['probability_thresholds']}")
+    # Log configuration
+    app_reporter.log_configuration(CONFIG)
     
     # Calculate parallelization settings automatically based on CPU count and task count
     n_algorithms = 4
@@ -57,12 +52,9 @@ if __name__ == "__main__":
     }
     CONFIG["parallelization"] = parallelization
     
-    logger.info(f"\n  Backtesting will test ALL {n_strategies} STRATEGIES with {n_thresholds} thresholds each")
-    logger.info(f"  Total combinations: {n_strategies} strategies × {n_thresholds} thresholds = {n_strategies * n_thresholds} tests")
-    logger.info(f"\n  Parallelization (CPU cores available: {n_cpu}):")
-    logger.info(f"    - Algorithm selection: {parallelization['algorithm_selection']} workers (for {n_algorithms} algorithms)")
-    logger.info(f"    - Fold evaluation: {parallelization['fold_evaluation']} workers (for 14 WFV folds)")
-    logger.info(f"    - Threshold testing: {parallelization['threshold_testing']} workers (for {n_strategies * n_thresholds} combinations)")
+    # Log backtesting plan and parallelization
+    app_reporter.log_backtesting_plan(n_strategies, n_thresholds)
+    app_reporter.log_parallelization(n_algorithms, n_strategies, n_thresholds, parallelization, n_cpu)
 
     pipeline = Pipeline(
         stock=stock, 
@@ -85,7 +77,7 @@ if __name__ == "__main__":
 
     try:
         results = pipeline.run(save=True)
-        logger.info("All results saved to 'output/' and 'logs/' directories")
+        app_reporter.log_completion()
     except Exception as e:
         logger.error(f"Pipeline failed with error: {e}", exc_info=True)
         raise
@@ -94,8 +86,8 @@ if __name__ == "__main__":
 
 """How is the data being centralized in a big dataframe ? problems with time splitting ?"""
 """Need to create test files, too many things can break now"""
-"""Undestand fully the strategies, create new ones"""
 """Why does mean reversion need threshold ? can it just not have ? adjust periods..."""
+"""Undestand fully the strategies, create new ones"""
 """Put clearer parameter usage of strategies in README"""
 
 """Future testing"""

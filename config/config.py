@@ -1,21 +1,21 @@
 CONFIG = {
     # Data parameters - 16 stocks
-    # "tickers": [
-    #     # Tech (5)
-    #     "SPY", "AAPL", "MSFT", "GOOGL", "AMZN",
-    #     # Financial (3)
-    #     "JPM", "BAC", "GS",
-    #     # Healthcare (3)
-    #     "JNJ", "PFE", "UNH",
-    #     # Energy (2)
-    #     "XOM", "CVX",
-    #     # Utilities (2)
-    #     "NEE", "DUK",
-    #     # Consumer (2)
-    #     "WMT", "HD"
-    # ],
+    "tickers": [
+        # Tech (5)
+        "SPY", "AAPL", "MSFT", "GOOGL", "AMZN",
+        # Financial (3)
+        "JPM", "BAC", "GS",
+        # Healthcare (3)
+        "JNJ", "PFE", "UNH",
+        # Energy (2)
+        "XOM", "CVX",
+        # Utilities (2)
+        "NEE", "DUK",
+        # Consumer (2)
+        "WMT", "HD"
+    ],
     # testing with 5 stocks also... works better to reduce overfitting
-    "tickers": ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"],
+    # "tickers": ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"],
     "start_date": "2006-01-01",
 
     # Pipeline parameters
