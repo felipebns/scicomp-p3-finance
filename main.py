@@ -84,7 +84,6 @@ if __name__ == "__main__":
 
 """TODOs"""
 
-"""How is the data being centralized in a big dataframe ? problems with time splitting ?"""
 """Need to create test files, too many things can break now"""
 """Why does mean reversion need threshold ? can it just not have ? adjust periods..."""
 """Undestand fully the strategies, create new ones"""
