@@ -18,7 +18,6 @@ from services.strategies import (
 
 logger = get_logger()
 
-
 class Backtest:
     """Backtesting engine for multi-asset trading strategies."""
     
@@ -128,7 +127,6 @@ class Backtest:
                 positions[mask] = ticker_positions
         
         # Consolidated allocation pipeline (top-k + weighting + normalization)
-        # AllocationManager maintains exact original logic
         positions = self.allocation_manager.allocate(positions, probabilities, strategy_name)
         
         daily_returns = self.return_calculator.calculate(positions, self.test_df)

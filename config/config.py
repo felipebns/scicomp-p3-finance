@@ -33,11 +33,11 @@ CONFIG = {
     "annual_rf_rate": 0.05,      # 5% annual risk-free rate
     "probability_thresholds": [0.50, 0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 0.60],  # Thresholds to test for position sizing
     "position_sizing": "probability_weighted",  # "equal_weight" or "probability_weighted"
-    
+
     # Feature engineering parameters (placeholder for future extensions)
     "feature_profile": "classification_indicators",
     "lookback_period": 20,
-    
+
     # ================== POSITION SELECTION ==================
     # NOTE: Backtest tests ALL 8 strategies and shows which performed best!
     #
@@ -59,7 +59,7 @@ CONFIG = {
     #   "top_10"  - Trade top 10 stocks (diversified)
     # ============================================================================
     "position_selection": "top_5",           # How many stocks to select per day
-    
+
     # ================== ALLOCATION LOGIC ==================
     # allocation_mode: How to deploy capital among selected stocks
     #   - "cash_allocation": Deploy only in selected, rest in CASH
@@ -71,7 +71,7 @@ CONFIG = {
     # ============================================================================
     "allocation_mode": "full_deployment",
     "purchase_threshold": 0.50,
-    
+
     # Model hyperparameters
     "model_params": {
         "LogisticRegression": {

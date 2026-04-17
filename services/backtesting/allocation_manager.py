@@ -106,7 +106,7 @@ class AllocationManager:
             return positions
         
         try:
-            n_top = int(self.position_selection.split("_")[1])
+            n_top = int(self.position_selection.split("_")[1]) #make better parsing latter
         except (IndexError, ValueError):
             return positions
         

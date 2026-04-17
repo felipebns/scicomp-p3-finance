@@ -92,7 +92,18 @@ if __name__ == "__main__":
 
 """TODOs"""
 
+"""Centralize logging reporter in new folder, all responsabilities should be there"""
 """Need to create test files, too many things can break now"""
+"""
+Check backtesting, i might be multiplying the same starting number by the return, is this wrong ?
+Should i always multiply the most recent result by the newest return ? how is it right now ?
+Right now it looks like each day is independent from each other
+"""
+"""Understand better my code"""
+"""Undestand fully the strategies, create new ones"""
+"""Implement ways to run only parts of the code"""
+"""Why does mean reversion need threshold ? can it just not have ? adjust periods..."""
+"""Put clearer parameter usage of strategies in README"""
 
 """Good to have"""
 
@@ -101,6 +112,7 @@ if __name__ == "__main__":
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
 """Test more buy/sell strategies"""
+"""Validation fine tunning, find right number of windows days..."""
 """Parameter tuning/more features ?"""
 """Encapsulating framework"""
 """Possible signal decomposotion"""

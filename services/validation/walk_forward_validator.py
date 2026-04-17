@@ -34,10 +34,13 @@ class WalkForwardValidator:
     ) -> Tuple[pd.DataFrame, np.ndarray, List[float], float, float]:
         """Perform walk-forward validation with parallel fold evaluation.
         
+        Uses ROLLING WINDOW approach with FIXED train size:
         Example with train_window=750, test_window=250:
-            Iter 0: train[0:750],     test[750:1000]
-            Iter 1: train[0:1000],    test[1000:1250]
-            Iter 2: train[0:1250],    test[1250:1500]
+            Iter 0: train[0:750],      test[750:1000]
+            Iter 1: train[250:1000],   test[1000:1250]
+            Iter 2: train[500:1250],   test[1250:1500]
+        
+        Each fold trains on exactly train_window unique dates (fair model comparison).
         
         Returns:
             Tuple containing:
@@ -56,6 +59,7 @@ class WalkForwardValidator:
         test_end = self.train_window + self.test_window
         
         while test_end <= n_dates:
+            train_start = max(0, train_end - self.train_window)  # Fixed window size
             split_date_start = dates[train_end]
             if test_end < n_dates:
                 split_date_end = dates[test_end]
@@ -63,7 +67,8 @@ class WalkForwardValidator:
             else:
                 test_df_mask = (df["date"] >= split_date_start)
             
-            train_df = df[df["date"] < split_date_start]
+            # Fixed-size rolling window: only use most recent train_window dates
+            train_df = df[(df["date"] >= dates[train_start]) & (df["date"] < split_date_start)]
             test_df = df[test_df_mask]
             
             fold_specs.append({
