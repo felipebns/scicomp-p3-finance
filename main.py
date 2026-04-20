@@ -46,18 +46,20 @@ if __name__ == "__main__":
     # Log configuration
     app_reporter.log_configuration(CONFIG)
     
-    # Parallelization settings
-    # NOTE: Disabled for SLURM cluster execution
-    # SLURM manages CPU allocation via sbatch script, avoiding over-subscription
+    # Parallelization settings for SLURM cluster
+    # NOTE: 
+    # - RandomForest uses all CPUs via n_jobs=-1 (via scikit-learn joblib)
+    # - ProcessPoolExecutor parallelism disabled (overhead too high for small tasks)
+    # - NumPy/MKL will use OMP_NUM_THREADS from SLURM environment
     n_algorithms = 4
     n_strategies = 8
     n_thresholds = len(CONFIG['probability_thresholds'])
     n_cpu = cpu_count()
     
     parallelization = {
-        "algorithm_selection": 1,  # Disabled - SLURM handles CPU allocation
-        "fold_evaluation": 1,      # Disabled - SLURM handles CPU allocation
-        "threshold_testing": 1,    # Disabled - SLURM handles CPU allocation
+        "algorithm_selection": 1,  # Disabled (heavy overhead)
+        "fold_evaluation": 1,      # Disabled (light tasks, ProcessPool overhead too high)
+        "threshold_testing": 1,    # Disabled (light tasks, ProcessPool overhead too high)
     }
     CONFIG["parallelization"] = parallelization
     
