@@ -1,5 +1,10 @@
 from multiprocessing import cpu_count
 from datetime import datetime, timezone
+
+# MUST BE FIRST: Setup reproducibility before ANY other imports
+from services.reproducibility import ReproducibilityManager
+ReproducibilityManager.setup_reproducibility(seed=42)
+
 from services.stock.stock import Stock
 from services.pipeline import Pipeline
 from services.algorithms.svc import SVCAlgorithm
@@ -8,7 +13,6 @@ from services.algorithms.ensemble import EnsembleClassificationAlgorithm
 from services.algorithms.logistic_regression import LogisticRegressionAlgorithm
 from services.log.logger_config import setup_logging, get_logger
 from services.log.reporters import ApplicationReporter
-
 from config.config import CONFIG
 
 if __name__ == "__main__":
@@ -32,26 +36,27 @@ if __name__ == "__main__":
         LogisticRegressionAlgorithm(**CONFIG["model_params"]["LogisticRegression"]),
         SVCAlgorithm(**CONFIG["model_params"]["SVC"]),
         RandomForestAlgorithm(**CONFIG["model_params"]["RandomForest"]),
-        EnsembleClassificationAlgorithm()
+        EnsembleClassificationAlgorithm(
+            lr_params=CONFIG["model_params"]["LogisticRegression"],
+            svc_params=CONFIG["model_params"]["SVC"],
+            rf_params=CONFIG["model_params"]["RandomForest"],
+        )
     ]
 
     # Log configuration
     app_reporter.log_configuration(CONFIG)
     
-    # Parallelization settings for SLURM cluster
-    # NOTE: 
-    # - RandomForest uses all CPUs via n_jobs=-1 (via scikit-learn joblib)
-    # - ProcessPoolExecutor parallelism disabled (overhead too high for small tasks)
-    # - NumPy/MKL will use OMP_NUM_THREADS from SLURM environment
+    # Calculate parallelization settings automatically based on CPU count and task count
     n_algorithms = 4
     n_strategies = 8
     n_thresholds = len(CONFIG['probability_thresholds'])
     n_cpu = cpu_count()
     
+    # Auto-calculate optimal workers
     parallelization = {
-        "algorithm_selection": 1,  # Disabled (heavy overhead)
-        "fold_evaluation": 1,      # Disabled (light tasks, ProcessPool overhead too high)
-        "threshold_testing": 1,    # Disabled (light tasks, ProcessPool overhead too high)
+        "algorithm_selection": min(n_algorithms, max(1, n_cpu // 2)),  # Use half CPUs for algorithms
+        "fold_evaluation": min(14, max(2, n_cpu - 1)),                  # Use N-1 CPUs for folds (leave 1 free)
+        "threshold_testing": min(n_strategies * n_thresholds, n_cpu),  # Use up to all CPUs for threshold testing
     }
     CONFIG["parallelization"] = parallelization
     
@@ -88,9 +93,6 @@ if __name__ == "__main__":
 """TODOs"""
 
 """Need to create test files, too many things can break now"""
-"""Why does mean reversion need threshold ? can it just not have ? adjust periods..."""
-"""Undestand fully the strategies, create new ones"""
-"""Put clearer parameter usage of strategies in README"""
 
 """Future testing"""
 
@@ -98,9 +100,12 @@ if __name__ == "__main__":
 """Stocks selection, more than 5 causes overfitting, need to think of a way to get "similar" stocks to diversify"""
 """Test different algorithms (possible deep learning ? LSTM, CNN, GRU, XGBoost, etc.)"""
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
-"""Test more buy/sell strategies"""
+"""Test more buy/sell strategies | Test more averages for mean reversion"""
 """Validation fine tunning, find right number of windows days..."""
-"""Parameter tuning/more features ?"""
+"""Models parameter tuning/more features ?"""
+
+"""Future improvements"""
+
 """Possible signal decomposotion"""
 """Eigen portfolios pca ?"""
 """Encapsulating framework"""
