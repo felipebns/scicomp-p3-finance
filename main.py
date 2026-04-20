@@ -46,17 +46,18 @@ if __name__ == "__main__":
     # Log configuration
     app_reporter.log_configuration(CONFIG)
     
-    # Calculate parallelization settings automatically based on CPU count and task count
+    # Parallelization settings
+    # NOTE: Disabled for SLURM cluster execution
+    # SLURM manages CPU allocation via sbatch script, avoiding over-subscription
     n_algorithms = 4
     n_strategies = 8
     n_thresholds = len(CONFIG['probability_thresholds'])
     n_cpu = cpu_count()
     
-    # Auto-calculate optimal workers
     parallelization = {
-        "algorithm_selection": min(n_algorithms, max(1, n_cpu // 2)),  # Use half CPUs for algorithms
-        "fold_evaluation": min(14, max(2, n_cpu - 1)),                  # Use N-1 CPUs for folds (leave 1 free)
-        "threshold_testing": min(n_strategies * n_thresholds, n_cpu),  # Use up to all CPUs for threshold testing
+        "algorithm_selection": 1,  # Disabled - SLURM handles CPU allocation
+        "fold_evaluation": 1,      # Disabled - SLURM handles CPU allocation
+        "threshold_testing": 1,    # Disabled - SLURM handles CPU allocation
     }
     CONFIG["parallelization"] = parallelization
     

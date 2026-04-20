@@ -43,7 +43,7 @@ Fold 3: Train[dates 500-1250]   → Test[dates 1250-1500]
 ...
 ```
 
-Each model trains on **exactly 750 days** (fair comparison!), then tests on 250 unseen days.
+Each model trains on **exactly 750 days**, then tests on 250 unseen days.
 
 **Selection Metric: Information Coefficient (IC)**
 - Measures: "Does model correctly rank stocks?"

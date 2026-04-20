@@ -93,7 +93,7 @@ CONFIG = {
             "random_state": 42,
             "class_weight": "balanced",
             "max_depth": None,
-            "n_jobs": -1,
+            "n_jobs": 1,  # Disabled for SLURM cluster (avoids over-subscription)
         },
         "Ensemble": {
             # Ensemble uses sub-models, so individual params not directly used
