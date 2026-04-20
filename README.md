@@ -5,7 +5,6 @@ Tests if machine learning can beat buy-and-hold through daily trading signals on
 ## Quick Start
 
 ```bash
-python -m venv venv
 pip install -r requirements.txt
 python main.py
 ```
@@ -43,7 +42,7 @@ Fold 3: Train[dates 500-1250]   → Test[dates 1250-1500]
 ...
 ```
 
-Each model trains on **exactly 750 days**, then tests on 250 unseen days.
+Each model trains on **exactly 750 days** (fair comparison!), then tests on 250 unseen days.
 
 **Selection Metric: Information Coefficient (IC)**
 - Measures: "Does model correctly rank stocks?"
@@ -170,112 +169,75 @@ Risk management: "Don't make big bets in storms."
 
 ## Configuration
 
-Edit `config/config.py`:
+Edit `main.py` to customize:
 
 ```python
 CONFIG = {
-    "tickers": ["SPY", "AAPL", "MSFT", "GOOGL", "AMZN"],
-    "start_date": "2006-01-01",
-    "wfv_train_window": 750,        # Trading days per fold
-    "wfv_test_window": 250,         # Test days per fold
-    "probability_thresholds": [0.50, 0.51, ..., 0.60],  # Test all thresholds
-    "position_selection": "top_5",  # Select top N stocks per day
-    "allocation_mode": "full_deployment",
-    "purchase_threshold": 0.50,     # Global minimum confidence
-    "transaction_cost": 0.0005,     # 0.05% per trade
-    "slippage": 0.0005,             # 0.05% market impact
+    "allocation_mode": "full_deployment",  # or "cash_allocation"
+    "purchase_threshold": 0.50,            # Min confidence to invest
+    "probability_thresholds": [0.50-0.60], # Test 11 thresholds (per-stock gate)
+    "position_selection": "top_5",         # Select top N stocks
+    "transaction_cost": 0.0005,            # 0.05% per trade
+    "slippage": 0.0005,                    # 0.05% impact
 }
 ```
 
----
+### Allocation Modes
 
-## Understanding the Data
+**FULL_DEPLOYMENT** (default, aggressive):
+- If 2 stocks selected → 100% deployed (50% each)
+- If no signals → 100% CASH
+- More volatile, higher potential returns
 
-### **Price Data Used**
+**CASH_ALLOCATION** (conservative):
+- If 2 stocks selected → 40% deployed, 60% CASH
+- More flexibility, smoother equity curve
 
-**Training Target** (what model learns to predict):
-```python
-target = (close[tomorrow] > close[today]) ? 1 : 0
-```
-Uses **CLOSE** (what traders see live on Bloomberg)
+### Thresholds
 
-**Training Features** (what model sees as input):
-```python
-return_close = close.pct_change()      # Market price perspective
-return_adj = adj_close.pct_change()    # Real investor return (with dividends)
-price_divergence = (close - adj_close) / adj_close  # Splits/dividend indicator
-```
-Model sees **BOTH** and learns which is more predictive
-
-**Backtesting** (how returns are calculated):
-```python
-daily_return = position × return_adj  # Real investor returns
-```
-Uses **ADJ_CLOSE** (accounts for splits, dividends)
-
-### **Why This Setup?**
-- ✅ Model learns what traders see (CLOSE)
-- ✅ Model gets both perspectives (return_close + return_adj)
-- ✅ Backtest shows real P&L (return_adj)
-- ✅ No overfitting to unrealistic price movements
+- **probability_thresholds**: Which stocks to select (per-stock decision)
+- **purchase_threshold**: Global gate - forces 100% CASH if best signal < 0.50
 
 ---
 
-## Results Interpretation
+## Results
 
-Example from backtest_summary.json:
+Example output from backtest_summary.json:
 
 ```
-ML mean_reversion 0.50:   Return +80.3%   Sharpe 1.04   Drawdown -16.2%
-Buy & Hold (SPY):         Return +76.5%   Sharpe 0.71   Drawdown -33.5%
-Fixed Income 5%:          Return +21.8%   Sharpe 0.00   Drawdown 0%
+ML mean_reversion 0.57:   Return +0.45%   Sharpe 0.12   Drawdown -8.56%
+Buy & Hold:               Return -5.32%   Sharpe -0.34  Drawdown -38.25%
+Cash Strategy:            Return +2.50%   Sharpe 2.45   Drawdown -0.05%
 ```
-
-**Metrics explained**:
-- **Total Return**: Total gain over backtest period (2021-2026)
-- **Annualized Return**: % gain per year on average
-- **Sharpe Ratio**: Risk-adjusted return (higher = better)
-  - \> 1.0: Good
-  - \> 2.0: Very good
-  - Negative: Strategy lost money on risk-adjusted basis
-- **Max Drawdown**: Worst peak-to-trough loss
-  - -16%: Lost 16% from peak before recovering
-  - -33%: Much worse, more stressful
 
 **Is your model good?**
-- ✅ **Beats buy-and-hold**: You won the game
-- ✅ **Positive Sharpe > 1.0**: Risk-adjusted winner
-- ⚠️ **Beats cash but lower than BnH**: Skill present but not enough
-- ❌ **Lower than BnH + negative Sharpe**: Model adds no value
+- ✅ Beats buy-and-hold + positive Sharpe
+- ⚠️ Beats cash but loses to buy-and-hold
+- ❌ Loses to both + negative Sharpe
+
+**Key metrics:**
+- **Total Return**: % gain over 5 years
+- **Annualized Return**: % per year
+- **Sharpe Ratio**: Risk-adjusted (higher = better)
+- **Max Drawdown**: Worst loss from peak
 
 ---
 
-## Technical Details
+## Technical Notes
 
-### **Walk-Forward vs Backtesting**
+**Walk-Forward Validation:**
+- Prevents looking into the future during training
+- Trains expanding window: [2006-2008], then [2006-2009], etc.
+- Tests on unseen future data: 2009, 2010, etc.
 
-**Walk-Forward (Model Selection)**:
-- Trains on sliding 750-day windows
-- Tests on 250-day windows
-- Prevents looking into future
-- Metric: Information Coefficient
-- Purpose: Pick best algorithm
+**Information Coefficient (IC):**
+- Measures how well model ranks stocks
+- Range: -1.0 (opposite) to +1.0 (perfect)
+- Your model: IC ≈ 0.021 (weak but consistent)
 
-**Backtesting (Strategy Testing)**:
-- Trains on entire 80% (2006-2020)
-- Tests on entire 20% (2021-2026)
-- Metric: Sharpe ratio, return, drawdown
-- Purpose: Evaluate real-world performance
-
-### **Rolling Window Explanation**
-
-```
-Why ROLLING (not GROWING)?
-GROWING:     Train[0:750], Train[0:1000], Train[0:1250]
-             Problem: Later models have MORE data → unfair advantage
-
-ROLLING:     Train[0:750], Train[250:1000], Train[500:1250]
-             Solution: Every model trains on EXACTLY 750 days → fair!
-```
+**44 Combinations:**
+- 4 ML strategies × 11 probability thresholds
+- Tests high confidence (0.60) vs low confidence (0.50)
+- Finds optimal threshold for each strategy
 
 ---
