@@ -5,7 +5,8 @@ from typing import Tuple, Dict, Any
 from services.pipeline.model_selector import ModelSelector
 from services.pipeline.metrics_evaluator import MetricsEvaluator
 from services.log.reporters import PipelineReporter
-from services.backtesting import Backtest, PlotGenerator
+from services.backtesting import Backtest
+from services.plotting.plot_generator import PlotGenerator
 from services.stock.stock import Stock
 from services.stock.transform import FeatureEngineer
 from services.algorithms.base import Algorithm

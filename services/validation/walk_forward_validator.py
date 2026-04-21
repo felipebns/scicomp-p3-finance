@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 import copy
-from typing import Tuple, List
+import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
+from typing import Tuple, List
 
 class WalkForwardValidator:
     """Walk-Forward Validation for model selection without data leakage.
@@ -88,6 +89,7 @@ class WalkForwardValidator:
         all_test_indices = []
         fold_ics = []
         
+        
         with ThreadPoolExecutor(max_workers=4) as executor:
             fold_futures = {
                 executor.submit(
@@ -101,9 +103,9 @@ class WalkForwardValidator:
                 for spec in fold_specs
             }
             
-            # Collect results maintaining order
+            # Collect results as they complete (non-blocking)
             fold_results = {}
-            for future in fold_futures:
+            for future in concurrent.futures.as_completed(fold_futures):
                 fold_idx = fold_futures[future]
                 predictions, probs, ic, test_indices = future.result()
                 fold_results[fold_idx] = (predictions, probs, ic, test_indices)

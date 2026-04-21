@@ -1,13 +1,14 @@
 import json
 import pandas as pd
 import numpy as np
+import concurrent.futures
 from typing import Dict, Optional
 from concurrent.futures import ThreadPoolExecutor
 
 from services.backtesting.metrics_calculator import MetricsCalculator
 from services.backtesting.allocation_manager import AllocationManager
 from services.backtesting.return_calculator import ReturnCalculator
-from services.backtesting.plot_generator import PlotGenerator
+from services.plotting.plot_generator import PlotGenerator
 from services.log.logger_config import get_logger
 from services.log.reporters import BacktestReporter
 from services.strategies import (
@@ -68,41 +69,47 @@ class Backtest:
     
     def run_threshold_strategies(self, model_probabilities: np.ndarray, 
                                  thresholds: list[float] = None) -> Dict[str, Dict]:
-        """Run all 8 strategies with multiple probability thresholds in parallel."""
+        """Run all strategies with multiple probability thresholds in parallel."""
         if thresholds is None:
             thresholds = [0.50, 0.55, 0.60, 0.65, 0.70]
         
         results = {}
         
-        # All strategies to test (4 intelligent + 4 benchmarks)
-        ml_strategies = ["ensemble_smart", "momentum", "mean_reversion", "volatility_weighted"]
+        # All strategies to test (4 intelligent + 1 baseline + 3 benchmarks)
+        threshold_strategies = ["ensemble_smart", "momentum", "mean_reversion", "volatility_weighted", "threshold"]
         
-        # Test all ML strategies with all thresholds in parallel
+        # Test all strategies with all thresholds in parallel
         with ThreadPoolExecutor(max_workers=self.threshold_workers) as executor:
             futures = {}
             
-            # Submit all ML strategy + threshold combinations
-            for strategy_name in ml_strategies:
+            # Submit all strategy + threshold combinations for parallel execution
+            # Note: The separation of submission (this loop) and retrieval (the next loop)
+            # is necessary for proper asynchronous execution. If both were in the same loop,
+            # execution would block on each iteration waiting for the result, destroying parallelism.
+            for strategy_name in threshold_strategies:
                 for threshold in thresholds:
                     future = executor.submit(
                         self._run_strategy, model_probabilities, threshold, strategy_name
                     )
                     futures[future] = (strategy_name, threshold)
             
-            # Collect results
-            for future in futures:
+            # Collect results as they complete
+            for future in concurrent.futures.as_completed(futures):
                 strategy_name, threshold = futures[future]
-                results[f"ML {strategy_name} {threshold:.2f}"] = future.result()
+                
+                # Format: "Threshold Only 0.50" for baseline, "ML ensemble_smart 0.50" for others
+                if strategy_name == "threshold":
+                    results[f"Threshold Only {threshold:.2f}"] = future.result()
+                else:
+                    results[f"ML {strategy_name} {threshold:.2f}"] = future.result()
         
-        # Add baseline strategies (sequential, don't need parallelization)
-        results["Threshold Only (baseline)"] = \
-            self._run_strategy(model_probabilities, 0.5, "threshold")
+        # Add benchmarks
         results["Buy & Hold (benchmark)"] = \
-            self._run_strategy(model_probabilities, 0.5, "buy_and_hold")
+            self._run_strategy(model_probabilities, None, "buy_and_hold")
         results[f"Fixed Income {self.annual_rf_rate:.2%} (benchmark)"] = \
-            self._run_strategy(model_probabilities, 0.5, "fixed_income")
+            self._run_strategy(model_probabilities, None, "fixed_income")
         results["Simple Reversal SMA20 (benchmark)"] = \
-            self._run_strategy(model_probabilities, 0.5, "simple_reversal")
+            self._run_strategy(model_probabilities, None, "simple_reversal")
         
         return results
     

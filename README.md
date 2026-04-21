@@ -1,10 +1,11 @@
 # ML Portfolio Manager
 
-Tests if machine learning can beat buy-and-hold through daily trading signals on 5 stocks (SPY, AAPL, MSFT, GOOGL, AMZN).
+Tests if machine learning can beat buy-and-hold through daily trading signals on X number of stocks (SPY, AAPL, MSFT, GOOGL, AMZN, etc).
 
 ## Quick Start
 
 ```bash
+python -m venv venv
 pip install -r requirements.txt
 python main.py
 ```
@@ -196,7 +197,11 @@ CONFIG = {
 ### Thresholds
 
 - **probability_thresholds**: Which stocks to select (per-stock decision)
-- **purchase_threshold**: Global gate - forces 100% CASH if best signal < 0.50
+- **purchase_threshold**: Global Gate (Regime Filter). Scans the broader market and forces a 100% CASH fallback if the *best* active signal of the day doesn't meet this baseline (e.g., `< 0.50`).
+
+*Future Note on Short Selling & Aggressive Allocation:*
+Currently, the pipeline is Long-Only. If an aggressive contrarian strategy lowers an individual asset's threshold down to `0.40` to "buy the dip", the `purchase_threshold` (Global Gate) acts as a vital safety net: it asks, "Are there *any* healthy, confident momentum stocks (`>=0.50`) in the broader market today to justify exposing our capital?". If the best asset in the entire market only scores `0.49`, the Gate vetos all trades and stays in cash.
+If outright Short Selling (profiting from `< 0.50` probabilities) or Market-Neutral portfolios are implemented in the future, this two-tier structure (Individual Threshold vs. Global Gate) provides the exact architectural foundation needed to evaluate both upside and downside regime convictions.
 
 ---
 
@@ -210,16 +215,18 @@ Buy & Hold:               Return -5.32%   Sharpe -0.34  Drawdown -38.25%
 Cash Strategy:            Return +2.50%   Sharpe 2.45   Drawdown -0.05%
 ```
 
-**Is your model good?**
-- ✅ Beats buy-and-hold + positive Sharpe
-- ⚠️ Beats cash but loses to buy-and-hold
-- ❌ Loses to both + negative Sharpe
+**How to evaluate if your model is actually good?**
+- 🏆 **Holy Grail**: Beats Buy & Hold broadly AND has a significantly lower Max Drawdown.
+- ✅ **Great**: Beats Buy & Hold in returns, OR loses slightly in returns but has a vastly superior Sharpe Ratio (much safer ride).
+- ⚠️ **Mediocre**: Beats the Risk-Free Cash strategy but heavily underperforms Buy & Hold.
+- ❌ **Poor**: Negative returns, negative Sharpe, or loses money compared to just holding cash.
 
-**Key metrics:**
-- **Total Return**: % gain over 5 years
-- **Annualized Return**: % per year
-- **Sharpe Ratio**: Risk-adjusted (higher = better)
-- **Max Drawdown**: Worst loss from peak
+**Key metrics to analyze:**
+- **Total / Annualized Return**: Pure profit generation over the period.
+- **Sharpe Ratio**: Risk-adjusted return. A Sharpe > 1.0 is excellent; negative means you took market risk for zero reward.
+- **Max Drawdown (MaxDD)**: The biggest drop from a peak. If Buy & Hold drops -40% but your model only drops -15%, your model is doing its ultimate job: capital protection.
+- **Active Hit Rate**: Percentage of winning days/trades. In quant finance, a 52%–54% hit rate combined with good risk management can yield massive profits.
+- **Parameter Robustness**: Look at your threshold clusters. If your model makes +50% at threshold `0.56` but loses money at `0.55` and `0.57`, it is **overfit** (luck). A truly robust model shows a "smooth surface" of profitability across neighboring thresholds.
 
 ---
 

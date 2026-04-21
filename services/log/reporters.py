@@ -241,13 +241,18 @@ class BacktestReporter(BaseReporter):
         
         Args:
             strategy_name: Name of the strategy
-            threshold: Probability threshold used
+            threshold: Probability threshold used (None for benchmarks)
             total_return: Total return of strategy
             sharpe_ratio: Sharpe ratio of strategy
             max_drawdown: Maximum drawdown of strategy
         """
+        if threshold is None:
+            threshold_str = "N/A"
+        else:
+            threshold_str = f"{threshold:.2f}"
+        
         self.logger.debug(
-            f"[{strategy_name} @ {threshold:.2f}] "
+            f"[{strategy_name} @ {threshold_str}] "
             f"Return={total_return:.2%}, Sharpe={sharpe_ratio:.4f}, MaxDD={max_drawdown:.2%}"
         )
     

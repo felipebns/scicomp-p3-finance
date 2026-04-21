@@ -76,7 +76,7 @@ class AllocationManager:
             logger.debug(f"[{strategy_name}] Probability weighting applied (weighted mode)")
         
         # STEP 3: Normalize positions (apply allocation mode + confidence gate)
-        positions = self._normalize_positions(positions)
+        positions = self._normalize_positions(positions, probabilities)
         n_final = np.sum(positions > 0)
         logger.debug(f"[{strategy_name}] Normalization complete: "
                     f"allocation_mode={self.allocation_mode}, "
@@ -166,7 +166,7 @@ class AllocationManager:
         
         return weights
     
-    def _normalize_positions(self, positions: np.ndarray) -> np.ndarray:
+    def _normalize_positions(self, positions: np.ndarray, probabilities: np.ndarray) -> np.ndarray:
         """Normalize positions based on allocation mode.
         
         This delegates to PositionNormalizer to maintain exact original logic.
@@ -175,6 +175,7 @@ class AllocationManager:
         
         Args:
             positions: Position array (binary or weighted)
+            probabilities: Array of probability values
         
         Returns:
             Normalized positions respecting allocation mode and confidence gate
@@ -184,6 +185,7 @@ class AllocationManager:
         normalizer = PositionNormalizer()
         return normalizer.normalize(
             positions, 
+            probabilities,
             self.test_df,
             allocation_mode=self.allocation_mode,
             purchase_threshold=self.purchase_threshold
