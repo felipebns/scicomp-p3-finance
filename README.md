@@ -49,9 +49,8 @@ Each model trains on **exactly 750 days** (fair comparison!), then tests on 250 
 - Measures: "Does model correctly rank stocks?"
 - Range: -1.0 (opposite ranking) to +1.0 (perfect ranking)
 - Formula: Correlation(model_prob, actual_returns)
-- Your model: IC ≈ 0.021 (weak but consistent)
 
-**Best Model Selected**: Algorithm with highest mean IC across all folds
+**Best Model Selected**: Uses a score to measure the best model (mix of mean IC and mean IC volatility)
 
 ### **Phase 2: Full Training**
 Train the best model on **entire** 750-day training set
@@ -196,11 +195,11 @@ CONFIG = {
 
 ### Thresholds
 
-- **probability_thresholds**: Which stocks to select (per-stock decision)
+- **probability_thresholds**: Which stocks to select for each day out of the array of probabilites (per-stock decision, lets say in one day there is [0.5, 0.55, 0.53] and the threshold is 0.52, only 2 of the stocks would be considered)
 - **purchase_threshold**: Global Gate (Regime Filter). Scans the broader market and forces a 100% CASH fallback if the *best* active signal of the day doesn't meet this baseline (e.g., `< 0.50`).
 
 *Future Note on Short Selling & Aggressive Allocation:*
-Currently, the pipeline is Long-Only. If an aggressive contrarian strategy lowers an individual asset's threshold down to `0.40` to "buy the dip", the `purchase_threshold` (Global Gate) acts as a vital safety net: it asks, "Are there *any* healthy, confident momentum stocks (`>=0.50`) in the broader market today to justify exposing our capital?". If the best asset in the entire market only scores `0.49`, the Gate vetos all trades and stays in cash.
+Currently, the pipeline is Long-Only, meaning the purchase threshold doesn't matter. If an aggressive contrarian strategy lowers an individual asset's threshold down to `0.40` to "buy the dip", the `purchase_threshold` (Global Gate) acts as a vital safety net: it asks, "Are there *any* healthy, confident momentum stocks (`>=0.50`) in the broader market today to justify exposing our capital?". If the best asset in the entire market only scores `0.49`, the Gate vetos all trades and stays in cash.
 If outright Short Selling (profiting from `< 0.50` probabilities) or Market-Neutral portfolios are implemented in the future, this two-tier structure (Individual Threshold vs. Global Gate) provides the exact architectural foundation needed to evaluate both upside and downside regime convictions.
 
 ---
@@ -216,7 +215,7 @@ Cash Strategy:            Return +2.50%   Sharpe 2.45   Drawdown -0.05%
 ```
 
 **How to evaluate if your model is actually good?**
-- 🏆 **Holy Grail**: Beats Buy & Hold broadly AND has a significantly lower Max Drawdown.
+- 🏆 **Ideal**: Beats Buy & Hold broadly AND has a significantly lower Max Drawdown.
 - ✅ **Great**: Beats Buy & Hold in returns, OR loses slightly in returns but has a vastly superior Sharpe Ratio (much safer ride).
 - ⚠️ **Mediocre**: Beats the Risk-Free Cash strategy but heavily underperforms Buy & Hold.
 - ❌ **Poor**: Negative returns, negative Sharpe, or loses money compared to just holding cash.
@@ -227,24 +226,5 @@ Cash Strategy:            Return +2.50%   Sharpe 2.45   Drawdown -0.05%
 - **Max Drawdown (MaxDD)**: The biggest drop from a peak. If Buy & Hold drops -40% but your model only drops -15%, your model is doing its ultimate job: capital protection.
 - **Active Hit Rate**: Percentage of winning days/trades. In quant finance, a 52%–54% hit rate combined with good risk management can yield massive profits.
 - **Parameter Robustness**: Look at your threshold clusters. If your model makes +50% at threshold `0.56` but loses money at `0.55` and `0.57`, it is **overfit** (luck). A truly robust model shows a "smooth surface" of profitability across neighboring thresholds.
-
----
-
-## Technical Notes
-
-**Walk-Forward Validation:**
-- Prevents looking into the future during training
-- Trains expanding window: [2006-2008], then [2006-2009], etc.
-- Tests on unseen future data: 2009, 2010, etc.
-
-**Information Coefficient (IC):**
-- Measures how well model ranks stocks
-- Range: -1.0 (opposite) to +1.0 (perfect)
-- Your model: IC ≈ 0.021 (weak but consistent)
-
-**44 Combinations:**
-- 4 ML strategies × 11 probability thresholds
-- Tests high confidence (0.60) vs low confidence (0.50)
-- Finds optimal threshold for each strategy
 
 ---

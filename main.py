@@ -1,8 +1,7 @@
 from multiprocessing import cpu_count
 from datetime import datetime, timezone
-
-# MUST BE FIRST: Setup reproducibility before ANY other imports
 from services.reproducibility import ReproducibilityManager
+
 ReproducibilityManager.setup_reproducibility(seed=42)
 
 from services.stock.stock import Stock
@@ -46,17 +45,21 @@ if __name__ == "__main__":
     # Log configuration
     app_reporter.log_configuration(CONFIG)
     
-    # Calculate parallelization settings automatically based on CPU count and task count
+    # Calculate parallelization settings automatically based on CPU count
     n_algorithms = 4
     n_strategies = 8
     n_thresholds = len(CONFIG['probability_thresholds'])
     n_cpu = cpu_count()
     
-    # Auto-calculate optimal workers
+    # Auto-calculate optimal workers to avoid CPU Over-subscription
+    # For nested parallelization: algo_workers * fold_workers <= n_cpu
+    algo_workers = min(n_algorithms, max(1, n_cpu // 2))
+    fold_workers = max(1, n_cpu // algo_workers)
+    
     parallelization = {
-        "algorithm_selection": min(n_algorithms, max(1, n_cpu // 2)),  # Use half CPUs for algorithms
-        "fold_evaluation": min(14, max(2, n_cpu - 1)),                  # Use N-1 CPUs for folds (leave 1 free)
-        "threshold_testing": min(n_strategies * n_thresholds, n_cpu),  # Use up to all CPUs for threshold testing
+        "algorithm_selection": algo_workers, 
+        "fold_evaluation": fold_workers,      
+        "threshold_testing": max(1, n_cpu - 1),  # We can use all CPUs for the final backtest (leaving 1 for OS)
     }
     CONFIG["parallelization"] = parallelization
     
@@ -92,7 +95,7 @@ if __name__ == "__main__":
 
 """TODOs"""
 
-"""Need to create test files, too many things can break now"""
+"""Creating test files"""
 """Still non deterministic"""
 
 """Future testing"""

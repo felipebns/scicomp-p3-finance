@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import concurrent.futures
 from typing import Dict, Optional
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 
 from services.backtesting.metrics_calculator import MetricsCalculator
 from services.backtesting.allocation_manager import AllocationManager
@@ -79,7 +79,7 @@ class Backtest:
         threshold_strategies = ["ensemble_smart", "momentum", "mean_reversion", "volatility_weighted", "threshold"]
         
         # Test all strategies with all thresholds in parallel
-        with ThreadPoolExecutor(max_workers=self.threshold_workers) as executor:
+        with ProcessPoolExecutor(max_workers=self.threshold_workers) as executor:
             futures = {}
             
             # Submit all strategy + threshold combinations for parallel execution

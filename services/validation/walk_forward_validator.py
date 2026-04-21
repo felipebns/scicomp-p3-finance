@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import copy
 import concurrent.futures
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 from typing import Tuple, List
 
 class WalkForwardValidator:
@@ -90,7 +90,7 @@ class WalkForwardValidator:
         fold_ics = []
         
         
-        with ThreadPoolExecutor(max_workers=4) as executor:
+        with ProcessPoolExecutor(max_workers=4) as executor:
             fold_futures = {
                 executor.submit(
                     self._evaluate_fold,

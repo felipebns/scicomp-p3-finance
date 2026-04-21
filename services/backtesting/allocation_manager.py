@@ -1,6 +1,7 @@
+from services.backtesting.position_normalizer import PositionNormalizer
+from services.log.logger_config import get_logger
 import pandas as pd
 import numpy as np
-from services.log.logger_config import get_logger
 
 logger = get_logger()
 
@@ -87,82 +88,61 @@ class AllocationManager:
     
     def _apply_position_selection(self, positions: np.ndarray, 
                                    probabilities: np.ndarray) -> np.ndarray:
-        """Filter positions keeping only top-K by probability.
-        
-        This is EXACT copy of the original backtest._apply_position_selection
-        
-        Args:
-            positions: Position array (0 or 1 for each row)
-            probabilities: Model probability for each row
-        
-        Returns:
-            Filtered position array
-        """
+        """Filter positions keeping only top-K by probability."""
         if self.position_selection == "all":
             return positions
         
-        # Parse "top_5" → 5
         if not self.position_selection.startswith("top_"):
             return positions
         
         try:
-            n_top = int(self.position_selection.split("_")[1]) #make better parsing latter
+            n_top = int(self.position_selection.split("_")[1])
         except (IndexError, ValueError):
             return positions
         
         filtered_positions = positions.copy()
-        dates = self.test_df["date"].unique()
         
-        for date in dates:
-            mask = self.test_df["date"] == date
-            date_positions = positions[mask.values]
-            date_probs = probabilities[mask.values]
-            
-            # Only apply filter if there are positions to take
-            n_positions = np.sum(date_positions > 0)
-            
-            if n_positions > n_top:
-                # Get indices of top N positions by probability (local to this date)
-                position_indices = np.where(date_positions > 0)[0]
-                position_probs = date_probs[position_indices]
-                
-                # Sort by probability descending, take top N (still local indices)
-                local_top_indices = position_indices[np.argsort(-position_probs)[:n_top]]
-                
-                # Zero out all positions for this date
-                filtered_positions[mask.values] = 0
-                
-                # Re-add only the top N (using local indices)
-                global_indices = np.where(mask.values)[0][local_top_indices]
-                filtered_positions[global_indices] = 1
+        # Fast vectorized top-K selection using pandas groupby
+        df_temp = pd.DataFrame({
+            'date': self.test_df['date'].values,
+            'pos': filtered_positions,
+            'prob': probabilities,
+            'idx': np.arange(len(filtered_positions))
+        })
         
+        # Only consider active positions
+        active = df_temp[df_temp['pos'] > 0]
+        
+        if not active.empty:
+            # Find the top K for each date
+            top_k = active.groupby('date', group_keys=False).apply(
+                lambda x: x.nlargest(n_top, 'prob')
+            )
+            
+            # Reset all to 0, then set only the top K to 1
+            filtered_positions.fill(0)
+            if not top_k.empty:
+                filtered_positions[top_k['idx'].values] = 1
+                
         return filtered_positions
     
     def _apply_probability_weights(self, probabilities: np.ndarray) -> np.ndarray:
-        """Normalize probabilities per date.
-        
-        This is EXACT copy of the original backtest._apply_probability_weights
-        
-        Args:
-            probabilities: Array of probability values
-        
-        Returns:
-            Normalized probability weights per date
-        """
+        """Normalize probabilities per date."""
         weights = np.zeros_like(probabilities)
-        dates = self.test_df["date"].unique()
         
-        for date in dates:
-            mask = self.test_df["date"] == date
-            date_probs = probabilities[mask]
-            total_prob = np.sum(date_probs[date_probs > 0])
-            
-            if total_prob > 0:
-                weights[mask] = np.where(
-                    date_probs > 0,
-                    date_probs / total_prob,
-                    0
-                )
+        # Fast vectorized probability weighting
+        df_temp = pd.DataFrame({
+            'date': self.test_df['date'].values,
+            'prob': probabilities
+        })
+        
+        # Only sum positive probabilities per date
+        df_temp['pos_prob'] = np.where(df_temp['prob'] > 0, df_temp['prob'], 0)
+        daily_sums = df_temp.groupby('date')['pos_prob'].transform('sum')
+        
+        # Calculate weights (avoiding division by zero)
+        mask = (daily_sums > 0) & (df_temp['pos_prob'] > 0)
+        weights[mask] = df_temp['pos_prob'][mask] / daily_sums[mask]
         
         return weights
     
@@ -180,7 +160,6 @@ class AllocationManager:
         Returns:
             Normalized positions respecting allocation mode and confidence gate
         """
-        from services.backtesting.position_normalizer import PositionNormalizer
         
         normalizer = PositionNormalizer()
         return normalizer.normalize(

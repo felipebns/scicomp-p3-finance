@@ -44,57 +44,58 @@ class PositionNormalizer:
                                     test_df: pd.DataFrame,
                                     allocation_mode: str,
                                     purchase_threshold: float) -> np.ndarray:
-        test_df_copy = test_df.copy().reset_index(drop=True)
-        test_df_copy["_pos"] = positions
-        test_df_copy["_prob"] = probabilities
+        df = pd.DataFrame({
+            'date': test_df['date'].values,
+            'pos': positions,
+            'prob': probabilities
+        })
         
-        normalized_vals = np.zeros_like(positions, dtype=float)
+        # Vectorized grouping metrics
+        grouped = df.groupby('date')
+        active_counts = grouped['pos'].transform('sum')
+        best_signals = grouped['prob'].transform('max')
+        total_assets = grouped['date'].transform('count')
         
-        for date, group in test_df_copy.groupby("date"):
-            idx = group.index
-            pos = group["_pos"].values
-            prob = group["_prob"].values
+        normalized = np.zeros_like(positions, dtype=float)
+        
+        # Valid conditions (Confidence Gate passing & Activity check)
+        valid_mask = (best_signals >= purchase_threshold) & (active_counts > 0)
+        
+        if allocation_mode == "cash_allocation":
+            weight = 1.0 / total_assets
+        else:
+            # Full deployment uses inverse of active signals count
+            weight = 1.0 / np.where(active_counts > 0, active_counts, 1)
             
-            active_count = np.sum(pos > 0)
-            best_signal = np.max(prob) if len(prob) > 0 else 0
-            total_assets = len(pos)
-            
-            if best_signal < purchase_threshold or active_count == 0:
-                normalized_vals[idx] = 0.0
-            else:
-                if allocation_mode == "cash_allocation":
-                    weight = 1.0 / total_assets
-                else: 
-                    weight = 1.0 / active_count
-                normalized_vals[idx] = pos * weight
-                
-        return normalized_vals
+        # Apply weights where validity passes
+        normalized[valid_mask] = positions[valid_mask] * weight[valid_mask]
+        
+        return normalized
     
     def _normalize_weighted_positions(self, positions: np.ndarray,
                                       probabilities: np.ndarray,
                                       test_df: pd.DataFrame,
                                       allocation_mode: str,
                                       purchase_threshold: float) -> np.ndarray:
-        test_df_copy = test_df.copy().reset_index(drop=True)
-        test_df_copy["_pos"] = positions
-        test_df_copy["_prob"] = probabilities
+        df = pd.DataFrame({
+            'date': test_df['date'].values,
+            'pos': positions,
+            'prob': probabilities
+        })
         
-        normalized_vals = np.zeros_like(positions, dtype=float)
+        # Vectorized grouping metrics
+        grouped = df.groupby('date')
+        totals = grouped['pos'].transform('sum')
+        best_signals = grouped['prob'].transform('max')
         
-        for date, group in test_df_copy.groupby("date"):
-            idx = group.index
-            pos = group["_pos"].values
-            prob = group["_prob"].values
+        normalized = np.zeros_like(positions, dtype=float)
+        
+        # Valid conditions (Confidence Gate passing & Activity check)
+        valid_mask = (best_signals >= purchase_threshold) & (totals > 0)
+        
+        if allocation_mode == "cash_allocation":
+            normalized[valid_mask] = positions[valid_mask]
+        else:
+            normalized[valid_mask] = positions[valid_mask] / totals[valid_mask]
             
-            total = np.sum(pos)
-            best_signal = np.max(prob) if len(prob) > 0 else 0
-            
-            if best_signal < purchase_threshold or total == 0:
-                normalized_vals[idx] = 0.0
-            else:
-                if allocation_mode == "cash_allocation":
-                    normalized_vals[idx] = pos
-                else: 
-                    normalized_vals[idx] = pos / total if total > 0 else pos
-                    
-        return normalized_vals
+        return normalized

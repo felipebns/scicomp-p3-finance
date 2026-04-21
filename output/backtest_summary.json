@@ -1,205 +1,115 @@
 {
-  "ML ensemble_smart 0.57": {
-    "total_return": 0.2057164309043955,
-    "annualized_return": 0.0474457738733407,
-    "sharpe_ratio": 1.8544284231383346,
-    "max_drawdown": -0.03210746939771354,
-    "active_hit_rate": 0.6666666666666666,
-    "final_equity": 12057.164309043956,
+  "ML ensemble_smart 0.54": {
+    "total_return": 0.008262682512469643,
+    "annualized_return": 0.0020410583246510683,
+    "sharpe_ratio": 0.06533148938185067,
+    "max_drawdown": -0.12510676230645776,
+    "active_hit_rate": 0.5797101449275363,
+    "final_equity": 10082.626825124697,
     "positions_by_ticker": {
       "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.023115035711753825,
+        "days_selected": 24,
+        "total_days": 1017,
+        "selection_rate": 0.02359882005899705
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.011312742192960771,
+        "days_selected": 13,
+        "total_days": 1017,
+        "selection_rate": 0.012782694198623401
+      },
+      "GOOGL": {
         "final_weight": 0.0,
         "avg_position_weight": 0.003933136676499509,
         "days_selected": 4,
         "total_days": 1017,
         "selection_rate": 0.003933136676499509
       },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.02261715696441579,
+        "days_selected": 25,
+        "total_days": 1017,
+        "selection_rate": 0.024582104228121928
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0019521152783622366,
+        "days_selected": 3,
+        "total_days": 1017,
+        "selection_rate": 0.0029498525073746312
+      }
+    }
+  },
+  "ML ensemble_smart 0.55": {
+    "total_return": 0.11052642609002894,
+    "annualized_return": 0.026316938714641802,
+    "sharpe_ratio": 0.39870732863953684,
+    "max_drawdown": -0.07198083609492886,
+    "active_hit_rate": 0.5777777777777777,
+    "final_equity": 11105.264260900289,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.014749262536873156,
+        "days_selected": 15,
+        "total_days": 1017,
+        "selection_rate": 0.014749262536873156
+      },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
+        "avg_position_weight": 0.009343050101216435,
+        "days_selected": 10,
         "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
+        "selection_rate": 0.00983284169124877
       },
       "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      },
-      "MSFT": {
         "final_weight": 0.0,
         "avg_position_weight": 0.0029498525073746312,
         "days_selected": 3,
         "total_days": 1017,
         "selection_rate": 0.0029498525073746312
       },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
-        "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
-      }
-    }
-  },
-  "ML ensemble_smart 0.50": {
-    "total_return": -0.08990185177893828,
-    "annualized_return": -0.0230719702469403,
-    "sharpe_ratio": -0.16963420046959526,
-    "max_drawdown": -0.22851693421081312,
-    "active_hit_rate": 0.4723618090452261,
-    "final_equity": 9100.981482210616,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.05790082612658545,
-        "days_selected": 68,
-        "total_days": 1017,
-        "selection_rate": 0.06686332350049164
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03492343070532072,
-        "days_selected": 46,
-        "total_days": 1017,
-        "selection_rate": 0.04523107177974434
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.016866381562133246,
-        "days_selected": 21,
-        "total_days": 1017,
-        "selection_rate": 0.02064896755162242
-      },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.04142290706237009,
-        "days_selected": 53,
+        "avg_position_weight": 0.014749262536873156,
+        "days_selected": 15,
         "total_days": 1017,
-        "selection_rate": 0.05211406096361849
+        "selection_rate": 0.014749262536873156
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.0062119216035708205,
-        "days_selected": 11,
+        "avg_position_weight": 0.001473075759157213,
+        "days_selected": 2,
         "total_days": 1017,
-        "selection_rate": 0.010816125860373648
+        "selection_rate": 0.0019665683382497543
       }
     }
   },
-  "ML ensemble_smart 0.53": {
-    "total_return": -0.12554382642093875,
-    "annualized_return": -0.03269505006897888,
-    "sharpe_ratio": -0.3628479623750873,
-    "max_drawdown": -0.21217187526789044,
-    "active_hit_rate": 0.5081967213114754,
-    "final_equity": 8744.561735790612,
+  "ML ensemble_smart 0.56": {
+    "total_return": 0.07328162585956388,
+    "annualized_return": 0.0176782035344909,
+    "sharpe_ratio": 0.4536759111864986,
+    "max_drawdown": -0.0681362142343267,
+    "active_hit_rate": 0.5,
+    "final_equity": 10732.816258595638,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.038682299048791925,
-        "days_selected": 42,
-        "total_days": 1017,
-        "selection_rate": 0.04129793510324484
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.021914624117869173,
-        "days_selected": 26,
-        "total_days": 1017,
-        "selection_rate": 0.025565388397246803
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.010812083719512974,
-        "days_selected": 12,
-        "total_days": 1017,
-        "selection_rate": 0.011799410029498525
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.028372046088323506,
-        "days_selected": 33,
-        "total_days": 1017,
-        "selection_rate": 0.032448377581120944
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.007396921460114031,
-        "days_selected": 9,
-        "total_days": 1017,
-        "selection_rate": 0.008849557522123894
-      }
-    }
-  },
-  "ML ensemble_smart 0.51": {
-    "total_return": -0.14027239695567706,
-    "annualized_return": -0.036757941807757266,
-    "sharpe_ratio": -0.31253010332435677,
-    "max_drawdown": -0.23515813918378217,
-    "active_hit_rate": 0.46994535519125685,
-    "final_equity": 8597.276030443229,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.05512706761484003,
-        "days_selected": 64,
-        "total_days": 1017,
-        "selection_rate": 0.06293018682399214
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03247480096679634,
-        "days_selected": 42,
-        "total_days": 1017,
-        "selection_rate": 0.04129793510324484
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.01491342088267507,
-        "days_selected": 18,
-        "total_days": 1017,
-        "selection_rate": 0.017699115044247787
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03862262296860438,
-        "days_selected": 49,
-        "total_days": 1017,
-        "selection_rate": 0.048180924287118974
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.006354712935815737,
-        "days_selected": 10,
-        "total_days": 1017,
-        "selection_rate": 0.00983284169124877
-      }
-    }
-  },
-  "ML ensemble_smart 0.55": {
-    "total_return": 0.1895148411394847,
-    "annualized_return": 0.04394043327823671,
-    "sharpe_ratio": 0.9314371577965883,
-    "max_drawdown": -0.06449338047697065,
-    "active_hit_rate": 0.6190476190476191,
-    "final_equity": 11895.148411394846,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.01376597836774828,
-        "days_selected": 14,
-        "total_days": 1017,
-        "selection_rate": 0.01376597836774828
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.006384107188337961,
+        "avg_position_weight": 0.00688298918387414,
         "days_selected": 7,
         "total_days": 1017,
         "selection_rate": 0.00688298918387414
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.003933136676499509,
+        "days_selected": 4,
+        "total_days": 1017,
+        "selection_rate": 0.003933136676499509
       },
       "GOOGL": {
         "final_weight": 0.0,
@@ -210,176 +120,221 @@
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.012298292025034704,
-        "days_selected": 13,
-        "total_days": 1017,
-        "selection_rate": 0.012782694198623401
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0058997050147492625,
-        "days_selected": 6,
-        "total_days": 1017,
-        "selection_rate": 0.0058997050147492625
-      }
-    }
-  },
-  "ML ensemble_smart 0.56": {
-    "total_return": 0.2707557127711333,
-    "annualized_return": 0.06117080191655555,
-    "sharpe_ratio": 1.6104936280100208,
-    "max_drawdown": -0.03210746939771354,
-    "active_hit_rate": 0.6818181818181818,
-    "final_equity": 12707.557127711332,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.00983284169124877,
-        "days_selected": 10,
-        "total_days": 1017,
-        "selection_rate": 0.00983284169124877
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.003933136676499509,
-        "days_selected": 4,
-        "total_days": 1017,
-        "selection_rate": 0.003933136676499509
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
-        "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0058997050147492625,
-        "days_selected": 6,
-        "total_days": 1017,
-        "selection_rate": 0.0058997050147492625
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
-        "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
-      }
-    }
-  },
-  "ML ensemble_smart 0.54": {
-    "total_return": -0.0692631548359558,
-    "annualized_return": -0.01762863748206933,
-    "sharpe_ratio": -0.22268364110992875,
-    "max_drawdown": -0.18861734172904102,
-    "active_hit_rate": 0.5180722891566265,
-    "final_equity": 9307.368451640443,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.029016609245169522,
-        "days_selected": 31,
-        "total_days": 1017,
-        "selection_rate": 0.03048180924287119
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.012746682968494032,
-        "days_selected": 15,
-        "total_days": 1017,
-        "selection_rate": 0.014749262536873156
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0029498525073746312,
-        "days_selected": 3,
-        "total_days": 1017,
-        "selection_rate": 0.0029498525073746312
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.022635489543368227,
-        "days_selected": 25,
-        "total_days": 1017,
-        "selection_rate": 0.024582104228121928
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.00836424675820912,
+        "avg_position_weight": 0.008849557522123894,
         "days_selected": 9,
         "total_days": 1017,
         "selection_rate": 0.008849557522123894
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
+        "total_days": 1017,
+        "selection_rate": 0.0
       }
     }
   },
   "ML ensemble_smart 0.52": {
-    "total_return": -0.10004894722898106,
-    "annualized_return": -0.025782317442361702,
-    "sharpe_ratio": -0.2203037820790517,
-    "max_drawdown": -0.23051641353168822,
-    "active_hit_rate": 0.4807692307692308,
-    "final_equity": 8999.51052771019,
+    "total_return": -0.11937786903111725,
+    "annualized_return": -0.03100944074612766,
+    "sharpe_ratio": -0.30727728390736975,
+    "max_drawdown": -0.18058855950643216,
+    "active_hit_rate": 0.4852941176470588,
+    "final_equity": 8806.221309688828,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.04858659961532143,
-        "days_selected": 55,
+        "avg_position_weight": 0.04195489922891376,
+        "days_selected": 47,
         "total_days": 1017,
-        "selection_rate": 0.05408062930186824
+        "selection_rate": 0.046214355948869225
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.027251620283849053,
-        "days_selected": 33,
+        "avg_position_weight": 0.019797972670468882,
+        "days_selected": 26,
         "total_days": 1017,
-        "selection_rate": 0.032448377581120944
+        "selection_rate": 0.025565388397246803
       },
       "GOOGL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.014410486947450655,
-        "days_selected": 17,
+        "avg_position_weight": 0.011789998901348157,
+        "days_selected": 13,
         "total_days": 1017,
-        "selection_rate": 0.01671583087512291
+        "selection_rate": 0.012782694198623401
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.034359480830433754,
-        "days_selected": 41,
+        "avg_position_weight": 0.03248507890435313,
+        "days_selected": 40,
         "total_days": 1017,
-        "selection_rate": 0.04031465093411996
+        "selection_rate": 0.03933136676499508
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.007151890985678636,
+        "avg_position_weight": 0.006066445575152066,
         "days_selected": 10,
         "total_days": 1017,
         "selection_rate": 0.00983284169124877
       }
     }
   },
-  "ML ensemble_smart 0.58": {
-    "total_return": 0.22046498613140186,
-    "annualized_return": 0.05060606455266736,
-    "sharpe_ratio": 0.0,
-    "max_drawdown": -0.004581665605062616,
-    "active_hit_rate": 0.6666666666666666,
-    "final_equity": 12204.64986131402,
+  "ML ensemble_smart 0.51": {
+    "total_return": -0.14083660688539135,
+    "annualized_return": -0.03691461767315274,
+    "sharpe_ratio": -0.2845386788593417,
+    "max_drawdown": -0.25057626779629644,
+    "active_hit_rate": 0.4797687861271676,
+    "final_equity": 8591.633931146087,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.0029498525073746312,
-        "days_selected": 3,
+        "avg_position_weight": 0.053633247232116356,
+        "days_selected": 62,
         "total_days": 1017,
-        "selection_rate": 0.0029498525073746312
+        "selection_rate": 0.06096361848574238
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
+        "avg_position_weight": 0.028380990504877888,
+        "days_selected": 37,
         "total_days": 1017,
-        "selection_rate": 0.0
+        "selection_rate": 0.03638151425762045
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.013280727278927955,
+        "days_selected": 16,
+        "total_days": 1017,
+        "selection_rate": 0.015732546705998034
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03571450809956557,
+        "days_selected": 46,
+        "total_days": 1017,
+        "selection_rate": 0.04523107177974434
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.007633594731119905,
+        "days_selected": 12,
+        "total_days": 1017,
+        "selection_rate": 0.011799410029498525
+      }
+    }
+  },
+  "ML ensemble_smart 0.53": {
+    "total_return": 0.0011667105704651348,
+    "annualized_return": 0.0002889696533607822,
+    "sharpe_ratio": 0.04547455552843414,
+    "max_drawdown": -0.12527428882814032,
+    "active_hit_rate": 0.5806451612903226,
+    "final_equity": 10011.667105704651,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.027048172388253335,
+        "days_selected": 28,
+        "total_days": 1017,
+        "selection_rate": 0.02753195673549656
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.013592823504705816,
+        "days_selected": 17,
+        "total_days": 1017,
+        "selection_rate": 0.01671583087512291
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0073574176149372944,
+        "days_selected": 8,
+        "total_days": 1017,
+        "selection_rate": 0.007866273352999017
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0278867633180015,
+        "days_selected": 32,
+        "total_days": 1017,
+        "selection_rate": 0.03146509341199607
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.005727409211466853,
+        "days_selected": 8,
+        "total_days": 1017,
+        "selection_rate": 0.007866273352999017
+      }
+    }
+  },
+  "ML ensemble_smart 0.50": {
+    "total_return": -0.09942458384734754,
+    "annualized_return": -0.025614884526726223,
+    "sharpe_ratio": -0.1698823085961053,
+    "max_drawdown": -0.23889429781089253,
+    "active_hit_rate": 0.48186528497409326,
+    "final_equity": 9005.754161526525,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.057678349400375674,
+        "days_selected": 68,
+        "total_days": 1017,
+        "selection_rate": 0.06686332350049164
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0306558420951988,
+        "days_selected": 40,
+        "total_days": 1017,
+        "selection_rate": 0.03933136676499508
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.01623659859582113,
+        "days_selected": 20,
+        "total_days": 1017,
+        "selection_rate": 0.01966568338249754
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.04035891755771464,
+        "days_selected": 53,
+        "total_days": 1017,
+        "selection_rate": 0.05211406096361849
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.007479338565245707,
+        "days_selected": 12,
+        "total_days": 1017,
+        "selection_rate": 0.011799410029498525
+      }
+    }
+  },
+  "ML ensemble_smart 0.57": {
+    "total_return": 0.11886738637378502,
+    "annualized_return": 0.028221631998943897,
+    "sharpe_ratio": 1.1049034311483017,
+    "max_drawdown": -0.03210746939771354,
+    "active_hit_rate": 0.25,
+    "final_equity": 11188.67386373785,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0019665683382497543,
+        "days_selected": 2,
+        "total_days": 1017,
+        "selection_rate": 0.0019665683382497543
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0009832841691248771,
+        "days_selected": 1,
+        "total_days": 1017,
+        "selection_rate": 0.0009832841691248771
       },
       "GOOGL": {
         "final_weight": 0.0,
@@ -390,10 +345,55 @@
       },
       "MSFT": {
         "final_weight": 0.0,
+        "avg_position_weight": 0.004916420845624385,
+        "days_selected": 5,
+        "total_days": 1017,
+        "selection_rate": 0.004916420845624385
+      },
+      "SPY": {
+        "final_weight": 0.0,
         "avg_position_weight": 0.0,
         "days_selected": 0,
         "total_days": 1017,
         "selection_rate": 0.0
+      }
+    }
+  },
+  "ML ensemble_smart 0.58": {
+    "total_return": 0.11675553157266161,
+    "annualized_return": 0.027740393570131472,
+    "sharpe_ratio": 1.3166608006335008,
+    "max_drawdown": -0.03210746939771354,
+    "active_hit_rate": 0.0,
+    "final_equity": 11167.555315726617,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0019665683382497543,
+        "days_selected": 2,
+        "total_days": 1017,
+        "selection_rate": 0.0019665683382497543
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0009832841691248771,
+        "days_selected": 1,
+        "total_days": 1017,
+        "selection_rate": 0.0009832841691248771
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
+        "total_days": 1017,
+        "selection_rate": 0.0
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0019665683382497543,
+        "days_selected": 2,
+        "total_days": 1017,
+        "selection_rate": 0.0019665683382497543
       },
       "SPY": {
         "final_weight": 0.0,
@@ -405,12 +405,12 @@
     }
   },
   "ML ensemble_smart 0.59": {
-    "total_return": 0.22338239053822972,
-    "annualized_return": 0.051227792972587505,
-    "sharpe_ratio": 0.0,
-    "max_drawdown": -0.0008063694934560068,
-    "active_hit_rate": 1.0,
-    "final_equity": 12233.823905382298,
+    "total_return": 0.1734461516583219,
+    "annualized_return": 0.0404281923078742,
+    "sharpe_ratio": 2.522457564200046,
+    "max_drawdown": -0.03210746939771354,
+    "active_hit_rate": 0.0,
+    "final_equity": 11734.461516583218,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
@@ -421,10 +421,10 @@
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
+        "avg_position_weight": 0.0009832841691248771,
+        "days_selected": 1,
         "total_days": 1017,
-        "selection_rate": 0.0
+        "selection_rate": 0.0009832841691248771
       },
       "GOOGL": {
         "final_weight": 0.0,
@@ -450,1401 +450,6 @@
     }
   },
   "ML ensemble_smart 0.60": {
-    "total_return": 0.22338239053822972,
-    "annualized_return": 0.051227792972587505,
-    "sharpe_ratio": 0.0,
-    "max_drawdown": -0.0008063694934560068,
-    "active_hit_rate": 1.0,
-    "final_equity": 12233.823905382298,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
-        "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      }
-    }
-  },
-  "ML momentum 0.52": {
-    "total_return": 0.18333142520973023,
-    "annualized_return": 0.04259313192901559,
-    "sharpe_ratio": 0.30401969454609773,
-    "max_drawdown": -0.3060185276881976,
-    "active_hit_rate": 0.5192736540299459,
-    "final_equity": 11833.314252097302,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.1806862576174398,
-        "days_selected": 609,
-        "total_days": 1017,
-        "selection_rate": 0.5988200589970502
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.16747142680060734,
-        "days_selected": 631,
-        "total_days": 1017,
-        "selection_rate": 0.6204523107177975
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.16982254324530008,
-        "days_selected": 621,
-        "total_days": 1017,
-        "selection_rate": 0.6106194690265486
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.1537410646756769,
-        "days_selected": 578,
-        "total_days": 1017,
-        "selection_rate": 0.5683382497541789
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.19258549232174288,
-        "days_selected": 700,
-        "total_days": 1017,
-        "selection_rate": 0.688298918387414
-      }
-    }
-  },
-  "ML momentum 0.51": {
-    "total_return": 0.2871838921235943,
-    "annualized_return": 0.06455371877357985,
-    "sharpe_ratio": 0.40583399818130744,
-    "max_drawdown": -0.29322934753805485,
-    "active_hit_rate": 0.5214067278287462,
-    "final_equity": 12871.838921235943,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.17734115922226135,
-        "days_selected": 631,
-        "total_days": 1017,
-        "selection_rate": 0.6204523107177975
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.16732993399183232,
-        "days_selected": 648,
-        "total_days": 1017,
-        "selection_rate": 0.6371681415929203
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.1699049387155023,
-        "days_selected": 643,
-        "total_days": 1017,
-        "selection_rate": 0.632251720747296
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.16012126380466635,
-        "days_selected": 610,
-        "total_days": 1017,
-        "selection_rate": 0.599803343166175
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.20042561478687826,
-        "days_selected": 738,
-        "total_days": 1017,
-        "selection_rate": 0.7256637168141593
-      }
-    }
-  },
-  "ML momentum 0.53": {
-    "total_return": 0.16430138982057962,
-    "annualized_return": 0.03841317951001555,
-    "sharpe_ratio": 0.2843150912337671,
-    "max_drawdown": -0.314774047756514,
-    "active_hit_rate": 0.5217098619993268,
-    "final_equity": 11643.013898205796,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.18105186209508833,
-        "days_selected": 580,
-        "total_days": 1017,
-        "selection_rate": 0.5703048180924287
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.16970623441746055,
-        "days_selected": 609,
-        "total_days": 1017,
-        "selection_rate": 0.5988200589970502
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.17410249041345677,
-        "days_selected": 602,
-        "total_days": 1017,
-        "selection_rate": 0.591937069813176
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.14769920664829764,
-        "days_selected": 542,
-        "total_days": 1017,
-        "selection_rate": 0.5329400196656834
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.1779810127187154,
-        "days_selected": 638,
-        "total_days": 1017,
-        "selection_rate": 0.6273352999016716
-      }
-    }
-  },
-  "ML momentum 0.54": {
-    "total_return": 0.08473260141277561,
-    "annualized_return": 0.020357886824114768,
-    "sharpe_ratio": 0.2007682589603749,
-    "max_drawdown": -0.31107872953221233,
-    "active_hit_rate": 0.521101573676681,
-    "final_equity": 10847.326014127757,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.18114668249854488,
-        "days_selected": 554,
-        "total_days": 1017,
-        "selection_rate": 0.5447394296951819
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.17541291656989788,
-        "days_selected": 588,
-        "total_days": 1017,
-        "selection_rate": 0.5781710914454278
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.17648819415549452,
-        "days_selected": 577,
-        "total_days": 1017,
-        "selection_rate": 0.567354965585054
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.142782509038399,
-        "days_selected": 509,
-        "total_days": 1017,
-        "selection_rate": 0.5004916420845624
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.15897795732468437,
-        "days_selected": 568,
-        "total_days": 1017,
-        "selection_rate": 0.5585054080629301
-      }
-    }
-  },
-  "ML momentum 0.50": {
-    "total_return": 0.2809793069488149,
-    "annualized_return": 0.06327989843351811,
-    "sharpe_ratio": 0.4041254188649949,
-    "max_drawdown": -0.2905401120434302,
-    "active_hit_rate": 0.5195071868583162,
-    "final_equity": 12809.793069488149,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.17847707479833,
-        "days_selected": 661,
-        "total_days": 1017,
-        "selection_rate": 0.6499508357915438
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.1648737168637203,
-        "days_selected": 666,
-        "total_days": 1017,
-        "selection_rate": 0.6548672566371682
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.16799393856959954,
-        "days_selected": 662,
-        "total_days": 1017,
-        "selection_rate": 0.6509341199606686
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.1673800675262687,
-        "days_selected": 646,
-        "total_days": 1017,
-        "selection_rate": 0.6352015732546706
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.20623095445447084,
-        "days_selected": 774,
-        "total_days": 1017,
-        "selection_rate": 0.7610619469026548
-      }
-    }
-  },
-  "ML momentum 0.56": {
-    "total_return": 0.24360218638977416,
-    "annualized_return": 0.05550646310030616,
-    "sharpe_ratio": 0.3579900313503714,
-    "max_drawdown": -0.25885017627379,
-    "active_hit_rate": 0.5220916092419943,
-    "final_equity": 12436.021863897742,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.17064132999965267,
-        "days_selected": 493,
-        "total_days": 1017,
-        "selection_rate": 0.48475909537856443
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.1794411072352356,
-        "days_selected": 536,
-        "total_days": 1017,
-        "selection_rate": 0.5270403146509341
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.1775163369096324,
-        "days_selected": 523,
-        "total_days": 1017,
-        "selection_rate": 0.5142576204523107
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.1337731482394983,
-        "days_selected": 452,
-        "total_days": 1017,
-        "selection_rate": 0.4444444444444444
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.1370548229453813,
-        "days_selected": 463,
-        "total_days": 1017,
-        "selection_rate": 0.4552605703048181
-      }
-    }
-  },
-  "ML momentum 0.55": {
-    "total_return": 0.20803463969417435,
-    "annualized_return": 0.04794443405627069,
-    "sharpe_ratio": 0.32384343477134575,
-    "max_drawdown": -0.3037016052178621,
-    "active_hit_rate": 0.521425862722791,
-    "final_equity": 12080.346396941744,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.17649206086053992,
-        "days_selected": 523,
-        "total_days": 1017,
-        "selection_rate": 0.5142576204523107
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.17669951022655267,
-        "days_selected": 564,
-        "total_days": 1017,
-        "selection_rate": 0.5545722713864307
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.17427098218357953,
-        "days_selected": 548,
-        "total_days": 1017,
-        "selection_rate": 0.5388397246804326
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.14060186420354098,
-        "days_selected": 484,
-        "total_days": 1017,
-        "selection_rate": 0.4759095378564405
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.1500280112376846,
-        "days_selected": 518,
-        "total_days": 1017,
-        "selection_rate": 0.5093411996066863
-      }
-    }
-  },
-  "ML momentum 0.57": {
-    "total_return": 0.02772085257086454,
-    "annualized_return": 0.006798406793983913,
-    "sharpe_ratio": 0.138087887705393,
-    "max_drawdown": -0.2744378339600113,
-    "active_hit_rate": 0.5197225834416992,
-    "final_equity": 10277.208525708646,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.17093267081342403,
-        "days_selected": 469,
-        "total_days": 1017,
-        "selection_rate": 0.4611602753195674
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.17542692017135803,
-        "days_selected": 513,
-        "total_days": 1017,
-        "selection_rate": 0.504424778761062
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.17847635190645902,
-        "days_selected": 498,
-        "total_days": 1017,
-        "selection_rate": 0.4896755162241888
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.12877659715667056,
-        "days_selected": 421,
-        "total_days": 1017,
-        "selection_rate": 0.4139626352015733
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.12219866939161637,
-        "days_selected": 406,
-        "total_days": 1017,
-        "selection_rate": 0.3992133726647001
-      }
-    }
-  },
-  "ML momentum 0.58": {
-    "total_return": -0.0574289949757919,
-    "annualized_return": -0.01454829264991786,
-    "sharpe_ratio": 0.03495529705424398,
-    "max_drawdown": -0.3208432732555338,
-    "active_hit_rate": 0.5166825548141086,
-    "final_equity": 9425.710050242082,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.15676110458703127,
-        "days_selected": 427,
-        "total_days": 1017,
-        "selection_rate": 0.4198623402163225
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.18144396993302653,
-        "days_selected": 486,
-        "total_days": 1017,
-        "selection_rate": 0.4778761061946903
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.18659890643155952,
-        "days_selected": 477,
-        "total_days": 1017,
-        "selection_rate": 0.4690265486725664
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.1263851350695491,
-        "days_selected": 390,
-        "total_days": 1017,
-        "selection_rate": 0.3834808259587021
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.09807342085198992,
-        "days_selected": 318,
-        "total_days": 1017,
-        "selection_rate": 0.31268436578171094
-      }
-    }
-  },
-  "ML momentum 0.60": {
-    "total_return": 0.09857337455847315,
-    "annualized_return": 0.02356855969607352,
-    "sharpe_ratio": 0.21593078412209643,
-    "max_drawdown": -0.2835103408280323,
-    "active_hit_rate": 0.5109489051094891,
-    "final_equity": 10985.733745584732,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.14354957416369893,
-        "days_selected": 360,
-        "total_days": 1017,
-        "selection_rate": 0.35398230088495575
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.17253602404054622,
-        "days_selected": 429,
-        "total_days": 1017,
-        "selection_rate": 0.4218289085545723
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.19603651463283803,
-        "days_selected": 431,
-        "total_days": 1017,
-        "selection_rate": 0.42379547689282204
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.11514141265837692,
-        "days_selected": 328,
-        "total_days": 1017,
-        "selection_rate": 0.3225172074729597
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.07676793959795192,
-        "days_selected": 233,
-        "total_days": 1017,
-        "selection_rate": 0.22910521140609635
-      }
-    }
-  },
-  "ML momentum 0.59": {
-    "total_return": 0.0667518787723862,
-    "annualized_return": 0.016140513215405106,
-    "sharpe_ratio": 0.18030967281551247,
-    "max_drawdown": -0.272472824410675,
-    "active_hit_rate": 0.5113989637305699,
-    "final_equity": 10667.518787723862,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.20857436502629867,
-        "avg_position_weight": 0.14904050057834628,
-        "days_selected": 392,
-        "total_days": 1017,
-        "selection_rate": 0.3854473942969518
-      },
-      "AMZN": {
-        "final_weight": 0.20612131158744704,
-        "avg_position_weight": 0.17741419334770217,
-        "days_selected": 457,
-        "total_days": 1017,
-        "selection_rate": 0.44936086529006886
-      },
-      "GOOGL": {
-        "final_weight": 0.19293169430242968,
-        "avg_position_weight": 0.19052722432048178,
-        "days_selected": 451,
-        "total_days": 1017,
-        "selection_rate": 0.44346116027531957
-      },
-      "MSFT": {
-        "final_weight": 0.19826713594840928,
-        "avg_position_weight": 0.12149054999046931,
-        "days_selected": 361,
-        "total_days": 1017,
-        "selection_rate": 0.35496558505408066
-      },
-      "SPY": {
-        "final_weight": 0.1941054931354153,
-        "avg_position_weight": 0.08522468023891003,
-        "days_selected": 269,
-        "total_days": 1017,
-        "selection_rate": 0.26450344149459193
-      }
-    }
-  },
-  "ML mean_reversion 0.50": {
-    "total_return": 0.08441798266265677,
-    "annualized_return": 0.02028454674008162,
-    "sharpe_ratio": 0.20358528430408707,
-    "max_drawdown": -0.36571268528104567,
-    "active_hit_rate": 0.5208591491119372,
-    "final_equity": 10844.179826626567,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1922685278395558,
-        "days_selected": 509,
-        "total_days": 1017,
-        "selection_rate": 0.5004916420845624
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.15220284069542928,
-        "days_selected": 455,
-        "total_days": 1017,
-        "selection_rate": 0.4473942969518191
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1371222770037763,
-        "days_selected": 415,
-        "total_days": 1017,
-        "selection_rate": 0.408062930186824
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.20268600144681614,
-        "days_selected": 564,
-        "total_days": 1017,
-        "selection_rate": 0.5545722713864307
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.15839488595444212,
-        "days_selected": 478,
-        "total_days": 1017,
-        "selection_rate": 0.47000983284169123
-      }
-    }
-  },
-  "ML mean_reversion 0.51": {
-    "total_return": 0.15959998305762935,
-    "annualized_return": 0.037372605887354915,
-    "sharpe_ratio": 0.27192274817621437,
-    "max_drawdown": -0.36687550953563647,
-    "active_hit_rate": 0.5234513274336283,
-    "final_equity": 11595.999830576293,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.19110280473243485,
-        "days_selected": 489,
-        "total_days": 1017,
-        "selection_rate": 0.4808259587020649
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.14753144253242892,
-        "days_selected": 423,
-        "total_days": 1017,
-        "selection_rate": 0.415929203539823
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12909067908889102,
-        "days_selected": 391,
-        "total_days": 1017,
-        "selection_rate": 0.38446411012782694
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1998665229283073,
-        "days_selected": 528,
-        "total_days": 1017,
-        "selection_rate": 0.5191740412979351
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.14263470607683662,
-        "days_selected": 429,
-        "total_days": 1017,
-        "selection_rate": 0.4218289085545723
-      }
-    }
-  },
-  "ML mean_reversion 0.52": {
-    "total_return": 0.14462292002479482,
-    "annualized_return": 0.03403639606801079,
-    "sharpe_ratio": 0.2587999595200824,
-    "max_drawdown": -0.35485724130428997,
-    "active_hit_rate": 0.5244423350735643,
-    "final_equity": 11446.229200247948,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.19033095266344316,
-        "days_selected": 465,
-        "total_days": 1017,
-        "selection_rate": 0.45722713864306785
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.14643527695276384,
-        "days_selected": 402,
-        "total_days": 1017,
-        "selection_rate": 0.3952802359882006
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12209804687680653,
-        "days_selected": 368,
-        "total_days": 1017,
-        "selection_rate": 0.36184857423795475
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18601900410242903,
-        "days_selected": 483,
-        "total_days": 1017,
-        "selection_rate": 0.4749262536873156
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12699479216758594,
-        "days_selected": 389,
-        "total_days": 1017,
-        "selection_rate": 0.3824975417895772
-      }
-    }
-  },
-  "ML mean_reversion 0.53": {
-    "total_return": 0.01249476395974769,
-    "annualized_return": 0.0030816035448049117,
-    "sharpe_ratio": 0.1322710754040964,
-    "max_drawdown": -0.40086464181102643,
-    "active_hit_rate": 0.5247167868177137,
-    "final_equity": 10124.947639597476,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18385684946559477,
-        "days_selected": 431,
-        "total_days": 1017,
-        "selection_rate": 0.42379547689282204
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.13614842424845333,
-        "days_selected": 368,
-        "total_days": 1017,
-        "selection_rate": 0.36184857423795475
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12009661660488813,
-        "days_selected": 349,
-        "total_days": 1017,
-        "selection_rate": 0.34316617502458213
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18223291975892317,
-        "days_selected": 452,
-        "total_days": 1017,
-        "selection_rate": 0.4444444444444444
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.11316174842754866,
-        "days_selected": 342,
-        "total_days": 1017,
-        "selection_rate": 0.336283185840708
-      }
-    }
-  },
-  "ML mean_reversion 0.55": {
-    "total_return": -0.06174670100275015,
-    "annualized_return": -0.015668771121561287,
-    "sharpe_ratio": 0.037958222584429324,
-    "max_drawdown": -0.3430593130322511,
-    "active_hit_rate": 0.5200974421437271,
-    "final_equity": 9382.532989972498,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.16131920466249544,
-        "days_selected": 361,
-        "total_days": 1017,
-        "selection_rate": 0.35496558505408066
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12371905920594996,
-        "days_selected": 321,
-        "total_days": 1017,
-        "selection_rate": 0.31563421828908556
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.10122813326821282,
-        "days_selected": 303,
-        "total_days": 1017,
-        "selection_rate": 0.29793510324483774
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.15681686488252367,
-        "days_selected": 377,
-        "total_days": 1017,
-        "selection_rate": 0.37069813176007865
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.09506816374286335,
-        "days_selected": 280,
-        "total_days": 1017,
-        "selection_rate": 0.2753195673549656
-      }
-    }
-  },
-  "ML mean_reversion 0.54": {
-    "total_return": 0.05689264340442035,
-    "annualized_return": 0.013805290145715965,
-    "sharpe_ratio": 0.17489537654220413,
-    "max_drawdown": -0.39821124371694777,
-    "active_hit_rate": 0.5258136924803591,
-    "final_equity": 10568.926434044204,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1698464137604493,
-        "days_selected": 390,
-        "total_days": 1017,
-        "selection_rate": 0.3834808259587021
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12890296454484118,
-        "days_selected": 343,
-        "total_days": 1017,
-        "selection_rate": 0.33726647000983284
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1118302443775161,
-        "days_selected": 326,
-        "total_days": 1017,
-        "selection_rate": 0.32055063913470994
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.16703190461049924,
-        "days_selected": 411,
-        "total_days": 1017,
-        "selection_rate": 0.40412979351032446
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.10577097024848378,
-        "days_selected": 312,
-        "total_days": 1017,
-        "selection_rate": 0.30678466076696165
-      }
-    }
-  },
-  "ML mean_reversion 0.58": {
-    "total_return": -0.028829341898151895,
-    "annualized_return": -0.007222341231977181,
-    "sharpe_ratio": 0.06702131480999178,
-    "max_drawdown": -0.3075253004453313,
-    "active_hit_rate": 0.5153422501966956,
-    "final_equity": 9711.706581018481,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.13443612874762856,
-        "days_selected": 278,
-        "total_days": 1017,
-        "selection_rate": 0.27335299901671584
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.10173834245072333,
-        "days_selected": 262,
-        "total_days": 1017,
-        "selection_rate": 0.2576204523107178
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.08742572455049816,
-        "days_selected": 245,
-        "total_days": 1017,
-        "selection_rate": 0.24090462143559488
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1353762434953973,
-        "days_selected": 309,
-        "total_days": 1017,
-        "selection_rate": 0.30383480825958703
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.05528118120806337,
-        "days_selected": 177,
-        "total_days": 1017,
-        "selection_rate": 0.17404129793510326
-      }
-    }
-  },
-  "ML mean_reversion 0.57": {
-    "total_return": 0.13387099855326845,
-    "annualized_return": 0.03162105132403492,
-    "sharpe_ratio": 0.252346944304775,
-    "max_drawdown": -0.29619251999247787,
-    "active_hit_rate": 0.5224637681159421,
-    "final_equity": 11338.709985532685,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.14738349291580832,
-        "days_selected": 304,
-        "total_days": 1017,
-        "selection_rate": 0.29891838741396265
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.10803553509248558,
-        "days_selected": 280,
-        "total_days": 1017,
-        "selection_rate": 0.2753195673549656
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.09157628933763554,
-        "days_selected": 263,
-        "total_days": 1017,
-        "selection_rate": 0.2586037364798427
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.13996868387189007,
-        "days_selected": 327,
-        "total_days": 1017,
-        "selection_rate": 0.3215339233038348
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.06662498599948627,
-        "days_selected": 206,
-        "total_days": 1017,
-        "selection_rate": 0.2025565388397247
-      }
-    }
-  },
-  "ML mean_reversion 0.56": {
-    "total_return": 0.055871674131313664,
-    "annualized_return": 0.013562532013606798,
-    "sharpe_ratio": 0.16966034366028585,
-    "max_drawdown": -0.29798567192529735,
-    "active_hit_rate": 0.5212483399734396,
-    "final_equity": 10558.716741313137,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.15474120169479424,
-        "days_selected": 332,
-        "total_days": 1017,
-        "selection_rate": 0.32645034414945917
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.11261235128917212,
-        "days_selected": 298,
-        "total_days": 1017,
-        "selection_rate": 0.29301868239921336
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.09679829155721112,
-        "days_selected": 280,
-        "total_days": 1017,
-        "selection_rate": 0.2753195673549656
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.145236546258275,
-        "days_selected": 349,
-        "total_days": 1017,
-        "selection_rate": 0.34316617502458213
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.08451524735197329,
-        "days_selected": 247,
-        "total_days": 1017,
-        "selection_rate": 0.24287118977384464
-      }
-    }
-  },
-  "ML mean_reversion 0.59": {
-    "total_return": 0.07179506198146224,
-    "annualized_return": 0.01732875252146382,
-    "sharpe_ratio": 0.18521230686014845,
-    "max_drawdown": -0.30870028362688917,
-    "active_hit_rate": 0.5157894736842106,
-    "final_equity": 10717.950619814623,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1217102171239979,
-        "days_selected": 244,
-        "total_days": 1017,
-        "selection_rate": 0.23992133726647
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.10098146948466713,
-        "days_selected": 247,
-        "total_days": 1017,
-        "selection_rate": 0.24287118977384464
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.08657682733783058,
-        "days_selected": 229,
-        "total_days": 1017,
-        "selection_rate": 0.22517207472959685
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.12138617019545152,
-        "days_selected": 273,
-        "total_days": 1017,
-        "selection_rate": 0.26843657817109146
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.046238137883618274,
-        "days_selected": 147,
-        "total_days": 1017,
-        "selection_rate": 0.14454277286135694
-      }
-    }
-  },
-  "ML mean_reversion 0.60": {
-    "total_return": -0.019956621118474516,
-    "annualized_return": -0.004982558374534207,
-    "sharpe_ratio": 0.07200179109048573,
-    "max_drawdown": -0.32023050340722714,
-    "active_hit_rate": 0.5101253616200578,
-    "final_equity": 9800.433788815255,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.11013776297438864,
-        "days_selected": 221,
-        "total_days": 1017,
-        "selection_rate": 0.21730580137659783
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.10021293965957208,
-        "days_selected": 233,
-        "total_days": 1017,
-        "selection_rate": 0.22910521140609635
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.08015670545028987,
-        "days_selected": 209,
-        "total_days": 1017,
-        "selection_rate": 0.2055063913470993
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.11460542741696848,
-        "days_selected": 253,
-        "total_days": 1017,
-        "selection_rate": 0.2487708947885939
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.037365040604975655,
-        "days_selected": 121,
-        "total_days": 1017,
-        "selection_rate": 0.11897738446411013
-      }
-    }
-  },
-  "ML volatility_weighted 0.50": {
-    "total_return": -0.0480117211070793,
-    "annualized_return": -0.012117765190224672,
-    "sharpe_ratio": -0.07800724431399657,
-    "max_drawdown": -0.243455513400284,
-    "active_hit_rate": 0.546875,
-    "final_equity": 9519.882788929208,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.06665625136362917,
-        "days_selected": 97,
-        "total_days": 1017,
-        "selection_rate": 0.09537856440511308
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03311231623481824,
-        "days_selected": 66,
-        "total_days": 1017,
-        "selection_rate": 0.06489675516224189
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03672513776240052,
-        "days_selected": 63,
-        "total_days": 1017,
-        "selection_rate": 0.061946902654867256
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.05669948050379939,
-        "days_selected": 82,
-        "total_days": 1017,
-        "selection_rate": 0.08062930186823992
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03984516221794857,
-        "days_selected": 76,
-        "total_days": 1017,
-        "selection_rate": 0.07472959685349066
-      }
-    }
-  },
-  "ML volatility_weighted 0.52": {
-    "total_return": -0.2745523885696566,
-    "annualized_return": -0.0764510743053477,
-    "sharpe_ratio": -0.7473578797600583,
-    "max_drawdown": -0.34710301436035496,
-    "active_hit_rate": 0.5084033613445378,
-    "final_equity": 7254.476114303434,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.059002884742105216,
-        "days_selected": 75,
-        "total_days": 1017,
-        "selection_rate": 0.07374631268436578
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.02654647865224803,
-        "days_selected": 43,
-        "total_days": 1017,
-        "selection_rate": 0.04228121927236971
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03351124443224133,
-        "days_selected": 46,
-        "total_days": 1017,
-        "selection_rate": 0.04523107177974434
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03463471304473741,
-        "days_selected": 44,
-        "total_days": 1017,
-        "selection_rate": 0.043264503441494594
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.016412840387271744,
-        "days_selected": 30,
-        "total_days": 1017,
-        "selection_rate": 0.029498525073746312
-      }
-    }
-  },
-  "ML volatility_weighted 0.53": {
-    "total_return": -0.33009287546751975,
-    "annualized_return": -0.09449975406579758,
-    "sharpe_ratio": -1.0436753165841788,
-    "max_drawdown": -0.38492404616565296,
-    "active_hit_rate": 0.48214285714285715,
-    "final_equity": 6699.0712453248025,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.05209932188336669,
-        "days_selected": 62,
-        "total_days": 1017,
-        "selection_rate": 0.06096361848574238
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.01739999008977812,
-        "days_selected": 28,
-        "total_days": 1017,
-        "selection_rate": 0.02753195673549656
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.02366327102557465,
-        "days_selected": 31,
-        "total_days": 1017,
-        "selection_rate": 0.03048180924287119
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.023159502909126408,
-        "days_selected": 29,
-        "total_days": 1017,
-        "selection_rate": 0.028515240904621434
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.01150485607838816,
-        "days_selected": 18,
-        "total_days": 1017,
-        "selection_rate": 0.017699115044247787
-      }
-    }
-  },
-  "ML volatility_weighted 0.51": {
-    "total_return": -0.19184403219638335,
-    "annualized_return": -0.05141019499216215,
-    "sharpe_ratio": -0.47186724049706547,
-    "max_drawdown": -0.3030478523231629,
-    "active_hit_rate": 0.5401234567901234,
-    "final_equity": 8081.559678036167,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.061032235872076734,
-        "days_selected": 86,
-        "total_days": 1017,
-        "selection_rate": 0.08456243854473942
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03131329987026352,
-        "days_selected": 56,
-        "total_days": 1017,
-        "selection_rate": 0.05506391347099312
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.037601440633877936,
-        "days_selected": 59,
-        "total_days": 1017,
-        "selection_rate": 0.05801376597836775
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.047123198592146615,
-        "days_selected": 65,
-        "total_days": 1017,
-        "selection_rate": 0.063913470993117
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0333526372243589,
-        "days_selected": 58,
-        "total_days": 1017,
-        "selection_rate": 0.05703048180924287
-      }
-    }
-  },
-  "ML volatility_weighted 0.55": {
-    "total_return": -0.07082051330647154,
-    "annualized_return": -0.018036196452143716,
-    "sharpe_ratio": -0.2029768792077542,
-    "max_drawdown": -0.1609986841786341,
-    "active_hit_rate": 0.3968253968253968,
-    "final_equity": 9291.794866935285,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.023120494707385773,
-        "days_selected": 25,
-        "total_days": 1017,
-        "selection_rate": 0.024582104228121928
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.008851861592417052,
-        "days_selected": 11,
-        "total_days": 1017,
-        "selection_rate": 0.010816125860373648
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.010313134155962885,
-        "days_selected": 12,
-        "total_days": 1017,
-        "selection_rate": 0.011799410029498525
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.011305413215656276,
-        "days_selected": 12,
-        "total_days": 1017,
-        "selection_rate": 0.011799410029498525
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.002456293968696008,
-        "days_selected": 3,
-        "total_days": 1017,
-        "selection_rate": 0.0029498525073746312
-      }
-    }
-  },
-  "ML volatility_weighted 0.54": {
-    "total_return": -0.1940011060892639,
-    "annualized_return": -0.0520382017520008,
-    "sharpe_ratio": -0.575305395970745,
-    "max_drawdown": -0.25492603703424627,
-    "active_hit_rate": 0.42990654205607476,
-    "final_equity": 8059.988939107361,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03756176996178311,
-        "days_selected": 41,
-        "total_days": 1017,
-        "selection_rate": 0.04031465093411996
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.012448788568811287,
-        "days_selected": 17,
-        "total_days": 1017,
-        "selection_rate": 0.01671583087512291
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.017688389724987628,
-        "days_selected": 20,
-        "total_days": 1017,
-        "selection_rate": 0.01966568338249754
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.018685963738635156,
-        "days_selected": 21,
-        "total_days": 1017,
-        "selection_rate": 0.02064896755162242
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.006043799903521262,
-        "days_selected": 8,
-        "total_days": 1017,
-        "selection_rate": 0.007866273352999017
-      }
-    }
-  },
-  "ML volatility_weighted 0.56": {
-    "total_return": 0.03068304100413677,
-    "annualized_return": 0.0075166794966223804,
-    "sharpe_ratio": 0.2092217140394627,
-    "max_drawdown": -0.07929474128561774,
-    "active_hit_rate": 0.4230769230769231,
-    "final_equity": 10306.830410041368,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.012782694198623401,
-        "days_selected": 13,
-        "total_days": 1017,
-        "selection_rate": 0.012782694198623401
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.003933136676499509,
-        "days_selected": 4,
-        "total_days": 1017,
-        "selection_rate": 0.003933136676499509
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.003933136676499509,
-        "days_selected": 4,
-        "total_days": 1017,
-        "selection_rate": 0.003933136676499509
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.004916420845624385,
-        "days_selected": 5,
-        "total_days": 1017,
-        "selection_rate": 0.004916420845624385
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      }
-    }
-  },
-  "ML volatility_weighted 0.57": {
-    "total_return": 0.1208601735234025,
-    "annualized_return": 0.028675111756789606,
-    "sharpe_ratio": 1.470334779770016,
-    "max_drawdown": -0.06221908104196634,
-    "active_hit_rate": 0.4166666666666667,
-    "final_equity": 11208.601735234026,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0058997050147492625,
-        "days_selected": 6,
-        "total_days": 1017,
-        "selection_rate": 0.0058997050147492625
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0019665683382497543,
-        "days_selected": 2,
-        "total_days": 1017,
-        "selection_rate": 0.0019665683382497543
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
-        "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0029498525073746312,
-        "days_selected": 3,
-        "total_days": 1017,
-        "selection_rate": 0.0029498525073746312
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.0,
-        "days_selected": 0,
-        "total_days": 1017,
-        "selection_rate": 0.0
-      }
-    }
-  },
-  "ML volatility_weighted 0.60": {
     "total_return": 0.21762612317657615,
     "annualized_return": 0.049999999999971845,
     "sharpe_ratio": 0.0,
@@ -1889,13 +494,1138 @@
       }
     }
   },
-  "ML volatility_weighted 0.58": {
-    "total_return": 0.19653370869848907,
-    "annualized_return": 0.04546340178465691,
-    "sharpe_ratio": 5.676196016977658,
-    "max_drawdown": -0.015543123794777085,
-    "active_hit_rate": 0.3333333333333333,
-    "final_equity": 11965.337086984891,
+  "ML momentum 0.54": {
+    "total_return": 0.08616745017632699,
+    "annualized_return": 0.020692158516040227,
+    "sharpe_ratio": 0.2021614529605679,
+    "max_drawdown": -0.28386399105918964,
+    "active_hit_rate": 0.5239107332624867,
+    "final_equity": 10861.67450176327,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.1674008697508523,
+        "days_selected": 543,
+        "total_days": 1017,
+        "selection_rate": 0.5339233038348082
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16424357091277947,
+        "days_selected": 571,
+        "total_days": 1017,
+        "selection_rate": 0.5614552605703048
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.17527231484658282,
+        "days_selected": 573,
+        "total_days": 1017,
+        "selection_rate": 0.5634218289085545
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.14590629518278028,
+        "days_selected": 524,
+        "total_days": 1017,
+        "selection_rate": 0.5152409046214356
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.17706878804840143,
+        "days_selected": 612,
+        "total_days": 1017,
+        "selection_rate": 0.6017699115044248
+      }
+    }
+  },
+  "ML momentum 0.56": {
+    "total_return": 0.0030910901086029785,
+    "annualized_return": 0.0007650449785268076,
+    "sharpe_ratio": 0.1078205746160723,
+    "max_drawdown": -0.30172313936114825,
+    "active_hit_rate": 0.5201612903225806,
+    "final_equity": 10030.91090108603,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.1638276168811944,
+        "days_selected": 486,
+        "total_days": 1017,
+        "selection_rate": 0.4778761061946903
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16714756094914096,
+        "days_selected": 528,
+        "total_days": 1017,
+        "selection_rate": 0.5191740412979351
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.17879921186320671,
+        "days_selected": 523,
+        "total_days": 1017,
+        "selection_rate": 0.5142576204523107
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.13156600550527472,
+        "days_selected": 451,
+        "total_days": 1017,
+        "selection_rate": 0.44346116027531957
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.14922007677758437,
+        "days_selected": 492,
+        "total_days": 1017,
+        "selection_rate": 0.4837758112094395
+      }
+    }
+  },
+  "ML momentum 0.55": {
+    "total_return": 0.10898417709223662,
+    "annualized_return": 0.02596358175537139,
+    "sharpe_ratio": 0.2271767985737892,
+    "max_drawdown": -0.24864255108500843,
+    "active_hit_rate": 0.5224443606186345,
+    "final_equity": 11089.841770922367,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.16560088951749555,
+        "days_selected": 514,
+        "total_days": 1017,
+        "selection_rate": 0.5054080629301868
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16418925335292264,
+        "days_selected": 547,
+        "total_days": 1017,
+        "selection_rate": 0.5378564405113078
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.1747814722393325,
+        "days_selected": 545,
+        "total_days": 1017,
+        "selection_rate": 0.5358898721730581
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.13901553861982316,
+        "days_selected": 487,
+        "total_days": 1017,
+        "selection_rate": 0.47885939036381514
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.16467243329107514,
+        "days_selected": 558,
+        "total_days": 1017,
+        "selection_rate": 0.5486725663716814
+      }
+    }
+  },
+  "ML momentum 0.50": {
+    "total_return": 0.3531232007729046,
+    "annualized_return": 0.07781386435754412,
+    "sharpe_ratio": 0.46231098667101167,
+    "max_drawdown": -0.3052916703450207,
+    "active_hit_rate": 0.5247787610619469,
+    "final_equity": 13531.232007729046,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.17278454701314905,
+        "days_selected": 640,
+        "total_days": 1017,
+        "selection_rate": 0.6293018682399213
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16474228092392842,
+        "days_selected": 661,
+        "total_days": 1017,
+        "selection_rate": 0.6499508357915438
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.16799433516990975,
+        "days_selected": 663,
+        "total_days": 1017,
+        "selection_rate": 0.6519174041297935
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.1640321857033322,
+        "days_selected": 645,
+        "total_days": 1017,
+        "selection_rate": 0.6342182890855457
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.21146926672557045,
+        "days_selected": 781,
+        "total_days": 1017,
+        "selection_rate": 0.767944936086529
+      }
+    }
+  },
+  "ML momentum 0.51": {
+    "total_return": 0.2618968044167653,
+    "annualized_return": 0.05933288919503443,
+    "sharpe_ratio": 0.3795770075212606,
+    "max_drawdown": -0.26902257150114794,
+    "active_hit_rate": 0.5241590214067279,
+    "final_equity": 12618.968044167654,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.17644974828663781,
+        "days_selected": 625,
+        "total_days": 1017,
+        "selection_rate": 0.6145526057030481
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.1673315462465226,
+        "days_selected": 648,
+        "total_days": 1017,
+        "selection_rate": 0.6371681415929203
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.16783810317545841,
+        "days_selected": 640,
+        "total_days": 1017,
+        "selection_rate": 0.6293018682399213
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.15788556112924707,
+        "days_selected": 614,
+        "total_days": 1017,
+        "selection_rate": 0.6037364798426745
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.20463466751414983,
+        "days_selected": 743,
+        "total_days": 1017,
+        "selection_rate": 0.7305801376597837
+      }
+    }
+  },
+  "ML momentum 0.52": {
+    "total_return": 0.19281350048568413,
+    "annualized_return": 0.04465702278398975,
+    "sharpe_ratio": 0.31298034134829245,
+    "max_drawdown": -0.28710182301060916,
+    "active_hit_rate": 0.5229591836734694,
+    "final_equity": 11928.135004856842,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.1733136514368932,
+        "days_selected": 598,
+        "total_days": 1017,
+        "selection_rate": 0.5880039331366765
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16549449364078123,
+        "days_selected": 626,
+        "total_days": 1017,
+        "selection_rate": 0.615535889872173
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.17008526723080586,
+        "days_selected": 617,
+        "total_days": 1017,
+        "selection_rate": 0.6066863323500492
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.1542453156307743,
+        "days_selected": 589,
+        "total_days": 1017,
+        "selection_rate": 0.5791543756145526
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.20018477255238748,
+        "days_selected": 706,
+        "total_days": 1017,
+        "selection_rate": 0.6941986234021632
+      }
+    }
+  },
+  "ML momentum 0.53": {
+    "total_return": 0.1012646769420158,
+    "annualized_return": 0.024189328930482423,
+    "sharpe_ratio": 0.21857815401702888,
+    "max_drawdown": -0.3010686354333098,
+    "active_hit_rate": 0.5248155600268276,
+    "final_equity": 11012.646769420158,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.17004745692622328,
+        "days_selected": 573,
+        "total_days": 1017,
+        "selection_rate": 0.5634218289085545
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16297867149980327,
+        "days_selected": 598,
+        "total_days": 1017,
+        "selection_rate": 0.5880039331366765
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.17391028088734006,
+        "days_selected": 593,
+        "total_days": 1017,
+        "selection_rate": 0.5830875122910522
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.14963965621434977,
+        "days_selected": 556,
+        "total_days": 1017,
+        "selection_rate": 0.5467059980334317
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.18806503575055306,
+        "days_selected": 662,
+        "total_days": 1017,
+        "selection_rate": 0.6509341199606686
+      }
+    }
+  },
+  "ML momentum 0.57": {
+    "total_return": -0.09352849616830405,
+    "annualized_return": -0.024038045207665504,
+    "sharpe_ratio": -0.016182345838765058,
+    "max_drawdown": -0.3319198052626515,
+    "active_hit_rate": 0.5196678321678322,
+    "final_equity": 9064.71503831696,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.1537077925609246,
+        "days_selected": 440,
+        "total_days": 1017,
+        "selection_rate": 0.4326450344149459
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.1710780405393203,
+        "days_selected": 503,
+        "total_days": 1017,
+        "selection_rate": 0.4945919370698132
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.18650629909386804,
+        "days_selected": 497,
+        "total_days": 1017,
+        "selection_rate": 0.4886922320550639
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.1286217820044692,
+        "days_selected": 422,
+        "total_days": 1017,
+        "selection_rate": 0.41494591937069814
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.134914011071821,
+        "days_selected": 426,
+        "total_days": 1017,
+        "selection_rate": 0.41887905604719766
+      }
+    }
+  },
+  "ML momentum 0.60": {
+    "total_return": 0.03077581562808618,
+    "annualized_return": 0.0075391504346893345,
+    "sharpe_ratio": 0.13982014200701298,
+    "max_drawdown": -0.32680690045426647,
+    "active_hit_rate": 0.5143177989893318,
+    "final_equity": 10307.758156280861,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.13704031112836737,
+        "days_selected": 353,
+        "total_days": 1017,
+        "selection_rate": 0.3470993117010816
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16971722839286435,
+        "days_selected": 421,
+        "total_days": 1017,
+        "selection_rate": 0.4139626352015733
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.19435321856935434,
+        "days_selected": 426,
+        "total_days": 1017,
+        "selection_rate": 0.41887905604719766
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.11580715362637042,
+        "days_selected": 333,
+        "total_days": 1017,
+        "selection_rate": 0.3274336283185841
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.08613026920733063,
+        "days_selected": 248,
+        "total_days": 1017,
+        "selection_rate": 0.24385447394296952
+      }
+    }
+  },
+  "ML momentum 0.58": {
+    "total_return": 0.07064468831441206,
+    "annualized_return": 0.0170580804306788,
+    "sharpe_ratio": 0.18508444856736628,
+    "max_drawdown": -0.27314109671401743,
+    "active_hit_rate": 0.5212716222533894,
+    "final_equity": 10706.44688314412,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.1500479641111593,
+        "days_selected": 412,
+        "total_days": 1017,
+        "selection_rate": 0.4051130776794494
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.17041574881440932,
+        "days_selected": 479,
+        "total_days": 1017,
+        "selection_rate": 0.47099311701081614
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.18755401578796332,
+        "days_selected": 475,
+        "total_days": 1017,
+        "selection_rate": 0.4670599803343166
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.1260430023403256,
+        "days_selected": 400,
+        "total_days": 1017,
+        "selection_rate": 0.39331366764995085
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.12208479500317296,
+        "days_selected": 373,
+        "total_days": 1017,
+        "selection_rate": 0.3667649950835792
+      }
+    }
+  },
+  "ML momentum 0.59": {
+    "total_return": 0.06497655121458745,
+    "annualized_return": 0.01572121747542199,
+    "sharpe_ratio": 0.1783759478121781,
+    "max_drawdown": -0.316747973336677,
+    "active_hit_rate": 0.5163432073544433,
+    "final_equity": 10649.765512145874,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.19907038299028273,
+        "avg_position_weight": 0.1454323295628994,
+        "days_selected": 382,
+        "total_days": 1017,
+        "selection_rate": 0.37561455260570303
+      },
+      "AMZN": {
+        "final_weight": 0.20953151207091378,
+        "avg_position_weight": 0.16690030901679803,
+        "days_selected": 448,
+        "total_days": 1017,
+        "selection_rate": 0.44051130776794495
+      },
+      "GOOGL": {
+        "final_weight": 0.19221717014048373,
+        "avg_position_weight": 0.1915766706298461,
+        "days_selected": 455,
+        "total_days": 1017,
+        "selection_rate": 0.4473942969518191
+      },
+      "MSFT": {
+        "final_weight": 0.19708170178495185,
+        "avg_position_weight": 0.12006574853730573,
+        "days_selected": 362,
+        "total_days": 1017,
+        "selection_rate": 0.3559488692232055
+      },
+      "SPY": {
+        "final_weight": 0.20209923301336785,
+        "avg_position_weight": 0.10660507991293446,
+        "days_selected": 311,
+        "total_days": 1017,
+        "selection_rate": 0.3058013765978368
+      }
+    }
+  },
+  "ML mean_reversion 0.50": {
+    "total_return": 0.27520788407893404,
+    "annualized_return": 0.06209083446758834,
+    "sharpe_ratio": 0.3692470407238774,
+    "max_drawdown": -0.3638199360392652,
+    "active_hit_rate": 0.5266175266175266,
+    "final_equity": 12752.07884078934,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.18922688890059933,
+        "days_selected": 504,
+        "total_days": 1017,
+        "selection_rate": 0.49557522123893805
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.14216797159391004,
+        "days_selected": 435,
+        "total_days": 1017,
+        "selection_rate": 0.4277286135693215
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1412880249197456,
+        "days_selected": 426,
+        "total_days": 1017,
+        "selection_rate": 0.41887905604719766
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.2016314354696054,
+        "days_selected": 566,
+        "total_days": 1017,
+        "selection_rate": 0.5565388397246804
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17327663290178358,
+        "days_selected": 511,
+        "total_days": 1017,
+        "selection_rate": 0.5024582104228122
+      }
+    }
+  },
+  "ML mean_reversion 0.51": {
+    "total_return": 0.15642590650776977,
+    "annualized_return": 0.03666828406580991,
+    "sharpe_ratio": 0.2692453713868944,
+    "max_drawdown": -0.3831714863290603,
+    "active_hit_rate": 0.5243314335817624,
+    "final_equity": 11564.259065077698,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1875778217667335,
+        "days_selected": 480,
+        "total_days": 1017,
+        "selection_rate": 0.471976401179941
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1370012042250722,
+        "days_selected": 408,
+        "total_days": 1017,
+        "selection_rate": 0.40117994100294985
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12956584358757955,
+        "days_selected": 394,
+        "total_days": 1017,
+        "selection_rate": 0.38741396263520156
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.20409906603285805,
+        "days_selected": 533,
+        "total_days": 1017,
+        "selection_rate": 0.5240904621435595
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.15591535642315496,
+        "days_selected": 466,
+        "total_days": 1017,
+        "selection_rate": 0.4582104228121927
+      }
+    }
+  },
+  "ML mean_reversion 0.52": {
+    "total_return": 0.2036097935506076,
+    "annualized_return": 0.04699199807857202,
+    "sharpe_ratio": 0.31213729881880814,
+    "max_drawdown": -0.37955366776650057,
+    "active_hit_rate": 0.5231350330500472,
+    "final_equity": 12036.097935506075,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1806081005381916,
+        "days_selected": 447,
+        "total_days": 1017,
+        "selection_rate": 0.43952802359882004
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.13408058924333646,
+        "days_selected": 384,
+        "total_days": 1017,
+        "selection_rate": 0.3775811209439528
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12378875205580755,
+        "days_selected": 373,
+        "total_days": 1017,
+        "selection_rate": 0.3667649950835792
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.2013529248129406,
+        "days_selected": 497,
+        "total_days": 1017,
+        "selection_rate": 0.4886922320550639
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.13991397946575132,
+        "days_selected": 417,
+        "total_days": 1017,
+        "selection_rate": 0.41002949852507375
+      }
+    }
+  },
+  "ML mean_reversion 0.53": {
+    "total_return": 0.12897858836838738,
+    "annualized_return": 0.030516298842025336,
+    "sharpe_ratio": 0.24475155883967092,
+    "max_drawdown": -0.37305417890401144,
+    "active_hit_rate": 0.521292970754233,
+    "final_equity": 11289.785883683873,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17978331649824397,
+        "days_selected": 421,
+        "total_days": 1017,
+        "selection_rate": 0.4139626352015733
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.13243795444083784,
+        "days_selected": 363,
+        "total_days": 1017,
+        "selection_rate": 0.35693215339233036
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.11578681993693835,
+        "days_selected": 347,
+        "total_days": 1017,
+        "selection_rate": 0.34119960668633237
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.19326889152688376,
+        "days_selected": 463,
+        "total_days": 1017,
+        "selection_rate": 0.4552605703048181
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12110256528637836,
+        "days_selected": 355,
+        "total_days": 1017,
+        "selection_rate": 0.34906588003933137
+      }
+    }
+  },
+  "ML mean_reversion 0.60": {
+    "total_return": -0.08011415531752086,
+    "annualized_return": -0.020479073648400514,
+    "sharpe_ratio": -0.008616370629459429,
+    "max_drawdown": -0.3657499932789797,
+    "active_hit_rate": 0.5231788079470199,
+    "final_equity": 9198.858446824792,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.10962370280481464,
+        "days_selected": 224,
+        "total_days": 1017,
+        "selection_rate": 0.22025565388397247
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.09446787068201526,
+        "days_selected": 229,
+        "total_days": 1017,
+        "selection_rate": 0.22517207472959685
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.08207457734550752,
+        "days_selected": 214,
+        "total_days": 1017,
+        "selection_rate": 0.21042281219272368
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1181089323540593,
+        "days_selected": 259,
+        "total_days": 1017,
+        "selection_rate": 0.25467059980334317
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03820279291979796,
+        "days_selected": 131,
+        "total_days": 1017,
+        "selection_rate": 0.1288102261553589
+      }
+    }
+  },
+  "ML mean_reversion 0.55": {
+    "total_return": 0.10072922666871986,
+    "annualized_return": 0.02406591428401983,
+    "sharpe_ratio": 0.21757829924372793,
+    "max_drawdown": -0.32244985081656785,
+    "active_hit_rate": 0.5231990231990232,
+    "final_equity": 11007.292266687198,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.15724384982945439,
+        "days_selected": 350,
+        "total_days": 1017,
+        "selection_rate": 0.344149459193707
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12410921571420563,
+        "days_selected": 320,
+        "total_days": 1017,
+        "selection_rate": 0.31465093411996065
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.10631862602743387,
+        "days_selected": 305,
+        "total_days": 1017,
+        "selection_rate": 0.2999016715830875
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17198082470002626,
+        "days_selected": 390,
+        "total_days": 1017,
+        "selection_rate": 0.3834808259587021
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.09521474036604805,
+        "days_selected": 273,
+        "total_days": 1017,
+        "selection_rate": 0.26843657817109146
+      }
+    }
+  },
+  "ML mean_reversion 0.56": {
+    "total_return": 0.10410258629785707,
+    "annualized_return": 0.02484267931601014,
+    "sharpe_ratio": 0.22082388672761352,
+    "max_drawdown": -0.320566011942187,
+    "active_hit_rate": 0.5201853077432164,
+    "final_equity": 11041.025862978571,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.15590262796108498,
+        "days_selected": 332,
+        "total_days": 1017,
+        "selection_rate": 0.32645034414945917
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12039253227640326,
+        "days_selected": 302,
+        "total_days": 1017,
+        "selection_rate": 0.2969518190757129
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1022231358179939,
+        "days_selected": 285,
+        "total_days": 1017,
+        "selection_rate": 0.28023598820059
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.15702325134736467,
+        "days_selected": 357,
+        "total_days": 1017,
+        "selection_rate": 0.35103244837758113
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.07999434246932624,
+        "days_selected": 235,
+        "total_days": 1017,
+        "selection_rate": 0.23107177974434612
+      }
+    }
+  },
+  "ML mean_reversion 0.54": {
+    "total_return": 0.03654979011135251,
+    "annualized_return": 0.008934680555191754,
+    "sharpe_ratio": 0.1538127624538894,
+    "max_drawdown": -0.38554753466894043,
+    "active_hit_rate": 0.5217149220489977,
+    "final_equity": 10365.497901113526,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17000097164633637,
+        "days_selected": 387,
+        "total_days": 1017,
+        "selection_rate": 0.3805309734513274
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12945198487156723,
+        "days_selected": 343,
+        "total_days": 1017,
+        "selection_rate": 0.33726647000983284
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.10552769526158641,
+        "days_selected": 322,
+        "total_days": 1017,
+        "selection_rate": 0.3166175024582104
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.18446488627210317,
+        "days_selected": 428,
+        "total_days": 1017,
+        "selection_rate": 0.42084562438544737
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.10671965368881982,
+        "days_selected": 316,
+        "total_days": 1017,
+        "selection_rate": 0.3107177974434612
+      }
+    }
+  },
+  "ML mean_reversion 0.58": {
+    "total_return": 0.06756692443965595,
+    "annualized_return": 0.016332834397422502,
+    "sharpe_ratio": 0.18165552239447924,
+    "max_drawdown": -0.326830703118606,
+    "active_hit_rate": 0.5241871530531325,
+    "final_equity": 10675.66924439656,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1271178436884748,
+        "days_selected": 265,
+        "total_days": 1017,
+        "selection_rate": 0.2605703048180924
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.10506251722242745,
+        "days_selected": 262,
+        "total_days": 1017,
+        "selection_rate": 0.2576204523107178
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.08918457155887428,
+        "days_selected": 250,
+        "total_days": 1017,
+        "selection_rate": 0.24582104228121926
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1366071043436792,
+        "days_selected": 305,
+        "total_days": 1017,
+        "selection_rate": 0.2999016715830875
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.054319015300605226,
+        "days_selected": 179,
+        "total_days": 1017,
+        "selection_rate": 0.176007866273353
+      }
+    }
+  },
+  "ML mean_reversion 0.57": {
+    "total_return": -0.057325666403729825,
+    "annualized_return": -0.014521525423008774,
+    "sharpe_ratio": 0.03849593624791462,
+    "max_drawdown": -0.3398443027694057,
+    "active_hit_rate": 0.5220854453294714,
+    "final_equity": 9426.743335962701,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.13915449318800704,
+        "days_selected": 295,
+        "total_days": 1017,
+        "selection_rate": 0.29006882989183874
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.11216582929566125,
+        "days_selected": 281,
+        "total_days": 1017,
+        "selection_rate": 0.27630285152409045
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.09807391569577825,
+        "days_selected": 271,
+        "total_days": 1017,
+        "selection_rate": 0.2664700098328417
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.14769154072543977,
+        "days_selected": 331,
+        "total_days": 1017,
+        "selection_rate": 0.3254670599803343
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.06535276583454339,
+        "days_selected": 203,
+        "total_days": 1017,
+        "selection_rate": 0.19960668633235004
+      }
+    }
+  },
+  "ML volatility_weighted 0.53": {
+    "total_return": -0.06272012215979084,
+    "annualized_return": -0.015921917119374185,
+    "sharpe_ratio": -0.2007741226922119,
+    "max_drawdown": -0.16755759250868102,
+    "active_hit_rate": 0.5244755244755245,
+    "final_equity": 9372.798778402092,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03931179160069004,
+        "days_selected": 46,
+        "total_days": 1017,
+        "selection_rate": 0.04523107177974434
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.014295323653965275,
+        "days_selected": 19,
+        "total_days": 1017,
+        "selection_rate": 0.018682399213372666
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.01898465925200265,
+        "days_selected": 25,
+        "total_days": 1017,
+        "selection_rate": 0.024582104228121928
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.02884747188451969,
+        "days_selected": 34,
+        "total_days": 1017,
+        "selection_rate": 0.03343166175024582
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.01262171722730809,
+        "days_selected": 19,
+        "total_days": 1017,
+        "selection_rate": 0.018682399213372666
+      }
+    }
+  },
+  "ML volatility_weighted 0.55": {
+    "total_return": -0.04735524625154264,
+    "annualized_return": -0.011949009411989397,
+    "sharpe_ratio": -0.18685757151103335,
+    "max_drawdown": -0.15218915204990116,
+    "active_hit_rate": 0.45652173913043476,
+    "final_equity": 9526.447537484573,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.012782694198623401,
+        "days_selected": 13,
+        "total_days": 1017,
+        "selection_rate": 0.012782694198623401
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.011307802614619594,
+        "days_selected": 12,
+        "total_days": 1017,
+        "selection_rate": 0.011799410029498525
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.004910043787102688,
+        "days_selected": 6,
+        "total_days": 1017,
+        "selection_rate": 0.0058997050147492625
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.009347541995524521,
+        "days_selected": 10,
+        "total_days": 1017,
+        "selection_rate": 0.00983284169124877
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.004916420845624385,
+        "days_selected": 5,
+        "total_days": 1017,
+        "selection_rate": 0.004916420845624385
+      }
+    }
+  },
+  "ML volatility_weighted 0.54": {
+    "total_return": -0.03758425850027547,
+    "annualized_return": -0.009447524648823369,
+    "sharpe_ratio": -0.11639371446827063,
+    "max_drawdown": -0.15323280754458388,
+    "active_hit_rate": 0.5319148936170213,
+    "final_equity": 9624.157414997246,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.026046413345647446,
+        "days_selected": 29,
+        "total_days": 1017,
+        "selection_rate": 0.028515240904621434
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.012310627039382443,
+        "days_selected": 15,
+        "total_days": 1017,
+        "selection_rate": 0.014749262536873156
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.016202858146261774,
+        "days_selected": 19,
+        "total_days": 1017,
+        "selection_rate": 0.018682399213372666
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0216377738566464,
+        "days_selected": 23,
+        "total_days": 1017,
+        "selection_rate": 0.02261553588987217
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.006398197818551617,
+        "days_selected": 8,
+        "total_days": 1017,
+        "selection_rate": 0.007866273352999017
+      }
+    }
+  },
+  "ML volatility_weighted 0.52": {
+    "total_return": -0.07382627754104898,
+    "annualized_return": -0.018824256714787824,
+    "sharpe_ratio": -0.19775395610201943,
+    "max_drawdown": -0.2181305325047651,
+    "active_hit_rate": 0.5462555066079295,
+    "final_equity": 9261.73722458951,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.04984199307123106,
+        "days_selected": 62,
+        "total_days": 1017,
+        "selection_rate": 0.06096361848574238
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.018574682276622418,
+        "days_selected": 27,
+        "total_days": 1017,
+        "selection_rate": 0.02654867256637168
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.029130516841941553,
+        "days_selected": 44,
+        "total_days": 1017,
+        "selection_rate": 0.043264503441494594
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.04117770370710519,
+        "days_selected": 52,
+        "total_days": 1017,
+        "selection_rate": 0.051130776794493606
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.025483560346954263,
+        "days_selected": 42,
+        "total_days": 1017,
+        "selection_rate": 0.04129793510324484
+      }
+    }
+  },
+  "ML volatility_weighted 0.57": {
+    "total_return": 0.2178606908610432,
+    "annualized_return": 0.0500501177593351,
+    "sharpe_ratio": 3.1027893772894775,
+    "max_drawdown": -0.020125087726660863,
+    "active_hit_rate": 0.5714285714285714,
+    "final_equity": 12178.606908610433,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
@@ -1906,10 +1636,235 @@
       },
       "AMZN": {
         "final_weight": 0.0,
+        "avg_position_weight": 0.0019665683382497543,
+        "days_selected": 2,
+        "total_days": 1017,
+        "selection_rate": 0.0019665683382497543
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
         "avg_position_weight": 0.0009832841691248771,
         "days_selected": 1,
         "total_days": 1017,
         "selection_rate": 0.0009832841691248771
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0029498525073746312,
+        "days_selected": 3,
+        "total_days": 1017,
+        "selection_rate": 0.0029498525073746312
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
+        "total_days": 1017,
+        "selection_rate": 0.0
+      }
+    }
+  },
+  "ML volatility_weighted 0.51": {
+    "total_return": -0.07643346480263524,
+    "annualized_return": -0.01950937645478723,
+    "sharpe_ratio": -0.15561900562082212,
+    "max_drawdown": -0.23880683450432785,
+    "active_hit_rate": 0.5526315789473685,
+    "final_equity": 9235.665351973648,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.059818458880768505,
+        "days_selected": 79,
+        "total_days": 1017,
+        "selection_rate": 0.0776794493608653
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.022071140296121096,
+        "days_selected": 39,
+        "total_days": 1017,
+        "selection_rate": 0.038348082595870206
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03702268056539245,
+        "days_selected": 57,
+        "total_days": 1017,
+        "selection_rate": 0.05604719764011799
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.05245237405744802,
+        "days_selected": 70,
+        "total_days": 1017,
+        "selection_rate": 0.0688298918387414
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03512502171649412,
+        "days_selected": 59,
+        "total_days": 1017,
+        "selection_rate": 0.05801376597836775
+      }
+    }
+  },
+  "ML mean_reversion 0.59": {
+    "total_return": 0.08284843171767609,
+    "annualized_return": 0.01991843289512074,
+    "sharpe_ratio": 0.19806712707762564,
+    "max_drawdown": -0.32208897328166336,
+    "active_hit_rate": 0.5287456445993032,
+    "final_equity": 10828.48431717676,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.11880021633789964,
+        "days_selected": 243,
+        "total_days": 1017,
+        "selection_rate": 0.23893805309734514
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.09873169225979352,
+        "days_selected": 245,
+        "total_days": 1017,
+        "selection_rate": 0.24090462143559488
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.08470106663521311,
+        "days_selected": 227,
+        "total_days": 1017,
+        "selection_rate": 0.2232055063913471
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.12606862246310394,
+        "days_selected": 280,
+        "total_days": 1017,
+        "selection_rate": 0.2753195673549656
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.04564137182218057,
+        "days_selected": 153,
+        "total_days": 1017,
+        "selection_rate": 0.1504424778761062
+      }
+    }
+  },
+  "ML volatility_weighted 0.50": {
+    "total_return": -0.01567315508581435,
+    "annualized_return": -0.0039067185164402,
+    "sharpe_ratio": 0.01568772212531209,
+    "max_drawdown": -0.23274413483623596,
+    "active_hit_rate": 0.5572916666666666,
+    "final_equity": 9843.268449141857,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.06547498790353709,
+        "days_selected": 92,
+        "total_days": 1017,
+        "selection_rate": 0.09046214355948869
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.029667152818870786,
+        "days_selected": 55,
+        "total_days": 1017,
+        "selection_rate": 0.05408062930186824
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.041689125754235994,
+        "days_selected": 67,
+        "total_days": 1017,
+        "selection_rate": 0.06588003933136677
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.05967535862275597,
+        "days_selected": 88,
+        "total_days": 1017,
+        "selection_rate": 0.08652900688298919
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.04341471216707018,
+        "days_selected": 82,
+        "total_days": 1017,
+        "selection_rate": 0.08062930186823992
+      }
+    }
+  },
+  "ML volatility_weighted 0.56": {
+    "total_return": 0.08850310829642516,
+    "annualized_return": 0.021235578883696427,
+    "sharpe_ratio": 0.5188671827250234,
+    "max_drawdown": -0.07295595293467977,
+    "active_hit_rate": 0.47619047619047616,
+    "final_equity": 10885.031082964251,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.00688298918387414,
+        "days_selected": 7,
+        "total_days": 1017,
+        "selection_rate": 0.00688298918387414
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.004916420845624385,
+        "days_selected": 5,
+        "total_days": 1017,
+        "selection_rate": 0.004916420845624385
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0024518680339740036,
+        "days_selected": 3,
+        "total_days": 1017,
+        "selection_rate": 0.0029498525073746312
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.004431121149900136,
+        "days_selected": 5,
+        "total_days": 1017,
+        "selection_rate": 0.004916420845624385
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0009832841691248771,
+        "days_selected": 1,
+        "total_days": 1017,
+        "selection_rate": 0.0009832841691248771
+      }
+    }
+  },
+  "ML volatility_weighted 0.58": {
+    "total_return": 0.1926593754352668,
+    "annualized_return": 0.04462357440245768,
+    "sharpe_ratio": 4.492981791539048,
+    "max_drawdown": -0.02012508772666065,
+    "active_hit_rate": 0.0,
+    "final_equity": 11926.593754352667,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0009832841691248771,
+        "days_selected": 1,
+        "total_days": 1017,
+        "selection_rate": 0.0009832841691248771
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
+        "total_days": 1017,
+        "selection_rate": 0.0
       },
       "GOOGL": {
         "final_weight": 0.0,
@@ -1920,10 +1875,10 @@
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.0009832841691248771,
-        "days_selected": 1,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
         "total_days": 1017,
-        "selection_rate": 0.0009832841691248771
+        "selection_rate": 0.0
       },
       "SPY": {
         "final_weight": 0.0,
@@ -1979,540 +1934,585 @@
       }
     }
   },
-  "Threshold Only 0.50": {
-    "total_return": 0.17127873163898877,
-    "annualized_return": 0.03995168064419086,
-    "sharpe_ratio": 0.28376838072258664,
-    "max_drawdown": -0.35947579360055293,
-    "active_hit_rate": 0.5237870937352803,
-    "final_equity": 11712.787316389888,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.5029576549469751,
-        "avg_position_weight": 0.20001615737056688,
-        "days_selected": 857,
-        "total_days": 1017,
-        "selection_rate": 0.8426745329400197
-      },
-      "AMZN": {
-        "final_weight": 0.49704234505302497,
-        "avg_position_weight": 0.19451689830337474,
-        "days_selected": 837,
-        "total_days": 1017,
-        "selection_rate": 0.8230088495575221
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18845700351954245,
-        "days_selected": 813,
-        "total_days": 1017,
-        "selection_rate": 0.799410029498525
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.20806831894271727,
-        "days_selected": 875,
-        "total_days": 1017,
-        "selection_rate": 0.8603736479842674
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.2050084851872991,
-        "days_selected": 864,
-        "total_days": 1017,
-        "selection_rate": 0.8495575221238938
-      }
-    }
-  },
-  "Threshold Only 0.51": {
-    "total_return": 0.13936500555950704,
-    "annualized_return": 0.03285738419263007,
-    "sharpe_ratio": 0.25457797279075045,
-    "max_drawdown": -0.3590534323288562,
-    "active_hit_rate": 0.5286402569593148,
-    "final_equity": 11393.65005559507,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 1.0,
-        "avg_position_weight": 0.20147752568496224,
-        "days_selected": 756,
-        "total_days": 1017,
-        "selection_rate": 0.7433628318584071
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.19536832878330573,
-        "days_selected": 736,
-        "total_days": 1017,
-        "selection_rate": 0.7236971484759095
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.185389420564871,
-        "days_selected": 713,
-        "total_days": 1017,
-        "selection_rate": 0.7010816125860374
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.20182897802457722,
-        "days_selected": 765,
-        "total_days": 1017,
-        "selection_rate": 0.7522123893805309
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.2080694735892848,
-        "days_selected": 766,
-        "total_days": 1017,
-        "selection_rate": 0.7531956735496559
-      }
-    }
-  },
-  "Threshold Only 0.52": {
-    "total_return": -0.2073903793783275,
-    "annualized_return": -0.055964871989755194,
-    "sharpe_ratio": -0.11386710711282268,
-    "max_drawdown": -0.3720648750896522,
-    "active_hit_rate": 0.5223199739328772,
-    "final_equity": 7926.0962062167255,
+  "ML volatility_weighted 0.60": {
+    "total_return": 0.21762612317657615,
+    "annualized_return": 0.049999999999971845,
+    "sharpe_ratio": 0.0,
+    "max_drawdown": 0.0,
+    "active_hit_rate": 0.0,
+    "final_equity": 12176.261231765762,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.20143850613792255,
-        "days_selected": 626,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
         "total_days": 1017,
-        "selection_rate": 0.615535889872173
+        "selection_rate": 0.0
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.1946352902691417,
-        "days_selected": 611,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
         "total_days": 1017,
-        "selection_rate": 0.6007866273352999
+        "selection_rate": 0.0
       },
       "GOOGL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.17910278113089725,
-        "days_selected": 576,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
         "total_days": 1017,
-        "selection_rate": 0.5663716814159292
+        "selection_rate": 0.0
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.19896002671760732,
-        "days_selected": 641,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
         "total_days": 1017,
-        "selection_rate": 0.6302851524090463
+        "selection_rate": 0.0
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.19734815483980978,
-        "days_selected": 615,
+        "avg_position_weight": 0.0,
+        "days_selected": 0,
         "total_days": 1017,
-        "selection_rate": 0.6047197640117994
-      }
-    }
-  },
-  "Threshold Only 0.53": {
-    "total_return": -0.5649337674828994,
-    "annualized_return": -0.1863483668237247,
-    "sharpe_ratio": -0.7468626840505153,
-    "max_drawdown": -0.5921876403910147,
-    "active_hit_rate": 0.5137690094533498,
-    "final_equity": 4350.662325171006,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18499976029948345,
-        "days_selected": 486,
-        "total_days": 1017,
-        "selection_rate": 0.4778761061946903
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18708673904358208,
-        "days_selected": 487,
-        "total_days": 1017,
-        "selection_rate": 0.47885939036381514
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.166111912854561,
-        "days_selected": 451,
-        "total_days": 1017,
-        "selection_rate": 0.44346116027531957
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.19349599908385043,
-        "days_selected": 523,
-        "total_days": 1017,
-        "selection_rate": 0.5142576204523107
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.19062613935765776,
-        "days_selected": 486,
-        "total_days": 1017,
-        "selection_rate": 0.4778761061946903
-      }
-    }
-  },
-  "Threshold Only 0.58": {
-    "total_return": -0.19894879335176507,
-    "annualized_return": -0.05348345297486479,
-    "sharpe_ratio": -0.30998458168482595,
-    "max_drawdown": -0.32031332744013663,
-    "active_hit_rate": 0.4835680751173709,
-    "final_equity": 8010.512066482349,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.022624146065744782,
-        "days_selected": 29,
-        "total_days": 1017,
-        "selection_rate": 0.028515240904621434
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03885454924126112,
-        "days_selected": 49,
-        "total_days": 1017,
-        "selection_rate": 0.048180924287118974
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.029821783875161774,
-        "days_selected": 41,
-        "total_days": 1017,
-        "selection_rate": 0.04031465093411996
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.035205538372122605,
-        "days_selected": 50,
-        "total_days": 1017,
-        "selection_rate": 0.049164208456243856
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.03573587035131444,
-        "days_selected": 44,
-        "total_days": 1017,
-        "selection_rate": 0.043264503441494594
-      }
-    }
-  },
-  "Threshold Only 0.57": {
-    "total_return": -0.4833251792552211,
-    "annualized_return": -0.15093918274890594,
-    "sharpe_ratio": -0.8610249730857255,
-    "max_drawdown": -0.5529065158806675,
-    "active_hit_rate": 0.4740740740740741,
-    "final_equity": 5166.748207447788,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.046468055355395346,
-        "days_selected": 62,
-        "total_days": 1017,
-        "selection_rate": 0.06096361848574238
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.06652933169906293,
-        "days_selected": 89,
-        "total_days": 1017,
-        "selection_rate": 0.08751229105211406
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.04962023516517587,
-        "days_selected": 72,
-        "total_days": 1017,
-        "selection_rate": 0.07079646017699115
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.06856382110966933,
-        "days_selected": 99,
-        "total_days": 1017,
-        "selection_rate": 0.09734513274336283
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.06380380740815965,
-        "days_selected": 83,
-        "total_days": 1017,
-        "selection_rate": 0.08161258603736479
-      }
-    }
-  },
-  "Threshold Only 0.54": {
-    "total_return": -0.6936663146636355,
-    "annualized_return": -0.25409172325963114,
-    "sharpe_ratio": -1.1659611832113923,
-    "max_drawdown": -0.7176775884226991,
-    "active_hit_rate": 0.5019852524106636,
-    "final_equity": 3063.3368533636453,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.16080353225110194,
-        "days_selected": 351,
-        "total_days": 1017,
-        "selection_rate": 0.34513274336283184
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1501916940921719,
-        "days_selected": 327,
-        "total_days": 1017,
-        "selection_rate": 0.3215339233038348
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.14810274810602705,
-        "days_selected": 335,
-        "total_days": 1017,
-        "selection_rate": 0.32940019665683384
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.18161613148992442,
-        "days_selected": 395,
-        "total_days": 1017,
-        "selection_rate": 0.38839724680432647
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.1655789127431739,
-        "days_selected": 355,
-        "total_days": 1017,
-        "selection_rate": 0.34906588003933137
+        "selection_rate": 0.0
       }
     }
   },
   "Threshold Only 0.56": {
-    "total_return": -0.5278496975373069,
-    "annualized_return": -0.16968835400524906,
-    "sharpe_ratio": -0.8463905656038425,
-    "max_drawdown": -0.5763832514266104,
-    "active_hit_rate": 0.4893917963224894,
-    "final_equity": 4721.503024626931,
+    "total_return": -0.3316322870902726,
+    "annualized_return": -0.09501579483732125,
+    "sharpe_ratio": -0.4362660700300969,
+    "max_drawdown": -0.40269514728128,
+    "active_hit_rate": 0.49393939393939396,
+    "final_equity": 6683.677129097274,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.08769059181610707,
-        "days_selected": 128,
+        "avg_position_weight": 0.06833000252159206,
+        "days_selected": 106,
         "total_days": 1017,
-        "selection_rate": 0.12586037364798427
+        "selection_rate": 0.10422812192723697
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.09540303130150148,
-        "days_selected": 142,
+        "avg_position_weight": 0.08401989439266841,
+        "days_selected": 126,
         "total_days": 1017,
-        "selection_rate": 0.13962635201573254
+        "selection_rate": 0.12389380530973451
       },
       "GOOGL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.08010889897535367,
-        "days_selected": 131,
+        "avg_position_weight": 0.07701624822146047,
+        "days_selected": 129,
         "total_days": 1017,
-        "selection_rate": 0.1288102261553589
+        "selection_rate": 0.12684365781710916
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.09974063820009288,
-        "days_selected": 163,
+        "avg_position_weight": 0.10105566845151426,
+        "days_selected": 158,
         "total_days": 1017,
-        "selection_rate": 0.16027531956735497
+        "selection_rate": 0.1553588987217306
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.09526726251913764,
-        "days_selected": 143,
+        "avg_position_weight": 0.09829008415121121,
+        "days_selected": 141,
         "total_days": 1017,
-        "selection_rate": 0.14060963618485742
+        "selection_rate": 0.13864306784660768
+      }
+    }
+  },
+  "Threshold Only 0.54": {
+    "total_return": -0.410736855272261,
+    "annualized_return": -0.12282653591157366,
+    "sharpe_ratio": -0.4426112409220162,
+    "max_drawdown": -0.4960043931918411,
+    "active_hit_rate": 0.5169541939321832,
+    "final_equity": 5892.63144727739,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.14184830519869915,
+        "days_selected": 298,
+        "total_days": 1017,
+        "selection_rate": 0.29301868239921336
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1414710173554896,
+        "days_selected": 299,
+        "total_days": 1017,
+        "selection_rate": 0.29400196656833827
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.14840025977347288,
+        "days_selected": 316,
+        "total_days": 1017,
+        "selection_rate": 0.3107177974434612
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.18261913945074373,
+        "days_selected": 379,
+        "total_days": 1017,
+        "selection_rate": 0.3726647000983284
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.2017871385952426,
+        "days_selected": 389,
+        "total_days": 1017,
+        "selection_rate": 0.3824975417895772
       }
     }
   },
   "Threshold Only 0.55": {
-    "total_return": -0.4988311452176748,
-    "annualized_return": -0.15732565815547428,
-    "sharpe_ratio": -0.7027597729968035,
-    "max_drawdown": -0.5688636101647017,
-    "active_hit_rate": 0.49870354364736386,
-    "final_equity": 5011.688547823252,
+    "total_return": -0.472309148643282,
+    "annualized_return": -0.14648905294512304,
+    "sharpe_ratio": -0.6145724397698953,
+    "max_drawdown": -0.5175929002387558,
+    "active_hit_rate": 0.5031333930170099,
+    "final_equity": 5276.90851356718,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.11977681524074064,
-        "days_selected": 212,
+        "avg_position_weight": 0.11391503997099044,
+        "days_selected": 202,
         "total_days": 1017,
-        "selection_rate": 0.20845624385447395
+        "selection_rate": 0.19862340216322516
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.12181130371630743,
-        "days_selected": 222,
+        "avg_position_weight": 0.11352569517213355,
+        "days_selected": 204,
         "total_days": 1017,
-        "selection_rate": 0.2182890855457227
+        "selection_rate": 0.20058997050147492
       },
       "GOOGL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.12400115522458989,
-        "days_selected": 229,
+        "avg_position_weight": 0.11038791579589033,
+        "days_selected": 203,
         "total_days": 1017,
-        "selection_rate": 0.22517207472959685
+        "selection_rate": 0.19960668633235004
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.13753236500247365,
-        "days_selected": 255,
+        "avg_position_weight": 0.14246212361947921,
+        "days_selected": 252,
         "total_days": 1017,
-        "selection_rate": 0.25073746312684364
+        "selection_rate": 0.24778761061946902
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.13207993407055904,
-        "days_selected": 239,
+        "avg_position_weight": 0.1588439353726766,
+        "days_selected": 256,
         "total_days": 1017,
-        "selection_rate": 0.23500491642084562
+        "selection_rate": 0.25172074729596855
+      }
+    }
+  },
+  "Threshold Only 0.58": {
+    "total_return": -0.2656575399612646,
+    "annualized_return": -0.07365802305646796,
+    "sharpe_ratio": -0.5488520748717216,
+    "max_drawdown": -0.37207761153604796,
+    "active_hit_rate": 0.4876847290640394,
+    "final_equity": 7343.424600387354,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0212261207697425,
+        "days_selected": 27,
+        "total_days": 1017,
+        "selection_rate": 0.02654867256637168
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.031864233650579485,
+        "days_selected": 45,
+        "total_days": 1017,
+        "selection_rate": 0.04424778761061947
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03353401759045262,
+        "days_selected": 46,
+        "total_days": 1017,
+        "selection_rate": 0.04523107177974434
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.03349966665396598,
+        "days_selected": 47,
+        "total_days": 1017,
+        "selection_rate": 0.046214355948869225
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.030318439211365608,
+        "days_selected": 38,
+        "total_days": 1017,
+        "selection_rate": 0.03736479842674533
+      }
+    }
+  },
+  "Threshold Only 0.57": {
+    "total_return": -0.32385087504291477,
+    "annualized_return": -0.09241641009080193,
+    "sharpe_ratio": -0.530381569925631,
+    "max_drawdown": -0.40296514633924824,
+    "active_hit_rate": 0.4627659574468085,
+    "final_equity": 6761.491249570852,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.034721314187078196,
+        "days_selected": 49,
+        "total_days": 1017,
+        "selection_rate": 0.048180924287118974
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.05383685518023085,
+        "days_selected": 80,
+        "total_days": 1017,
+        "selection_rate": 0.07866273352999016
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.04971874068781159,
+        "days_selected": 75,
+        "total_days": 1017,
+        "selection_rate": 0.07374631268436578
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.06660816704540812,
+        "days_selected": 95,
+        "total_days": 1017,
+        "selection_rate": 0.09341199606686332
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.057651796055813435,
+        "days_selected": 77,
+        "total_days": 1017,
+        "selection_rate": 0.07571288102261553
       }
     }
   },
   "Threshold Only 0.59": {
-    "total_return": -0.0810090670031488,
-    "annualized_return": -0.020715283777603566,
-    "sharpe_ratio": -0.11820978594600659,
-    "max_drawdown": -0.2826903334928207,
-    "active_hit_rate": 0.44036697247706424,
-    "final_equity": 9189.909329968512,
+    "total_return": 0.29798494099217665,
+    "annualized_return": 0.06676023134901876,
+    "sharpe_ratio": 0.7086781464137731,
+    "max_drawdown": -0.09906320160157366,
+    "active_hit_rate": 0.5648148148148148,
+    "final_equity": 12979.849409921766,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.011649546346736626,
-        "days_selected": 14,
-        "total_days": 1017,
-        "selection_rate": 0.01376597836774828
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.019315894928237858,
-        "days_selected": 25,
-        "total_days": 1017,
-        "selection_rate": 0.024582104228121928
-      },
-      "GOOGL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.018853609653005317,
-        "days_selected": 23,
-        "total_days": 1017,
-        "selection_rate": 0.02261553588987217
-      },
-      "MSFT": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.018196191340580547,
-        "days_selected": 25,
-        "total_days": 1017,
-        "selection_rate": 0.024582104228121928
-      },
-      "SPY": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.019497048783553714,
-        "days_selected": 22,
-        "total_days": 1017,
-        "selection_rate": 0.021632251720747297
-      }
-    }
-  },
-  "Threshold Only 0.60": {
-    "total_return": -0.11275132368814544,
-    "annualized_return": -0.02920778735116414,
-    "sharpe_ratio": -0.37578675103685155,
-    "max_drawdown": -0.24387862429865223,
-    "active_hit_rate": 0.4098360655737705,
-    "final_equity": 8872.486763118546,
-    "positions_by_ticker": {
-      "AAPL": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.00688298918387414,
-        "days_selected": 7,
-        "total_days": 1017,
-        "selection_rate": 0.00688298918387414
-      },
-      "AMZN": {
-        "final_weight": 0.0,
-        "avg_position_weight": 0.011138963144114547,
+        "avg_position_weight": 0.012136433895077462,
         "days_selected": 13,
         "total_days": 1017,
         "selection_rate": 0.012782694198623401
       },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.021985103340961237,
+        "days_selected": 27,
+        "total_days": 1017,
+        "selection_rate": 0.02654867256637168
+      },
       "GOOGL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.00918582039588129,
-        "days_selected": 11,
+        "avg_position_weight": 0.01981837130837616,
+        "days_selected": 26,
         "total_days": 1017,
-        "selection_rate": 0.010816125860373648
+        "selection_rate": 0.025565388397246803
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.013108897470767126,
-        "days_selected": 16,
+        "avg_position_weight": 0.020488540252524657,
+        "days_selected": 25,
         "total_days": 1017,
-        "selection_rate": 0.015732546705998034
+        "selection_rate": 0.024582104228121928
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.01278067493810626,
+        "avg_position_weight": 0.0150504105934243,
+        "days_selected": 17,
+        "total_days": 1017,
+        "selection_rate": 0.01671583087512291
+      }
+    }
+  },
+  "Threshold Only 0.60": {
+    "total_return": 0.24157501563643158,
+    "annualized_return": 0.055079868090967876,
+    "sharpe_ratio": 0.7257625534595176,
+    "max_drawdown": -0.08523346776832053,
+    "active_hit_rate": 0.5094339622641509,
+    "final_equity": 12415.750156364316,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.005417212428240674,
+        "days_selected": 6,
+        "total_days": 1017,
+        "selection_rate": 0.0058997050147492625
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.010322757241105644,
+        "days_selected": 12,
+        "total_days": 1017,
+        "selection_rate": 0.011799410029498525
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.010328802677675152,
+        "days_selected": 13,
+        "total_days": 1017,
+        "selection_rate": 0.012782694198623401
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0113070088669914,
         "days_selected": 14,
         "total_days": 1017,
         "selection_rate": 0.01376597836774828
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.0068720063966066,
+        "days_selected": 8,
+        "total_days": 1017,
+        "selection_rate": 0.007866273352999017
+      }
+    }
+  },
+  "Threshold Only 0.53": {
+    "total_return": -0.4065234997413856,
+    "annualized_return": -0.12127658025602961,
+    "sharpe_ratio": -0.4328104724557843,
+    "max_drawdown": -0.48604492172224173,
+    "active_hit_rate": 0.5262934690415606,
+    "final_equity": 5934.765002586144,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1603149747967224,
+        "days_selected": 426,
+        "total_days": 1017,
+        "selection_rate": 0.41887905604719766
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.16009439414788298,
+        "days_selected": 424,
+        "total_days": 1017,
+        "selection_rate": 0.4169124877089479
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.16045166005914194,
+        "days_selected": 427,
+        "total_days": 1017,
+        "selection_rate": 0.4198623402163225
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.21410014090682092,
+        "days_selected": 541,
+        "total_days": 1017,
+        "selection_rate": 0.5319567354965585
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.22440952822119184,
+        "days_selected": 540,
+        "total_days": 1017,
+        "selection_rate": 0.5309734513274337
+      }
+    }
+  },
+  "Threshold Only 0.52": {
+    "total_return": -0.2542282467566501,
+    "annualized_return": -0.07010625201558163,
+    "sharpe_ratio": -0.18893151834289082,
+    "max_drawdown": -0.42215800512829554,
+    "active_hit_rate": 0.5307390451275343,
+    "final_equity": 7457.7175324334985,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17769877882721974,
+        "days_selected": 570,
+        "total_days": 1017,
+        "selection_rate": 0.56047197640118
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17454379335444445,
+        "days_selected": 569,
+        "total_days": 1017,
+        "selection_rate": 0.5594886922320551
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17025394035776625,
+        "days_selected": 560,
+        "total_days": 1017,
+        "selection_rate": 0.5506391347099312
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.2130439186080946,
+        "days_selected": 663,
+        "total_days": 1017,
+        "selection_rate": 0.6519174041297935
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.2349610437787286,
+        "days_selected": 696,
+        "total_days": 1017,
+        "selection_rate": 0.6843657817109144
+      }
+    }
+  },
+  "Threshold Only 0.51": {
+    "total_return": -0.16532119238746046,
+    "annualized_return": -0.043789570217829366,
+    "sharpe_ratio": -0.07158862340565955,
+    "max_drawdown": -0.38776249605569224,
+    "active_hit_rate": 0.5289345592212007,
+    "final_equity": 8346.788076125395,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.18587000313133561,
+        "days_selected": 705,
+        "total_days": 1017,
+        "selection_rate": 0.6932153392330384
+      },
+      "AMZN": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.18197278230593514,
+        "days_selected": 703,
+        "total_days": 1017,
+        "selection_rate": 0.6912487708947886
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.17620661892857017,
+        "days_selected": 686,
+        "total_days": 1017,
+        "selection_rate": 0.6745329400196657
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.21522899252162567,
+        "days_selected": 792,
+        "total_days": 1017,
+        "selection_rate": 0.7787610619469026
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.22892219308303485,
+        "days_selected": 812,
+        "total_days": 1017,
+        "selection_rate": 0.7984267453294002
+      }
+    }
+  },
+  "Threshold Only 0.50": {
+    "total_return": 0.1269809057650657,
+    "annualized_return": 0.03006416765685449,
+    "sharpe_ratio": 0.24326232963143118,
+    "max_drawdown": -0.3433524281305446,
+    "active_hit_rate": 0.5313390313390314,
+    "final_equity": 11269.809057650657,
+    "positions_by_ticker": {
+      "AAPL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.18670153131987624,
+        "days_selected": 809,
+        "total_days": 1017,
+        "selection_rate": 0.7954768928220256
+      },
+      "AMZN": {
+        "final_weight": 1.0,
+        "avg_position_weight": 0.18905065728431147,
+        "days_selected": 808,
+        "total_days": 1017,
+        "selection_rate": 0.7944936086529006
+      },
+      "GOOGL": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.1816390916987777,
+        "days_selected": 796,
+        "total_days": 1017,
+        "selection_rate": 0.7826941986234022
+      },
+      "MSFT": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.2166777570863197,
+        "days_selected": 899,
+        "total_days": 1017,
+        "selection_rate": 0.8839724680432645
+      },
+      "SPY": {
+        "final_weight": 0.0,
+        "avg_position_weight": 0.22199782593421538,
+        "days_selected": 900,
+        "total_days": 1017,
+        "selection_rate": 0.8849557522123894
       }
     }
   },
   "Buy & Hold (benchmark)": {
-    "total_return": 0.6774501632347489,
-    "annualized_return": 0.1367511287279466,
-    "sharpe_ratio": 0.6616287533011909,
-    "max_drawdown": -0.35311446189354767,
-    "active_hit_rate": 0.527147087857848,
-    "final_equity": 16774.50163234749,
+    "total_return": 0.7129106633792961,
+    "annualized_return": 0.14265879321361719,
+    "sharpe_ratio": 0.6830634530333671,
+    "max_drawdown": -0.35569777146346393,
+    "active_hit_rate": 0.5273445212240868,
+    "final_equity": 17129.106633792962,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.2,
-        "avg_position_weight": 0.19921337266470013,
+        "avg_position_weight": 0.19921337266470016,
         "days_selected": 1013,
         "total_days": 1017,
         "selection_rate": 0.9960668633235005
       },
       "AMZN": {
         "final_weight": 0.2,
-        "avg_position_weight": 0.19921337266470013,
+        "avg_position_weight": 0.19921337266470016,
         "days_selected": 1013,
         "total_days": 1017,
         "selection_rate": 0.9960668633235005
       },
       "GOOGL": {
         "final_weight": 0.2,
-        "avg_position_weight": 0.19921337266470013,
+        "avg_position_weight": 0.19921337266470016,
         "days_selected": 1013,
         "total_days": 1017,
         "selection_rate": 0.9960668633235005
       },
       "MSFT": {
         "final_weight": 0.2,
-        "avg_position_weight": 0.19921337266470013,
+        "avg_position_weight": 0.19921337266470016,
         "days_selected": 1013,
         "total_days": 1017,
         "selection_rate": 0.9960668633235005
       },
       "SPY": {
         "final_weight": 0.2,
-        "avg_position_weight": 0.19921337266470013,
+        "avg_position_weight": 0.19921337266470016,
         "days_selected": 1013,
         "total_days": 1017,
         "selection_rate": 0.9960668633235005
@@ -2565,44 +2565,44 @@
     }
   },
   "Simple Reversal SMA20 (benchmark)": {
-    "total_return": 0.03727884590497954,
-    "annualized_return": 0.009110472261779634,
-    "sharpe_ratio": 0.15362557871800572,
-    "max_drawdown": -0.3357350695273619,
-    "active_hit_rate": 0.5252225519287834,
-    "final_equity": 10372.788459049796,
+    "total_return": 0.06101523277825627,
+    "annualized_return": 0.014783736881587517,
+    "sharpe_ratio": 0.17822483022626187,
+    "max_drawdown": -0.3357352292474192,
+    "active_hit_rate": 0.5261599210266535,
+    "final_equity": 10610.152327782562,
     "positions_by_ticker": {
       "AAPL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.17841691248770894,
-        "days_selected": 431,
+        "avg_position_weight": 0.1786135693215339,
+        "days_selected": 432,
         "total_days": 1017,
-        "selection_rate": 0.42379547689282204
+        "selection_rate": 0.4247787610619469
       },
       "AMZN": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.14514913143231728,
-        "days_selected": 410,
+        "avg_position_weight": 0.14534578826614225,
+        "days_selected": 411,
         "total_days": 1017,
-        "selection_rate": 0.4031465093411996
+        "selection_rate": 0.40412979351032446
       },
       "GOOGL": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.14400196656833827,
-        "days_selected": 393,
+        "avg_position_weight": 0.14419862340216325,
+        "days_selected": 394,
         "total_days": 1017,
-        "selection_rate": 0.3864306784660767
+        "selection_rate": 0.38741396263520156
       },
       "MSFT": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.16628974106850214,
-        "days_selected": 450,
+        "avg_position_weight": 0.1664863979023271,
+        "days_selected": 451,
         "total_days": 1017,
-        "selection_rate": 0.4424778761061947
+        "selection_rate": 0.44346116027531957
       },
       "SPY": {
         "final_weight": 0.0,
-        "avg_position_weight": 0.09770567027204195,
+        "avg_position_weight": 0.09691904293674204,
         "days_selected": 338,
         "total_days": 1017,
         "selection_rate": 0.33235004916420846
