@@ -106,6 +106,7 @@ if __name__ == "__main__":
 """Explore more probabilities to chose best ML model, using strategy, etc. (not only IC)"""
 """Test more buy/sell strategies | Test more averages for mean reversion"""
 """Validation fine tunning, find right number of windows days..."""
+"""Change strategies parameters to optimize"""
 """Models parameter tuning/more features ?"""
 
 """Future improvements"""

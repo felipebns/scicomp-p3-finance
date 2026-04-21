@@ -118,8 +118,6 @@ adjusted_threshold = threshold + (distance × 2)
 - Price 5% above SMA → adjusted_threshold = 0.50 + 0.10 = **0.60**
   - *Harder to buy* (prices may pull back)
 
-**Why it worked best (80.3% return)**: The model + mean reversion found optimal sweet spots.
-
 ---
 
 ### **Strategy 3: Momentum**
